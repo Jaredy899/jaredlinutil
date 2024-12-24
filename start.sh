@@ -7,7 +7,7 @@ RED='\033[0;31m'
 
 # Function to fetch the latest release tag from the GitHub API
 get_latest_release() {
-  latest_release=$(curl -s https://api.github.com/repos/ChrisTitusTech/linutil/releases | 
+  latest_release=$(curl -s https://api.github.com/repos/Jaredy899/jaredlinutil/releases | 
     grep "tag_name" | 
     head -n 1 | 
     sed -E 's/.*"tag_name": "([^"]+)".*/\1/')
@@ -22,11 +22,11 @@ get_latest_release() {
 redirect_to_latest_pre_release() {
   latest_release=$(get_latest_release)
   if [ -n "$latest_release" ]; then
-    url="https://github.com/ChrisTitusTech/linutil/releases/download/$latest_release/linutil"
+    url="https://github.com/Jaredy899/jaredlinutil/releases/download/$latest_release/linutil"
   else
     printf "%b\n" 'Unable to determine latest pre-release version.' >&2
     printf "%b\n" "Using latest Full Release"
-    url="https://github.com/ChrisTitusTech/linutil/releases/latest/download/linutil"
+    url="https://github.com/Jaredy899/jaredlinutil/releases/latest/download/linutil"
   fi
   addArch
 }
