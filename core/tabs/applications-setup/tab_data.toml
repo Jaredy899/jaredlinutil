@@ -159,25 +159,25 @@ name = "Terminal Emulators"
 [[data.entries]]
 name = "Alacritty"
 description = "Alacritty is a modern terminal emulator that comes with sensible defaults, but allows for extensive configuration. By integrating with other applications, rather than reimplementing their functionality, it manages to provide a flexible set of features with high performance. The supported platforms currently consist of BSD, Linux, macOS and Windows. This command installs and configures alacritty terminal emulator."
-script = "alacritty-setup.sh"
+script = "terminal-emulators/alacritty-setup.sh"
 task_list = "I FM"
 
 [[data.entries]]
 name = "Ghostty"
 description = "Ghostty is a fast, feature-rich, and cross-platform terminal emulator that uses platform-native UI and GPU acceleration."
-script = "ghostty-setup.sh"
+script = "terminal-emulators/ghostty-setup.sh"
 task_list = "I FM MP"
 
 [[data.entries]]
 name = "Kitty"
 description = "kitty is a free and open-source GPU-accelerated terminal emulator for Linux, macOS, and some BSD distributions, focused on performance and features. kitty is written in a mix of C and Python programming languages. This command installs and configures kitty."
-script = "kitty-setup.sh"
+script = "terminal-emulators/kitty-setup.sh"
 task_list = "I FM"
 
 [[data.entries]]
 name = "Warp"
 description = "Warp is the intelligent terminal with AI and your dev team's knowledge built-in."
-script = "warp-setup.sh"
+script = "terminal-emulators/warp-setup.sh"
 task_list = "I FM"
 
 [[data]]
