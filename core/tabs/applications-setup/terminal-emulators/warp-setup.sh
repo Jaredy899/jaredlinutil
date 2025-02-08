@@ -13,16 +13,34 @@ installWarp() {
         case "$PACKAGER" in
             pacman)
                 TEMP_FILE="warp-latest.pkg"
-                curl -o "$TEMP_FILE" -JLO https://app.warp.dev/download?package=pacman
-                if [[ "$TEMP_FILE" != *.pkg.tar.zst ]]; then
+                ARCH=$(uname -m)
+                if [ "$ARCH" = "x86_64" ]; then
+                    curl -o "$TEMP_FILE" -JLO https://app.warp.dev/download?package=pacman
+                elif [ "$ARCH" = "aarch64" ]; then
+                    curl -o "$TEMP_FILE" -JLO https://app.warp.dev/download?package=pacman_arm64
+                else
+                    printf "%b\n" "${RED}Unsupported architecture for Pacman package.${RC}"
+                    invalid_package=true
+                fi
+
+                if [ "$invalid_package" = false ] && [[ "$TEMP_FILE" != *.pkg.tar.zst ]]; then
                     mv "$TEMP_FILE" "$TEMP_FILE.pkg.tar.zst"
                 fi
                 sudo pacman -U "$TEMP_FILE.pkg.tar.zst" || invalid_package=true
                 ;;
             apt-get|nala)
                 TEMP_DEB_FILE="warp-latest.deb"
-                curl -o "$TEMP_DEB_FILE" -JLO https://app.warp.dev/download?package=deb
-                if file "$TEMP_DEB_FILE" | grep -q 'Debian binary package'; then
+                ARCH=$(uname -m)
+                if [ "$ARCH" = "x86_64" ]; then
+                    curl -o "$TEMP_DEB_FILE" -JLO https://app.warp.dev/download?package=deb
+                elif [ "$ARCH" = "aarch64" ]; then
+                    curl -o "$TEMP_DEB_FILE" -JLO https://app.warp.dev/download?package=deb_arm64
+                else
+                    printf "%b\n" "${RED}Unsupported architecture for DEB package.${RC}"
+                    invalid_package=true
+                fi
+
+                if [ "$invalid_package" = false ] && file "$TEMP_DEB_FILE" | grep -q 'Debian binary package'; then
                     "$ESCALATION_TOOL" dpkg -i "$TEMP_DEB_FILE" || "$ESCALATION_TOOL" "$PACKAGER" install -f
                 else
                     invalid_package=true
@@ -30,8 +48,17 @@ installWarp() {
                 ;;
             dnf)
                 TEMP_RPM_FILE="warp-latest.rpm"
-                curl -o "$TEMP_RPM_FILE" -JLO https://app.warp.dev/download?package=rpm
-                if file "$TEMP_RPM_FILE" | grep -q 'RPM'; then
+                ARCH=$(uname -m)
+                if [ "$ARCH" = "x86_64" ]; then
+                    curl -o "$TEMP_RPM_FILE" -JLO https://app.warp.dev/download?package=rpm
+                elif [ "$ARCH" = "aarch64" ]; then
+                    curl -o "$TEMP_RPM_FILE" -JLO https://app.warp.dev/download?package=rpm_arm64
+                else
+                    printf "%b\n" "${RED}Unsupported architecture for RPM package.${RC}"
+                    invalid_package=true
+                fi
+
+                if [ "$invalid_package" = false ] && file "$TEMP_RPM_FILE" | grep -q 'RPM'; then
                     "$ESCALATION_TOOL" rpm -i "$TEMP_RPM_FILE"
                 else
                     invalid_package=true
@@ -39,8 +66,17 @@ installWarp() {
                 ;;
             zypper)
                 TEMP_RPM_FILE="warp-latest.rpm"
-                curl -o "$TEMP_RPM_FILE" -JLO https://app.warp.dev/download?package=rpm
-                if file "$TEMP_RPM_FILE" | grep -q 'RPM'; then
+                ARCH=$(uname -m)
+                if [ "$ARCH" = "x86_64" ]; then
+                    curl -o "$TEMP_RPM_FILE" -JLO https://app.warp.dev/download?package=rpm
+                elif [ "$ARCH" = "aarch64" ]; then
+                    curl -o "$TEMP_RPM_FILE" -JLO https://app.warp.dev/download?package=rpm_arm64
+                else
+                    printf "%b\n" "${RED}Unsupported architecture for RPM package.${RC}"
+                    invalid_package=true
+                fi
+
+                if [ "$invalid_package" = false ] && file "$TEMP_RPM_FILE" | grep -q 'RPM'; then
                     "$ESCALATION_TOOL" rpm --import https://releases.warp.dev/linux/keys/warp.asc
                     "$ESCALATION_TOOL" zypper --no-gpg-checks install -y "$TEMP_RPM_FILE"
                 else
