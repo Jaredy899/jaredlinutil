@@ -1,6 +1,7 @@
 #!/bin/sh -e
 # Source common functions
-. ../common-script.sh
+. ../../common-script.sh
+
 
 # Define variables
 GHOSTTY_VERSION="latest"

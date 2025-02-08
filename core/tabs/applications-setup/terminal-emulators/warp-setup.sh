@@ -1,6 +1,7 @@
 #!/bin/sh -e
 
-. ../common-script.sh
+. ../../common-script.sh
+
 
 installWarp() {
     local invalid_package=false

@@ -1,6 +1,7 @@
 #!/bin/sh -e
 
-. ../common-script.sh
+. ../../common-script.sh
+
 
 installAlacritty() {
     if ! command_exists alacritty; then

@@ -1,6 +1,7 @@
 #!/bin/sh -e
 
-. ../common-script.sh
+. ../../common-script.sh
+
 
 installKitty() {
     if ! command_exists kitty; then
