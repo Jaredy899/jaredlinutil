@@ -67,7 +67,7 @@ installWarp() {
                 if [ -x "$appimage_path" ]; then
                     mkdir -p "$HOME/.local/share/applications"
                     mkdir -p "$HOME/.local/share/icons"
-                    curl -o "$HOME/.local/share/icons/warp.png" "https://www.warp.dev/static/image/r/w=3840,q=90,format=auto/header_cf707f3073.png"
+                    curl -o "$HOME/.local/share/icons/warp.png" "https://user-images.githubusercontent.com/85056161/221151383-dee5374b-03d9-4548-a0fd-35dfc7ea0f5b.png"
                     ICON_PATH="$HOME/.local/share/icons/warp.png"
                     cat <<EOF > "$HOME/.local/share/applications/warp.desktop"
 [Desktop Entry]
