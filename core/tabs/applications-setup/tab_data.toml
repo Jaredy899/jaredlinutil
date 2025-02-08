@@ -176,7 +176,7 @@ task_list = "I FM"
 
 [[data.entries]]
 name = "Warp"
-descripton = "Warp is the intelligent terminal with AI and your dev team's knowledge built-in."
+description = "Warp is the intelligent terminal with AI and your dev team's knowledge built-in."
 script = "warp-setup.sh"
 task_list = "I FM"
 
