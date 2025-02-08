@@ -86,6 +86,7 @@ installWarp() {
             *)
                 printf "%b\n" "${YELLOW}Downloading Warp AppImage...${RC}"
                 ARCH=$(uname -m)
+                mkdir -p "$HOME/.local/bin"  # Ensure the directory exists
                 if [ "$ARCH" = "x86_64" ]; then
                     appimage_path="$HOME/.local/bin/Warp-x64.AppImage"
                     curl -L "https://app.warp.dev/download?package=appimage" -o "$appimage_path"
