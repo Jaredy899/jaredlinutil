@@ -175,6 +175,12 @@ script = "terminal-emulators/kitty-setup.sh"
 task_list = "I FM"
 
 [[data.entries]]
+name = "Termius"
+description = "Termius is an SSH client and terminal how it should be. Connect with one tap from any mobile and desktop device—no re-entering IP addresses, ports, and passwords."
+script = "terminal-emulators/termius-setup.sh"
+task_list = "I FM"
+
+[[data.entries]]
 name = "Warp"
 description = "Warp is the intelligent terminal with AI and your dev team's knowledge built-in."
 script = "terminal-emulators/warp-setup.sh"
