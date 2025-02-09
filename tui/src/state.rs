@@ -103,7 +103,7 @@ enum ScrollDir {
 impl AppState {
     pub fn new(args: Args) -> Self {
         #[cfg(unix)]
-        let root_warning = check_root_status(args.bypass_root);
+        let root_warning = check_root_status(false);
         #[cfg(not(unix))]
         let root_warning = None;
 
@@ -133,7 +133,7 @@ impl AppState {
             tip: crate::tips::get_random_tip(),
             size_bypass: args.size_bypass,
             skip_confirmation: args.skip_confirmation,
-            mouse_enabled: args.mouse,
+            mouse_enabled: false,
         };
 
         #[cfg(unix)]
