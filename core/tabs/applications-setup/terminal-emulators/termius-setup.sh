@@ -16,7 +16,7 @@ installTermius() {
                 "$ESCALATION_TOOL" "$PACKAGER" install -y ./termius.deb
                 "$ESCALATION_TOOL" rm termius.deb
                 ;;
-            dnf|zypper|xbps-install|apk|eopkg)
+            *)
                 checkFlatpak
                 "$ESCALATION_TOOL" flatpak install flathub com.termius.Termius
                 ;;
