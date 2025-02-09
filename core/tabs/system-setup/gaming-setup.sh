@@ -59,7 +59,7 @@ installDepend() {
             "$ESCALATION_TOOL" "$PACKAGER" -Sy $DEPENDENCIES $DISTRO_DEPS
             ;;
         eopkg)
-            DISTRO_DEPS="gnutls gtk+2 gtk+3 pulseaudio alsa-lib alsa-plugins giflib libpng openal libxcomposite libxinerama ncurses vulkan-loader ocl-icd libva gst-plugins-base sdl2 v4l-utils sqlite"
+            DISTRO_DEPS="libgnutls libgtk-2 libgtk-3 pulseaudio alsa-lib alsa-plugins giflib libpng openal-soft libxcomposite libxinerama ncurses vulkan ocl-icd libva gst-plugins-base sdl2 v4l-utils sqlite3"
 
             "$ESCALATION_TOOL" "$PACKAGER" install -y $DEPENDENCIES $DISTRO_DEPS
             ;;
@@ -109,7 +109,7 @@ installAdditionalDepend() {
             "$ESCALATION_TOOL" "$PACKAGER" -n install $DISTRO_DEPS
             ;;
         xbps-install)
-            DISTRO_DEPS='steam lutris'
+            DISTRO_DEPS='lutris'
             "$ESCALATION_TOOL" "$PACKAGER" -Sy $DISTRO_DEPS
             ;;
         eopkg)
