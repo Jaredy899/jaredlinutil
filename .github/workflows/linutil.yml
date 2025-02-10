@@ -55,7 +55,7 @@ jobs:
       - name: Build armv7 binary
         run: |
           cross build --target-dir=build --release --verbose --target=armv7-unknown-linux-musleabihf --all-features
-          mv ./build/armv7-unknown-linux-musleabihf/release/linutil ./build/armv7-unknown-linux-musleabihf/release/linutil-armv7
+          mv ./build/armv7-unknown-linux-musleabihf/release/linutil ./build/armv7-unknown-linux-musleabihf/release/linutil-armv7l
 
       - name: Extract Version
         id: extract_version
@@ -80,7 +80,7 @@ jobs:
           files: |
             ./build/x86_64-unknown-linux-musl/release/linutil
             ./build/aarch64-unknown-linux-musl/release/linutil-aarch64
-            ./build/armv7-unknown-linux-musleabihf/release/linutil-armv7
+            ./build/armv7-unknown-linux-musleabihf/release/linutil-armv7l
             ./start.sh
             ./startdev.sh
           prerelease: true
