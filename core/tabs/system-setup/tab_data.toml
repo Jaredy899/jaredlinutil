@@ -71,12 +71,6 @@ description = "Install JaKooLit's Hyprland configuration"
 script = "debian/hyprland-kool-deb.sh"
 task_list = "I MP"
 
-[[data.entries]]
-name = "Zig"
-description = "Installs Zig for Debian"
-script = "debian/zig-setup.sh"
-task_list = "I MP"
-
 [[data]]
 name = "Fedora"
 
@@ -206,3 +200,9 @@ name = "TTY Fonts"
 description = "This Script will set the default TTY font to Terminus size 32 Bold"
 script = "terminus-tty.sh"
 task_list = "I PFM"
+
+[[data]]
+name = "Zig"
+description = "Zig is a general-purpose programming language and toolchain for maintaining robust, optimal and reusable software."
+script = "zig-setup.sh"
+task_list = "I MP"
