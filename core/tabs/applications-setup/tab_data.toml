@@ -238,12 +238,6 @@ script = "browsers/thorium.sh"
 task_list = "I"
 
 [[data.entries]]
-name = "Zen Browser"
-description = "Zen Browser is a privacy-focused web browser designed for enhanced security and a seamless browsing experience."
-script = "browsers/zen-browser.sh"
-task_list = "I"
-
-[[data.entries]]
 name = "Vivaldi"
 description = "Vivaldi is a freeware, cross-platform web browser developed by Vivaldi Technologies."
 script = "browsers/vivaldi.sh"
@@ -260,6 +254,12 @@ name = "waterfox"
 description = "Waterfox is the privacy-focused web browser engineered to give you speed, control, and peace of mind on the internet."
 script = "browsers/waterfox.sh"
 task_list = "FI"
+
+[[data.entries]]
+name = "Zen Browser"
+description = "Zen Browser is a privacy-focused web browser designed for enhanced security and a seamless browsing experience."
+script = "browsers/zen-browser.sh"
+task_list = "I"
 
 [[data]]
 name = "Android Debloater"
