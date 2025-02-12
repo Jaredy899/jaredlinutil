@@ -72,8 +72,8 @@ script = "debian/hyprland-kool-deb.sh"
 task_list = "I MP"
 
 [[data.entries]]
-name = Zig
-description = Installs Zig for Debian
+name = "Zig"
+description = "Installs Zig for Debian"
 script = "debian/zig-setup.sh"
 task_list = "I MP"
 
