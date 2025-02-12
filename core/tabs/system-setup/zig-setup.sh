@@ -1,4 +1,5 @@
-#!/bin/bash
+#!/bin/sh -e
+
 . ../common-script.sh
 
 ZIG_VERSION="0.13.0"
