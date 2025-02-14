@@ -12,21 +12,27 @@ installWarp() {
 
         case "$PACKAGER" in
             pacman)
-                TEMP_FILE="warp-latest.pkg"
-                ARCH=$(uname -m)
-                if [ "$ARCH" = "x86_64" ]; then
-                    curl -o "$TEMP_FILE" -JLO https://app.warp.dev/download?package=pacman
-                elif [ "$ARCH" = "aarch64" ]; then
-                    curl -o "$TEMP_FILE" -JLO https://app.warp.dev/download?package=pacman_arm64
-                else
-                    printf "%b\n" "${RED}Unsupported architecture for Pacman package.${RC}"
-                    invalid_package=true
+                if command -v yay >/dev/null 2>&1; then
+                    yay -S warp-terminal || package_failed=true
                 fi
 
-                if [ "$invalid_package" = false ] && [[ "$TEMP_FILE" != *.pkg.tar.zst ]]; then
-                    mv "$TEMP_FILE" "$TEMP_FILE.pkg.tar.zst"
+                if [ "$package_failed" = true ]; then
+                    TEMP_FILE="warp-latest.pkg"
+                    ARCH=$(uname -m)
+                    if [ "$ARCH" = "x86_64" ]; then
+                        curl -o "$TEMP_FILE" -JLO https://app.warp.dev/download?package=pacman
+                    elif [ "$ARCH" = "aarch64" ]; then
+                        curl -o "$TEMP_FILE" -JLO https://app.warp.dev/download?package=pacman_arm64
+                    else
+                        printf "%b\n" "${RED}Unsupported architecture for Pacman package.${RC}"
+                        invalid_package=true
+                    fi
+
+                    if [ "$invalid_package" = false ] && [[ "$TEMP_FILE" != *.pkg.tar.zst ]]; then
+                        mv "$TEMP_FILE" "$TEMP_FILE.pkg.tar.zst"
+                    fi
+                    sudo pacman -U "$TEMP_FILE.pkg.tar.zst" || invalid_package=true
                 fi
-                sudo pacman -U "$TEMP_FILE.pkg.tar.zst" || invalid_package=true
                 ;;
             apt-get|nala)
                 TEMP_DEB_FILE="warp-latest.deb"
