@@ -2,117 +2,68 @@
 
 . ../../common-script.sh
 
-
 installWarp() {
-    local invalid_package=false
-    local appimage_path=""
+    if command_exists warp-terminal; then
+        printf "%b\n" "${GREEN}Warp is already installed.${RC}"
+        return 0
+    fi
 
-    if ! command_exists warp-terminal; then
-        printf "%b\n" "${YELLOW}Installing Warp...${RC}"
+    printf "%b\n" "${YELLOW}Installing Warp...${RC}"
+    
+    ARCH=$(uname -m)
+    if [ "$ARCH" != "x86_64" ] && [ "$ARCH" != "aarch64" ]; then
+        printf "%b\n" "${RED}Unsupported architecture: $ARCH${RC}"
+        return 1
+    fi
 
-        case "$PACKAGER" in
-            pacman)
-                if command -v yay >/dev/null 2>&1; then
-                    yay -S warp-terminal || package_failed=true
-                fi
+    ARCH_SUFFIX=""
+    [ "$ARCH" = "aarch64" ] && ARCH_SUFFIX="_arm64"
 
-                if [ "$package_failed" = true ]; then
-                    TEMP_FILE="warp-latest.pkg"
-                    ARCH=$(uname -m)
-                    if [ "$ARCH" = "x86_64" ]; then
-                        curl -o "$TEMP_FILE" -JLO https://app.warp.dev/download?package=pacman
-                    elif [ "$ARCH" = "aarch64" ]; then
-                        curl -o "$TEMP_FILE" -JLO https://app.warp.dev/download?package=pacman_arm64
-                    else
-                        printf "%b\n" "${RED}Unsupported architecture for Pacman package.${RC}"
-                        invalid_package=true
-                    fi
+    case "$PACKAGER" in
+        pacman)
+            if command -v yay >/dev/null 2>&1; then
+                yay -S warp-terminal && return 0
+            fi
+            
+            TEMP_FILE="warp-latest.pkg.tar.zst"
+            curl -o "$TEMP_FILE" -JLO "https://app.warp.dev/download?package=pacman${ARCH_SUFFIX}"
+            sudo pacman -U "$TEMP_FILE"
+            ;;
+        apt-get|nala)
+            TEMP_FILE="warp-latest.deb"
+            curl -o "$TEMP_FILE" -JLO "https://app.warp.dev/download?package=deb${ARCH_SUFFIX}"
+            "$ESCALATION_TOOL" dpkg -i "$TEMP_FILE" || "$ESCALATION_TOOL" "$PACKAGER" install -f
+            ;;
+        dnf|zypper)
+            TEMP_FILE="warp-latest.rpm"
+            curl -o "$TEMP_FILE" -JLO "https://app.warp.dev/download?package=rpm${ARCH_SUFFIX}"
+            
+            if [ "$PACKAGER" = "zypper" ]; then
+                "$ESCALATION_TOOL" rpm --import https://releases.warp.dev/linux/keys/warp.asc
+                "$ESCALATION_TOOL" zypper --no-gpg-checks install -y "$TEMP_FILE"
+            else
+                "$ESCALATION_TOOL" rpm -i "$TEMP_FILE"
+            fi
+            ;;
+        *)
+            # AppImage installation
+            APPIMAGE_NAME="Warp-$([ "$ARCH" = "x86_64" ] && echo "x64" || echo "ARM64").AppImage"
+            appimage_path="$HOME/.local/bin/$APPIMAGE_NAME"
+            
+            mkdir -p "$HOME/.local/bin"
+            curl -L "https://app.warp.dev/download?package=appimage${ARCH_SUFFIX}" -o "$appimage_path"
+            chmod +x "$appimage_path"
 
-                    if [ "$invalid_package" = false ] && [[ "$TEMP_FILE" != *.pkg.tar.zst ]]; then
-                        mv "$TEMP_FILE" "$TEMP_FILE.pkg.tar.zst"
-                    fi
-                    sudo pacman -U "$TEMP_FILE.pkg.tar.zst" || invalid_package=true
-                fi
-                ;;
-            apt-get|nala)
-                TEMP_DEB_FILE="warp-latest.deb"
-                ARCH=$(uname -m)
-                if [ "$ARCH" = "x86_64" ]; then
-                    curl -o "$TEMP_DEB_FILE" -JLO https://app.warp.dev/download?package=deb
-                elif [ "$ARCH" = "aarch64" ]; then
-                    curl -o "$TEMP_DEB_FILE" -JLO https://app.warp.dev/download?package=deb_arm64
-                else
-                    printf "%b\n" "${RED}Unsupported architecture for DEB package.${RC}"
-                    invalid_package=true
-                fi
-
-                if [ "$invalid_package" = false ] && file "$TEMP_DEB_FILE" | grep -q 'Debian binary package'; then
-                    "$ESCALATION_TOOL" dpkg -i "$TEMP_DEB_FILE" || "$ESCALATION_TOOL" "$PACKAGER" install -f
-                else
-                    invalid_package=true
-                fi
-                ;;
-            dnf)
-                TEMP_RPM_FILE="warp-latest.rpm"
-                ARCH=$(uname -m)
-                if [ "$ARCH" = "x86_64" ]; then
-                    curl -o "$TEMP_RPM_FILE" -JLO https://app.warp.dev/download?package=rpm
-                elif [ "$ARCH" = "aarch64" ]; then
-                    curl -o "$TEMP_RPM_FILE" -JLO https://app.warp.dev/download?package=rpm_arm64
-                else
-                    printf "%b\n" "${RED}Unsupported architecture for RPM package.${RC}"
-                    invalid_package=true
-                fi
-
-                if [ "$invalid_package" = false ] && file "$TEMP_RPM_FILE" | grep -q 'RPM'; then
-                    "$ESCALATION_TOOL" rpm -i "$TEMP_RPM_FILE"
-                else
-                    invalid_package=true
-                fi
-                ;;
-            zypper)
-                TEMP_RPM_FILE="warp-latest.rpm"
-                ARCH=$(uname -m)
-                if [ "$ARCH" = "x86_64" ]; then
-                    curl -o "$TEMP_RPM_FILE" -JLO https://app.warp.dev/download?package=rpm
-                elif [ "$ARCH" = "aarch64" ]; then
-                    curl -o "$TEMP_RPM_FILE" -JLO https://app.warp.dev/download?package=rpm_arm64
-                else
-                    printf "%b\n" "${RED}Unsupported architecture for RPM package.${RC}"
-                    invalid_package=true
-                fi
-
-                if [ "$invalid_package" = false ] && file "$TEMP_RPM_FILE" | grep -q 'RPM'; then
-                    "$ESCALATION_TOOL" rpm --import https://releases.warp.dev/linux/keys/warp.asc
-                    "$ESCALATION_TOOL" zypper --no-gpg-checks install -y "$TEMP_RPM_FILE"
-                else
-                    invalid_package=true
-                fi
-                ;;
-            *)
-                printf "%b\n" "${YELLOW}Downloading Warp AppImage...${RC}"
-                ARCH=$(uname -m)
-                mkdir -p "$HOME/.local/bin"  # Ensure the directory exists
-                if [ "$ARCH" = "x86_64" ]; then
-                    appimage_path="$HOME/.local/bin/Warp-x64.AppImage"
-                    curl -L "https://app.warp.dev/download?package=appimage" -o "$appimage_path"
-                    chmod +x "$appimage_path"
-                elif [ "$ARCH" = "aarch64" ]; then
-                    appimage_path="$HOME/.local/bin/Warp-ARM64.AppImage"
-                    curl -L "https://app.warp.dev/download?package=appimage_arm64" -o "$appimage_path"
-                    chmod +x "$appimage_path"
-                else
-                    printf "%b\n" "${RED}Unsupported architecture for AppImage.${RC}"
-                    invalid_package=true
-                fi
-
-                # Add AppImage to system apps
-                if [ -x "$appimage_path" ]; then
-                    mkdir -p "$HOME/.local/share/applications"
-                    mkdir -p "$HOME/.local/share/icons"
-                    curl -o "$HOME/.local/share/icons/warp.png" "https://user-images.githubusercontent.com/85056161/221151383-dee5374b-03d9-4548-a0fd-35dfc7ea0f5b.png"
-                    ICON_PATH="$HOME/.local/share/icons/warp.png"
-                    cat <<EOF > "$HOME/.local/share/applications/warp.desktop"
+            # Create desktop entry
+            mkdir -p "$HOME/.local/share/applications" "$HOME/.local/share/icons"
+            ICON_PATH="$HOME/.local/share/icons/warp.png"
+            
+            # Extract icon from the AppImage
+            "$appimage_path" --appimage-extract dev.warp.Warp.png >/dev/null
+            mv squashfs-root/dev.warp.Warp.png "$ICON_PATH"
+            rm -rf squashfs-root
+            
+            cat <<EOF > "$HOME/.local/share/applications/warp.desktop"
 [Desktop Entry]
 Name=Warp
 Exec=$appimage_path
@@ -120,18 +71,8 @@ Icon=$ICON_PATH
 Type=Application
 Categories=Utility;
 EOF
-                else
-                    invalid_package=true
-                fi
-                ;;
-        esac
-
-        if [ "$invalid_package" = true ]; then
-            printf "%b\n" "${RED}Downloaded file is not a valid package.${RC}"
-        fi
-    else
-        printf "%b\n" "${GREEN}Warp is already installed.${RC}"
-    fi
+            ;;
+    esac
 }
 
 checkEnv
