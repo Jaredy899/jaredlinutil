@@ -22,7 +22,7 @@ installWarp() {
     case "$PACKAGER" in
         pacman)
             if command -v yay >/dev/null 2>&1; then
-                yay -S warp-terminal && return 0
+                "$AUR_HELPER" -S --needed --noconfirm warp-terminal && return 0
             fi
             
             TEMP_FILE="warp-latest.pkg.tar.zst"
