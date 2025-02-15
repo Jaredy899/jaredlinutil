@@ -31,9 +31,9 @@ installDepend() {
                     : # Do nothing if both fail
                 fi
             fi
-            while IFS=' ' read -r pkg; do
-                "$ESCALATION_TOOL" "$PACKAGER" -y install "${pkg}" || :
-            done <<< "$DEPENDENCIES"
+            if ! "$ESCALATION_TOOL" "$PACKAGER" -y install $DEPENDENCIES; then
+                : # Continue if package install fails
+            fi
             if ! "$ESCALATION_TOOL" "$PACKAGER" -y group install "Development Tools"; then
                 "$ESCALATION_TOOL" "$PACKAGER" -y group install development-tools
             fi
