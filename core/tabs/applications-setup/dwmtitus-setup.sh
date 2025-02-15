@@ -13,7 +13,7 @@ setupDWM() {
             ;;
         dnf)
             "$ESCALATION_TOOL" "$PACKAGER" install -y "@development-tools" || "$ESCALATION_TOOL" "$PACKAGER" group install -y "Development Tools"
-            "$ESCALATION_TOOL" "$PACKAGER" install -y libX11-devel libXinerama-devel libXft-devel imlib2-devel libxcb-devel unzip flameshot lxappearance feh mate-polkit meson # no need to include git here as it should be already installed via "Development Tools"
+            "$ESCALATION_TOOL" "$PACKAGER" install -y libX11-devel libXinerama-devel libXft-devel imlib2-devel libxcb-devel unzip flameshot lxappearance feh mate-polkit # no need to include git here as it should be already installed via "Development Tools"
             ;;
         zypper)
             "$ESCALATION_TOOL" "$PACKAGER"  install -y make libX11-devel libXinerama-devel libXft-devel imlib2-devel gcc
@@ -63,7 +63,6 @@ install_nerd_font() {
     FONT_URL="https://github.com/ryanoasis/nerd-fonts/releases/latest/download/Meslo.zip"
     FONT_INSTALLED=$(fc-list | grep -i "Meslo")
 
-    # Check if Meslo Nerd-font is already installed
     if [ -n "$FONT_INSTALLED" ]; then
         printf "%b\n" "${GREEN}Meslo Nerd-fonts are already installed.${RC}"
         return 0
