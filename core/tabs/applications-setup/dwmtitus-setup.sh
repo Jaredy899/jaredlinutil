@@ -17,6 +17,7 @@ setupDWM() {
             ;;
         zypper)
             "$ESCALATION_TOOL" "$PACKAGER" make libX11-devel libXinerama-devel libXft-devel imlib2-devel gcc
+            ;;
         *)
             printf "%b\n" "${RED}Unsupported package manager: ""$PACKAGER""${RC}"
             exit 1
