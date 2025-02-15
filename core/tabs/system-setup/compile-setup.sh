@@ -30,7 +30,6 @@ installDepend() {
             "$ESCALATION_TOOL" "$PACKAGER" -y config-manager --set-enabled crb 2>/dev/null || true
             "$ESCALATION_TOOL" "$PACKAGER" -y install $DEPENDENCIES
             "$ESCALATION_TOOL" "$PACKAGER" -y group install Development\ Tools 2>/dev/null || \
-            "$ESCALATION_TOOL" "$PACKAGER" -y group install "C Development Tools and Libraries" || \
             "$ESCALATION_TOOL" "$PACKAGER" -y group install development-tools
             "$ESCALATION_TOOL" "$PACKAGER" -y install glibc-devel.i686 libgcc.i686
             ;;
