@@ -26,19 +26,15 @@ installDepend() {
             ;;
         dnf)
             "$ESCALATION_TOOL" "$PACKAGER" update -y
-            # First try to enable powertools/crb repository
             if ! "$ESCALATION_TOOL" "$PACKAGER" config-manager --enable powertools; then
                 if ! "$ESCALATION_TOOL" "$PACKAGER" config-manager --enable crb; then
                     : # Do nothing if both fail
                 fi
             fi
-            # Install EPEL repository for additional packages
             "$ESCALATION_TOOL" "$PACKAGER" -y install epel-release
-            # Install each package separately to handle failures gracefully
             while IFS=' ' read -r pkg; do
                 "$ESCALATION_TOOL" "$PACKAGER" -y install "${pkg}" || :
             done <<< "$DEPENDENCIES"
-            # Install development tools
             if ! "$ESCALATION_TOOL" "$PACKAGER" -y group install "Development Tools"; then
                 "$ESCALATION_TOOL" "$PACKAGER" -y group install development-tools
             fi
