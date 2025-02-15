@@ -231,7 +231,7 @@ setupDisplayManager() {
     printf "%b\n" "${YELLOW}Setting up Display Manager${RC}"
     currentdm="none"
     for dm in gdm sddm lightdm; do
-        if systemctl is-active --quiet "$dm.service"; then
+        if command -v "$dm" >/dev/null 2>&1 || systemctl list-unit-files | grep -q "$dm"; then
             currentdm="$dm"
             break
         fi
