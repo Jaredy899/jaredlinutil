@@ -15,6 +15,8 @@ setupDWM() {
             "$ESCALATION_TOOL" "$PACKAGER" install -y "@development-tools" || "$ESCALATION_TOOL" "$PACKAGER" group install -y "Development Tools"
             "$ESCALATION_TOOL" "$PACKAGER" install -y libX11-devel libXinerama-devel libXft-devel imlib2-devel libxcb-devel unzip flameshot lxappearance feh mate-polkit meson # no need to include git here as it should be already installed via "Development Tools"
             ;;
+        zypper)
+            "$ESCALATION_TOOL" "$PACKAGER" make libX11-devel libXinerama-devel libXft-devel imlib2-devel gcc
         *)
             printf "%b\n" "${RED}Unsupported package manager: ""$PACKAGER""${RC}"
             exit 1
@@ -216,6 +218,9 @@ setupDisplayManager() {
         dnf)
             "$ESCALATION_TOOL" "$PACKAGER" install -y xorg-x11-xinit xorg-x11-server-Xorg
             ;;
+        zypper)
+            "$ESCALATION_TOOL" "$PACKAGER" install -y xinit xorg-x11-server
+            ;;
         *)
             printf "%b\n" "${RED}Unsupported package manager: $PACKAGER${RC}"
             exit 1
@@ -266,6 +271,9 @@ setupDisplayManager() {
                 "$ESCALATION_TOOL" "$PACKAGER" install -y "$DM"
                 ;;
             dnf)
+                "$ESCALATION_TOOL" "$PACKAGER" install -y "$DM"
+                ;;
+            zypper)
                 "$ESCALATION_TOOL" "$PACKAGER" install -y "$DM"
                 ;;
             *)
