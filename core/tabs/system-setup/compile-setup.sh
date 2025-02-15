@@ -22,7 +22,7 @@ installDepend() {
             "$ESCALATION_TOOL" "$PACKAGER" update
             "$ESCALATION_TOOL" dpkg --add-architecture i386
             "$ESCALATION_TOOL" "$PACKAGER" update
-            "$ESCALATION_TOOL" "$PACKAGER" install -y "$DEPENDENCIES" "$COMPILEDEPS"
+            "$ESCALATION_TOOL" "$PACKAGER" install -y $DEPENDENCIES "$COMPILEDEPS"
             ;;
         dnf)
             "$ESCALATION_TOOL" "$PACKAGER" update -y
