@@ -33,6 +33,7 @@ installDepend() {
             "$ESCALATION_TOOL" "$PACKAGER" -y group install Development\ Tools 2>/dev/null || \
             "$ESCALATION_TOOL" "$PACKAGER" -y group install development-tools
             "$ESCALATION_TOOL" "$PACKAGER" -y install glibc-devel.i686 libgcc.i686
+            ;;
         zypper)
             COMPILEDEPS='patterns-devel-base-devel_basis'
             "$ESCALATION_TOOL" "$PACKAGER" refresh 
