@@ -25,10 +25,13 @@ installDepend() {
             "$ESCALATION_TOOL" "$PACKAGER" install -y "$DEPENDENCIES" "$COMPILEDEPS"
             ;;
         dnf)
-            COMPILEDEPS='@development-tools'
             "$ESCALATION_TOOL" "$PACKAGER" update
-#            "$ESCALATION_TOOL" "$PACKAGER" config-manager --set-enabled powertools
-            "$ESCALATION_TOOL" "$PACKAGER" install -y $DEPENDENCIES $COMPILEDEPS
+            "$ESCALATION_TOOL" "$PACKAGER" config-manager --set-enabled powertools 2>/dev/null || \
+            "$ESCALATION_TOOL" "$PACKAGER" config-manager --set-enabled crb 2>/dev/null || true
+            "$ESCALATION_TOOL" "$PACKAGER" install -y $DEPENDENCIES
+            "$ESCALATION_TOOL" "$PACKAGER" group install -y Development\ Tools 2>/dev/null || \
+            "$ESCALATION_TOOL" "$PACKAGER" group install -y "C Development Tools and Libraries" || \
+            "$ESCALATION_TOOL" "$PACKAGER" group install -y development-tools
             "$ESCALATION_TOOL" "$PACKAGER" install -y glibc-devel.i686 libgcc.i686
             ;;
         zypper)
