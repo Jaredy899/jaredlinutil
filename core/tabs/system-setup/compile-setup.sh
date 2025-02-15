@@ -31,10 +31,11 @@ installDepend() {
                     : # Do nothing if both fail
                 fi
             fi
-            "$ESCALATION_TOOL" "$PACKAGER" -y install epel-release
+            # Install each package separately to handle failures gracefully
             while IFS=' ' read -r pkg; do
                 "$ESCALATION_TOOL" "$PACKAGER" -y install "${pkg}" || :
             done <<< "$DEPENDENCIES"
+            # Install development tools
             if ! "$ESCALATION_TOOL" "$PACKAGER" -y group install "Development Tools"; then
                 "$ESCALATION_TOOL" "$PACKAGER" -y group install development-tools
             fi
