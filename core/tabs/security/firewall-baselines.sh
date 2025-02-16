@@ -4,7 +4,7 @@
 . ../common-service-script.sh
 
 installPkg() {
-    if ! command_exists ufw && ! command_exists firewalld; then
+    if ! "$ESCALATION_TOOL" ufw status >/dev/null 2>&1 && ! "$ESCALATION_TOOL" firewall-cmd --state >/dev/null 2>&1; then
         printf "%b\n" "${YELLOW}Neither UFW nor FirewallD is installed.${RC}"
         printf "%b\n" "${YELLOW}Please choose which firewall to install:${RC}"
         printf "%b\n" "${YELLOW}1) UFW${RC}"
@@ -109,9 +109,9 @@ configureFirewallD() {
 }
 
 applyFirewallConfiguration() {
-    if command_exists ufw; then
+    if "$ESCALATION_TOOL" ufw status >/dev/null 2>&1; then
         configureUFW
-    elif command_exists firewalld; then
+    elif "$ESCALATION_TOOL" firewall-cmd --state >/dev/null 2>&1; then
         configureFirewallD
     else
         printf "%b\n" "${RED}No supported firewall is installed.${RC}"
