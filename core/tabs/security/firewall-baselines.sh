@@ -3,7 +3,6 @@
 . ../common-script.sh
 . ../common-service-script.sh
 
-
 installPkg() {
     if ! command_exists ufw && ! command_exists firewalld; then
         printf "%b\n" "${YELLOW}Neither UFW nor FirewallD is installed.${RC}"
