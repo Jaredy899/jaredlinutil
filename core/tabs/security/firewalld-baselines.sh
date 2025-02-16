@@ -1,22 +1,9 @@
 #!/bin/sh -e
 
 . ../common-script.sh
-. ../common-service-script.sh
 
 configureFirewallD() {
     printf "%b\n" "${YELLOW}Configuring FirewallD with recommended rules${RC}"
-
-    printf "%b\n" "${YELLOW}Checking FirewallD state${RC}"
-    if ! "$ESCALATION_TOOL" firewall-cmd --state >/dev/null 2>&1; then
-        printf "%b\n" "${YELLOW}Starting and enabling FirewallD${RC}"
-        stopService firewalld
-        startAndEnableService firewalld
-        
-        if ! "$ESCALATION_TOOL" firewall-cmd --state; then
-            printf "%b\n" "${RED}FirewallD failed to start properly. Please check system logs.${RC}"
-            exit 1
-        fi
-    fi
 
     printf "%b\n" "${YELLOW}Setting default zone to drop (FirewallD)${RC}"
     "$ESCALATION_TOOL" firewall-cmd --set-default-zone=drop
