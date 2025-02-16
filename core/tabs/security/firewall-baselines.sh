@@ -85,6 +85,7 @@ configureFirewallD() {
     printf "%b\n" "${YELLOW}Configuring FirewallD with recommended rules${RC}"
 
     printf "%b\n" "${YELLOW}Enabling and starting FirewallD${RC}"
+    stopService firewalld
     startAndEnableService firewalld
 
     printf "%b\n" "${YELLOW}Checking FirewallD state${RC}"
