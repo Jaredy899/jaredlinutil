@@ -19,7 +19,7 @@ setup_xrandr() {
             xbps-install)
                 "$ESCALATION_TOOL" "$PACKAGER" -y xrandr
                 ;;
-            eopkg)
+            dnf|eopkg)
                 "$ESCALATION_TOOL" "$PACKAGER" install -y xrandr
                 ;;
             *)
