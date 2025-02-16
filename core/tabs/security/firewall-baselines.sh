@@ -36,10 +36,12 @@ installPkg() {
                         "$ESCALATION_TOOL" "$PACKAGER" -S --needed --noconfirm firewalld
                         ;;
                     apk)
-                        "$ESCALATION_TOOL" "$PACKAGER" add firewalld
-                        ;;
-                    xbps-install)
-                        "$ESCALATION_TOOL" "$PACKAGER" -y firewalld
+                        printf "%b\n" "${YELLOW}Installing FirewallD and required dependencies...${RC}"
+                        "$ESCALATION_TOOL" "$PACKAGER" add dbus firewalld
+                        printf "%b\n" "${YELLOW}Enabling D-Bus service...${RC}"
+                        startAndEnableService dbus
+                        startAndEnableService firewalld
+                        sleep 2
                         ;;
                     *)
                         "$ESCALATION_TOOL" "$PACKAGER" install -y firewalld
@@ -84,12 +86,17 @@ configureUFW() {
 configureFirewallD() {
     printf "%b\n" "${YELLOW}Configuring FirewallD with recommended rules${RC}"
 
-    printf "%b\n" "${YELLOW}Enabling and starting FirewallD${RC}"
-    stopService firewalld
-    startAndEnableService firewalld
-
     printf "%b\n" "${YELLOW}Checking FirewallD state${RC}"
-    "$ESCALATION_TOOL" firewall-cmd --state
+    if ! "$ESCALATION_TOOL" firewall-cmd --state >/dev/null 2>&1; then
+        printf "%b\n" "${YELLOW}Starting and enabling FirewallD${RC}"
+        stopService firewalld
+        startAndEnableService firewalld
+        
+        if ! "$ESCALATION_TOOL" firewall-cmd --state; then
+            printf "%b\n" "${RED}FirewallD failed to start properly. Please check system logs.${RC}"
+            exit 1
+        fi
+    fi
 
     printf "%b\n" "${YELLOW}Setting default zone to drop (FirewallD)${RC}"
     "$ESCALATION_TOOL" firewall-cmd --set-default-zone=drop
