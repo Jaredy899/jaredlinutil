@@ -103,9 +103,6 @@ configureFirewallD() {
     printf "%b\n" "${YELLOW}Allowing HTTPS service (FirewallD)${RC}"
     "$ESCALATION_TOOL" firewall-cmd --permanent --add-service=https
 
-    printf "%b\n" "${YELLOW}Saving runtime configuration to permanent (FirewallD)${RC}"
-    "$ESCALATION_TOOL" firewall-cmd --runtime-to-permanent
-
     printf "%b\n" "${YELLOW}Reloading FirewallD configuration${RC}"
     "$ESCALATION_TOOL" firewall-cmd --reload
 
