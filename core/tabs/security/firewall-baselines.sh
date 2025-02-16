@@ -94,9 +94,6 @@ configureFirewallD() {
     printf "%b\n" "${YELLOW}Setting default zone to drop (FirewallD)${RC}"
     "$ESCALATION_TOOL" firewall-cmd --set-default-zone=drop
 
-    printf "%b\n" "${YELLOW}Setting target to ACCEPT for outgoing traffic (FirewallD)${RC}"
-    "$ESCALATION_TOOL" firewall-cmd --permanent --zone=drop --set-target=ACCEPT
-
     printf "%b\n" "${YELLOW}Allowing SSH service (FirewallD)${RC}"
     "$ESCALATION_TOOL" firewall-cmd --permanent --add-service=ssh
 
