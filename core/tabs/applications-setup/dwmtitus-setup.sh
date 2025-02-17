@@ -321,7 +321,10 @@ install_slstatus() {
     else
         printf "%b\n" "${GREEN}Skipping slstatus installation${RC}"
     fi
-    cd "$HOME"
+    if ! cd "$HOME"; then
+        printf "%b\n" "${RED}Failed to return to home directory${RC}"
+        return 1
+    fi
 }
 
 checkEnv
