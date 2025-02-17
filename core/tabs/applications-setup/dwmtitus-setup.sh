@@ -314,7 +314,6 @@ install_slstatus() {
         cd "$HOME/dwm-titus/slstatus" || { printf "%b\n" "${RED}Failed to change directory to slstatus${RC}"; return 1; }
         if "$ESCALATION_TOOL" make clean install; then
             printf "%b\n" "${GREEN}slstatus installed successfully${RC}"
-            cd "$HOME/dwm-titus" || return 1  # Return to the dwm-titus directory
         else
             printf "%b\n" "${RED}Failed to install slstatus${RC}"
             return 1
@@ -322,6 +321,7 @@ install_slstatus() {
     else
         printf "%b\n" "${GREEN}Skipping slstatus installation${RC}"
     fi
+    cd "$HOME"
 }
 
 checkEnv
