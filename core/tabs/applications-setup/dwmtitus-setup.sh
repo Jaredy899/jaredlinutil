@@ -12,9 +12,13 @@ setupDWM() {
         apt-get|nala)
             "$ESCALATION_TOOL" "$PACKAGER" install -y build-essential libx11-dev libxinerama-dev libxft-dev libimlib2-dev libx11-xcb-dev libfontconfig1 libx11-6 libxft2 libxinerama1 libxcb-res0-dev git unzip flameshot lxappearance feh mate-polkit
             ;;
+        eopkg)
+            "$ESCALATION_TOOL" "$PACKAGER" install -y -c system.devel
+            "$ESCALATION_TOOL" "$PACKAGER" install -y libxcb-devel libxinerama-devel libxft-devel imlib2-devel git unzip flameshot lxappearance feh mate-polkit xcb-util-devel
+            ;;
         dnf)
             "$ESCALATION_TOOL" "$PACKAGER" install -y "@development-tools" || "$ESCALATION_TOOL" "$PACKAGER" group install -y "Development Tools"
-            "$ESCALATION_TOOL" "$PACKAGER" install -y libX11-devel libXinerama-devel libXft-devel imlib2-devel libxcb-devel unzip flameshot lxappearance feh mate-polkit # no need to include git here as it should be already installed via "Development Tools"
+            "$ESCALATION_TOOL" "$PACKAGER" install -y libx11-devel libXinerama-devel libXft-devel imlib2-devel libxcb-devel unzip flameshot lxappearance feh mate-polkit # no need to include git here as it should be already installed via "Development Tools"
             ;;
         zypper)
             "$ESCALATION_TOOL" "$PACKAGER" install -y make libX11-devel libXinerama-devel libXft-devel imlib2-devel gcc
@@ -35,6 +39,9 @@ setupPicomDependencies() {
     case "$PACKAGER" in
         pacman)
             "$ESCALATION_TOOL" "$PACKAGER" -S --needed --noconfirm libxcb meson libev uthash libconfig
+            ;;
+        eopkg)
+            "$ESCALATION_TOOL" "$PACKAGER" install -y libxcb-devel meson libev-devel uthash-devel libconfig-devel pixman-devel xcb-util-image-devel xcb-util-renderutil-devel pcre2-devel libepoxy-devel dbus-devel xcb-util-devel
             ;;
         apt-get|nala)
             "$ESCALATION_TOOL" "$PACKAGER" install -y libxcb1-dev libxcb-res0-dev libconfig-dev libdbus-1-dev libegl-dev libev-dev libgl-dev libepoxy-dev libpcre2-dev libpixman-1-dev libx11-xcb-dev libxcb1-dev libxcb-composite0-dev libxcb-damage0-dev libxcb-dpms0-dev libxcb-glx0-dev libxcb-image0-dev libxcb-present-dev libxcb-randr0-dev libxcb-render0-dev libxcb-render-util0-dev libxcb-shape0-dev libxcb-util-dev libxcb-xfixes0-dev libxext-dev meson ninja-build uthash-dev
@@ -219,6 +226,9 @@ setupDisplayManager() {
         pacman)
             "$ESCALATION_TOOL" "$PACKAGER" -S --needed --noconfirm xorg-xinit xorg-server
             ;;
+        eopkg)
+            "$ESCALATION_TOOL" "$PACKAGER" install -y xorg-server xinit
+            ;;
         apt-get|nala)
             "$ESCALATION_TOOL" "$PACKAGER" install -y xorg xinit
             ;;
@@ -280,6 +290,9 @@ setupDisplayManager() {
                 if [ "$DM" = "lightdm" ]; then
                     "$ESCALATION_TOOL" "$PACKAGER" -S --needed --noconfirm lightdm-gtk-greeter
                 fi
+                ;;
+            eopkg)
+                "$ESCALATION_TOOL" "$PACKAGER" install -y "$DM"
                 ;;
             apt-get|nala)
                 "$ESCALATION_TOOL" "$PACKAGER" install -y "$DM"
