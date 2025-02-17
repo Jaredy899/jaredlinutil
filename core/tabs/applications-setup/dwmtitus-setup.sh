@@ -45,7 +45,7 @@ setupPicomDependencies() {
             "$ESCALATION_TOOL" "$PACKAGER" install -y libxcb-devel libxcb-devel dbus-1-devel gcc git libconfig-devel libdrm-devel libev-devel libX11-devel libX11-xcb1 libXext-devel libxcb-devel Mesa-libGL-devel Mesa-libEGL-devel libepoxy-devel meson pcre2-devel uthash-devel xcb-util-image-devel libpixman-1-0-devel xcb-util-renderutil-devel xcb-util-devel
             ;;
         xbps-install)
-            "$ESCALATION_TOOL" "$PACKAGER" -Sy libxcb-devel meson libev-devel uthash libconfig-devel pixman-devel
+            "$ESCALATION_TOOL" "$PACKAGER" -Sy libxcb-devel meson libev-devel uthash libconfig-devel pixman-devel xcb-util-image-devel xcb-util-renderutil-devel pcre2-devel libepoxy-devel dbus-devel
             ;;
         *)
             printf "%b\n" "${RED}Unsupported package manager: $PACKAGER${RC}"
