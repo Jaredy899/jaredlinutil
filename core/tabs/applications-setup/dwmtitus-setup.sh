@@ -1,6 +1,7 @@
 #!/bin/sh -e
 
 . ../common-script.sh
+. ../common-service-script.sh
 
 setupDWM() {
     printf "%b\n" "${YELLOW}Installing DWM-Titus...${RC}"
@@ -301,7 +302,7 @@ setupDisplayManager() {
                 ;;
         esac
         printf "%b\n" "${GREEN}$DM installed successfully${RC}"
-        systemctl enable "$DM"
+        enableService "$DM"
     fi
 }
 
