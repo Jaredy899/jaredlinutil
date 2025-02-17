@@ -16,7 +16,10 @@ setupDWM() {
             "$ESCALATION_TOOL" "$PACKAGER" install -y libX11-devel libXinerama-devel libXft-devel imlib2-devel libxcb-devel unzip flameshot lxappearance feh mate-polkit # no need to include git here as it should be already installed via "Development Tools"
             ;;
         zypper)
-            "$ESCALATION_TOOL" "$PACKAGER"  install -y make libX11-devel libXinerama-devel libXft-devel imlib2-devel gcc
+            "$ESCALATION_TOOL" "$PACKAGER" install -y make libX11-devel libXinerama-devel libXft-devel imlib2-devel gcc
+            ;;
+        xbps-install)
+            "$ESCALATION_TOOL" "$PACKAGER" -Sy base-devel libX11 libXinerama libXft imlib2 git unzip flameshot lxappearance feh mate-polkit
             ;;
         *)
             printf "%b\n" "${RED}Unsupported package manager: ""$PACKAGER""${RC}"
@@ -40,6 +43,9 @@ setupPicomDependencies() {
             ;;
         zypper)
             "$ESCALATION_TOOL" "$PACKAGER" install -y libxcb-devel libxcb-devel dbus-1-devel gcc git libconfig-devel libdrm-devel libev-devel libX11-devel libX11-xcb1 libXext-devel libxcb-devel Mesa-libGL-devel Mesa-libEGL-devel libepoxy-devel meson pcre2-devel uthash-devel xcb-util-image-devel libpixman-1-0-devel xcb-util-renderutil-devel xcb-util-devel
+            ;;
+        xbps-install)
+            "$ESCALATION_TOOL" "$PACKAGER" -Sy libxcb meson libev uthash libconfig
             ;;
         *)
             printf "%b\n" "${RED}Unsupported package manager: $PACKAGER${RC}"
@@ -221,6 +227,9 @@ setupDisplayManager() {
         zypper)
             "$ESCALATION_TOOL" "$PACKAGER" install -y xinit xorg-x11-server
             ;;
+        xbps-install)
+            "$ESCALATION_TOOL" "$PACKAGER" -Sy xorg-server xinit
+            ;;
         *)
             printf "%b\n" "${RED}Unsupported package manager: $PACKAGER${RC}"
             exit 1
@@ -280,6 +289,12 @@ setupDisplayManager() {
             zypper)
                 "$ESCALATION_TOOL" "$PACKAGER" install -y "$DM"
                 ;;
+            xbps-install)
+                "$ESCALATION_TOOL" "$PACKAGER" -Sy "$DM"
+                if [ "$DM" = "lightdm" ]; then
+                    "$ESCALATION_TOOL" "$PACKAGER" -Sy lightdm-gtk-greeter
+                fi
+                ;;
             *)
                 printf "%b\n" "${RED}Unsupported package manager: $PACKAGER${RC}"
                 exit 1
@@ -287,7 +302,6 @@ setupDisplayManager() {
         esac
         printf "%b\n" "${GREEN}$DM installed successfully${RC}"
         systemctl enable "$DM"
-        
     fi
 }
 
