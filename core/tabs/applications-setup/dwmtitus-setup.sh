@@ -1,4 +1,4 @@
-#!/bin/sh -e
+#!/bin/sh
 
 . ../common-script.sh
 . ../common-service-script.sh
@@ -326,12 +326,12 @@ install_slstatus() {
 
 checkEnv
 checkEscalationTool
-setupDisplayManager || true
-setupDWM || true
-setupPicomDependencies || true
-makeDWM || true
-install_slstatus || true
-install_nerd_font || true
-picom_animations || true
-clone_config_folders || true
-configure_backgrounds || true
+setupDisplayManager
+setupDWM
+setupPicomDependencies
+makeDWM
+install_slstatus
+install_nerd_font
+picom_animations
+clone_config_folders
+configure_backgrounds
