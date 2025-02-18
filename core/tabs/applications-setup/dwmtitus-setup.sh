@@ -27,7 +27,7 @@ setupDWM() {
             "$ESCALATION_TOOL" "$PACKAGER" install -y make libX11-devel libXinerama-devel libXft-devel imlib2-devel gcc
             ;;
         xbps-install)
-            "$ESCALATION_TOOL" "$PACKAGER" -Sy base-devel freetype-devel fontconfig-devel imlib2-devel git unzip flameshot lxappearance feh mate-polkit
+            "$ESCALATION_TOOL" "$PACKAGER" -Sy base-devel freetype-devel fontconfig-devel imlib2-devel libXft-devel git unzip flameshot lxappearance feh mate-polkit
             ;;
         *)
             printf "%b\n" "${RED}Unsupported package manager: ""$PACKAGER""${RC}"
