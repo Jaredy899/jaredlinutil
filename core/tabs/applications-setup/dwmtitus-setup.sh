@@ -9,6 +9,9 @@ setupDWM() {
         pacman)
             "$ESCALATION_TOOL" "$PACKAGER" -S --needed --noconfirm base-devel libx11 libxinerama libxft imlib2 git unzip flameshot lxappearance feh mate-polkit
             ;;
+        apk)
+            "$ESCALATION_TOOL" "$PACKAGER" add build-base libxinerama-dev libxft-dev imlib2-dev font-dejavu dbus-x11 git unzip flameshot feh polkit
+            ;;
         apt-get|nala)
             "$ESCALATION_TOOL" "$PACKAGER" install -y build-essential libx11-dev libxinerama-dev libxft-dev libimlib2-dev libx11-xcb-dev libfontconfig1 libx11-6 libxft2 libxinerama1 libxcb-res0-dev git unzip flameshot lxappearance feh mate-polkit
             ;;
@@ -24,7 +27,7 @@ setupDWM() {
             "$ESCALATION_TOOL" "$PACKAGER" install -y make libX11-devel libXinerama-devel libXft-devel imlib2-devel gcc
             ;;
         xbps-install)
-            "$ESCALATION_TOOL" "$PACKAGER" -Sy base-devel libX11-devel libXinerama-devel libXft-devel imlib2-devel git unzip flameshot lxappearance feh mate-polkit
+            "$ESCALATION_TOOL" "$PACKAGER" -Sy base-devel freetype-devel fontconfig-devel imlib2-devel git unzip flameshot lxappearance feh mate-polkit
             ;;
         *)
             printf "%b\n" "${RED}Unsupported package manager: ""$PACKAGER""${RC}"
@@ -40,6 +43,9 @@ setupPicomDependencies() {
         pacman)
             "$ESCALATION_TOOL" "$PACKAGER" -S --needed --noconfirm libxcb meson libev uthash libconfig
             ;;
+        apk)
+            "$ESCALATION_TOOL" "$PACKAGER" add libxcb-dev meson libev-dev uthash-dev libconfig-dev pixman-dev xcb-util-image-dev xcb-util-renderutil-dev pcre2-dev libepoxy-dev dbus-dev xcb-util-dev
+            ;;
         eopkg)
             "$ESCALATION_TOOL" "$PACKAGER" install -y libxcb-devel meson libev-devel uthash-devel libconfig-devel pixman-devel xcb-util-image-devel xcb-util-renderutil-devel pcre2-devel libepoxy-devel dbus-devel xcb-util-devel
             ;;
@@ -53,7 +59,7 @@ setupPicomDependencies() {
             "$ESCALATION_TOOL" "$PACKAGER" install -y libxcb-devel libxcb-devel dbus-1-devel gcc git libconfig-devel libdrm-devel libev-devel libX11-devel libX11-xcb1 libXext-devel libxcb-devel Mesa-libGL-devel Mesa-libEGL-devel libepoxy-devel meson pcre2-devel uthash-devel xcb-util-image-devel libpixman-1-0-devel xcb-util-renderutil-devel xcb-util-devel
             ;;
         xbps-install)
-            "$ESCALATION_TOOL" "$PACKAGER" -Sy libxcb-devel meson libev-devel uthash libconfig-devel pixman-devel xcb-util-image-devel xcb-util-renderutil-devel pcre2-devel libepoxy-devel dbus-devel
+            "$ESCALATION_TOOL" "$PACKAGER" -Sy meson libev-devel uthash libconfig-devel pixman-devel xcb-util-image-devel xcb-util-renderutil-devel pcre2-devel libepoxy-devel dbus-devel
             ;;
         *)
             printf "%b\n" "${RED}Unsupported package manager: $PACKAGER${RC}"
@@ -226,6 +232,9 @@ setupDisplayManager() {
         pacman)
             "$ESCALATION_TOOL" "$PACKAGER" -S --needed --noconfirm xorg-xinit xorg-server
             ;;
+        apk)
+            "$ESCALATION_TOOL" setup-xorg-base
+            ;;
         eopkg)
             "$ESCALATION_TOOL" "$PACKAGER" install -y xorg-server xinit
             ;;
@@ -239,7 +248,7 @@ setupDisplayManager() {
             "$ESCALATION_TOOL" "$PACKAGER" install -y xinit xorg-x11-server
             ;;
         xbps-install)
-            "$ESCALATION_TOOL" "$PACKAGER" -Sy xorg-server xinit
+            "$ESCALATION_TOOL" "$PACKAGER" -Sy xorg-minimal
             ;;
         *)
             printf "%b\n" "${RED}Unsupported package manager: $PACKAGER${RC}"
@@ -291,6 +300,12 @@ setupDisplayManager() {
                     "$ESCALATION_TOOL" "$PACKAGER" -S --needed --noconfirm lightdm-gtk-greeter
                 fi
                 ;;
+            apk)
+                "$ESCALATION_TOOL" "$PACKAGER" add "$DM"
+                if [ "$DM" = "lightdm" ]; then
+                    "$ESCALATION_TOOL" "$PACKAGER" add lightdm-gtk-greeter
+                fi
+                ;;    
             eopkg)
                 "$ESCALATION_TOOL" "$PACKAGER" install -y "$DM"
                 ;;
