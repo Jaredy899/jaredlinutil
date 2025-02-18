@@ -21,7 +21,7 @@ setupDWM() {
             ;;
         dnf)
             "$ESCALATION_TOOL" "$PACKAGER" install -y "@development-tools" || "$ESCALATION_TOOL" "$PACKAGER" group install -y "Development Tools"
-            "$ESCALATION_TOOL" "$PACKAGER" install -y libx11-devel libXinerama-devel libXft-devel imlib2-devel libxcb-devel unzip flameshot lxappearance feh mate-polkit # no need to include git here as it should be already installed via "Development Tools"
+            "$ESCALATION_TOOL" "$PACKAGER" install -y libX11-devel libXinerama-devel libXft-devel imlib2-devel libxcb-devel unzip flameshot lxappearance feh mate-polkit # no need to include git here as it should be already installed via "Development Tools"
             ;;
         zypper)
             "$ESCALATION_TOOL" "$PACKAGER" install -y make libX11-devel libXinerama-devel libXft-devel imlib2-devel gcc
