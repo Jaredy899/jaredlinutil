@@ -277,12 +277,15 @@ setupDisplayManager() {
         case "$choice" in
             1)
                 DM="sddm"
+                break
                 ;;
             2)
                 DM="lightdm"
+                break
                 ;;
             3)
                 DM="gdm"
+                break
                 ;;
             4)
                 printf "%b\n" "${GREEN}No display manager will be installed${RC}"
