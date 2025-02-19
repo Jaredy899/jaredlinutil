@@ -25,6 +25,9 @@ installLibreOffice() {
             eopkg)
                 "$ESCALATION_TOOL" "$PACKAGER" -y install libreoffice
                 ;;
+            slapt-get)
+                "$ESCALATION_TOOL" "$PACKAGER" -y -i libreoffice
+                ;;
             *)
                 printf "%b\n" "${RED}Unsupported package manager: ""$PACKAGER""${RC}"
                 exit 1

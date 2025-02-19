@@ -18,6 +18,9 @@ installMeld() {
             xbps-install)
                 "$ESCALATION_TOOL" "$PACKAGER" -y meld
                 ;;
+            slapt-get)
+                "$ESCALATION_TOOL" "$PACKAGER" -y -i meld
+                ;;
             *)
                 checkFlatpak
                 flatpak install -y flathub org.gnome.meld

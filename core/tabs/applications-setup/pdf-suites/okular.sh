@@ -15,6 +15,9 @@ installOkular() {
             xbps-install)
                 "$ESCALATION_TOOL" "$PACKAGER" -y okular
                 ;;
+            slapt-get)
+                "$ESCALATION_TOOL" "$PACKAGER" -y -i okular
+                ;;
             *)
                 "$ESCALATION_TOOL" "$PACKAGER" install -y okular
                 ;;

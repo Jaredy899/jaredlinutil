@@ -45,6 +45,9 @@ installWarp() {
                 "$ESCALATION_TOOL" rpm -i "$TEMP_FILE"
             fi
             ;;
+        slapt-get)
+            "$ESCALATION_TOOL" slapt-src -y -i warp-terminal
+            ;;
         *)
             # AppImage installation
             APPIMAGE_NAME="Warp-$([ "$ARCH" = "x86_64" ] && echo "x64" || echo "ARM64").AppImage"

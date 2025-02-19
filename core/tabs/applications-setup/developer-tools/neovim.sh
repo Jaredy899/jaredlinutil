@@ -39,6 +39,10 @@ installNeovim() {
         eopkg)
             "$ESCALATION_TOOL" "$PACKAGER" -y install neovim ripgrep fzf virtualenv luarocks golang shellcheck git
             ;;
+        slapt-get)
+            "$ESCALATION_TOOL" slapt-src -y -i neovim
+            "$ESCALATION_TOOL" "$PACKAGER" -y -i ripgrep fzf virtualenv luarocks go shellcheck git
+            ;;
         *)
             printf "%b\n" "${RED}Unsupported package manager: ""$PACKAGER""${RC}"
             exit 1

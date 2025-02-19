@@ -34,6 +34,9 @@ installVsCode() {
             eopkg)
                 "$ESCALATION_TOOL" "$PACKAGER" -y install vscode
                 ;;
+            slapt-get)
+                "$ESCALATION_TOOL" slapt-src -y -i vscode-bin
+                ;;
             apk)
                 checkFlatpak
                 flatpak install -y flathub com.visualstudio.code
