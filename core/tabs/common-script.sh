@@ -27,9 +27,6 @@ checkFlatpak() {
             apk)
                 "$ESCALATION_TOOL" "$PACKAGER" add flatpak
                 ;;
-            xbps-install)
-                "$ESCALATION_TOOL" "$PACKAGER" -Sy flatpak
-                ;;
             *)
                 "$ESCALATION_TOOL" "$PACKAGER" install -y flatpak
                 ;;
@@ -112,6 +109,7 @@ checkEscalationTool() {
         exit 1
     fi
 }
+
 checkCommandRequirements() {
     ## Check for requirements.
     REQUIREMENTS=$1
@@ -143,6 +141,17 @@ checkPackageManager() {
     if [ "$PACKAGER" = "apk" ] && grep -qE '^#.*community' /etc/apk/repositories; then
         "$ESCALATION_TOOL" sed -i '/community/s/^#//' /etc/apk/repositories
         "$ESCALATION_TOOL" "$PACKAGER" update
+    fi
+
+    ## Setup slapt-get and slapt-src
+    if [ "$PACKAGER" = "slapt-get" ]; then
+        if ! command_exists slapt-src; then
+            printf "%b\n" "${YELLOW}Installing slapt-src and build dependencies...${RC}"
+            $ESCALATION_TOOL slapt-get -i -y slapt-src cmake make gcc automake autoconf pkg-config libtool
+        fi
+        # Update slapt-src database
+        printf "%b\n" "${CYAN}Updating slapt-src database...${RC}"
+        $ESCALATION_TOOL slapt-src -u
     fi
 
     if [ -z "$PACKAGER" ]; then
@@ -197,80 +206,4 @@ checkEnv() {
     checkDistro
     checkAURHelper
     setupNonInteractive
-}
-
-# Function to set up the non-interactive installation flags
-setupNonInteractive() {
-    case "$PACKAGER" in
-        pacman)
-            NONINTERACTIVE="--noconfirm --needed"
-            ;;
-        apt-get|nala|dnf|zypper)
-            NONINTERACTIVE="-y"
-            ;;
-        apk)
-            NONINTERACTIVE="--no-cache"
-            ;;
-        eopkg)
-            NONINTERACTIVE="-y"
-            ;;
-        xbps-install)
-            NONINTERACTIVE="-y"
-            ;;
-        *)
-            echo "Unsupported package manager: $PACKAGER"
-            return 1
-            ;;
-    esac
-}
-
-# Unified package installation function
-noninteractive() {
-    if [ -z "$NONINTERACTIVE" ]; then
-        setupNonInteractive
-    fi
-    case "$PACKAGER" in
-        pacman)
-            $ESCALATION_TOOL pacman -S --noconfirm --needed "$@"
-            ;;
-        apt-get|apt)
-            $ESCALATION_TOOL apt-get install -y "$@"
-            ;;
-        apk)
-            $ESCALATION_TOOL apk add --no-cache "$@"
-            ;;
-        eopkg)
-            $ESCALATION_TOOL eopkg install -y "$@"
-            ;;
-        xbps-install)
-            $ESCALATION_TOOL xbps-install -y "$@"
-            ;;
-        *)
-            $ESCALATION_TOOL $PACKAGER install $NONINTERACTIVE "$@"
-            ;;
-    esac
-}
-
-# Function to get non-interactive installation flags (if needed elsewhere)
-getNonInteractiveFlags() {
-    case "$PACKAGER" in
-        pacman)
-            echo "--noconfirm --needed"
-            ;;
-        apt-get|nala|dnf|zypper)
-            echo "-y"
-            ;;
-        apk)
-            echo "--no-cache"
-            ;;
-        eopkg)
-            echo "-y"
-            ;;
-        xbps-install)
-            echo "-y"
-            ;;
-        *)
-            echo ""  # Default to empty string if package manager is unknown
-            ;;
-    esac
 }
