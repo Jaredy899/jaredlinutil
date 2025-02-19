@@ -205,5 +205,4 @@ checkEnv() {
     checkSuperUser
     checkDistro
     checkAURHelper
-    setupNonInteractive
 }
