@@ -17,6 +17,9 @@ installDepend() {
             xbps-install)
                 "$ESCALATION_TOOL" "$PACKAGER" -y bash bash-completion tar bat tree unzip fontconfig git
                 ;;
+            slapt-get)
+                "$ESCALATION_TOOL" "$PACKAGER" -y -i bash bash-completion tar bat tree infozip fontconfig git
+                ;;
             *)
                 "$ESCALATION_TOOL" "$PACKAGER" install -y bash bash-completion tar bat tree unzip fontconfig git
                 ;;

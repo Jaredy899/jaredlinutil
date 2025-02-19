@@ -52,6 +52,9 @@ install_docker() {
         eopkg)
             "$ESCALATION_TOOL" "$PACKAGER" -y install docker
             ;;
+        slapt-get)
+            "$ESCALATION_TOOL" "$PACKAGER" -y -i docker
+            ;;
         *)
             printf "%b\n" "${RED}Unsupported package manager: ""$PACKAGER""${RC}"
             exit 1
@@ -96,6 +99,9 @@ install_docker_compose() {
             ;;
         eopkg)
             "$ESCALATION_TOOL" "$PACKAGER" -y install docker-compose
+            ;;
+        slapt-get)
+            "$ESCALATION_TOOL" "$PACKAGER" -y -i docker-compose
             ;;
         *)
             printf "%b\n" "${RED}Unsupported package manager: ""$PACKAGER""${RC}"
