@@ -17,28 +17,36 @@ checkInitManager() {
 
 startService() {
     case "$INIT_MANAGER" in
-        systemctl)
-            "$ESCALATION_TOOL" "$INIT_MANAGER" start "$1"
-            ;;
         rc-service)
             "$ESCALATION_TOOL" "$INIT_MANAGER" "$1" start
             ;;
-        sv)
-            "$ESCALATION_TOOL" sv start "$1"
+        systemctl|sv)
+            "$ESCALATION_TOOL" "$INIT_MANAGER" "$1" start
+            ;;
+        service)
+            if [ -d "/etc/rc.d" ]; then
+                "$ESCALATION_TOOL" "$INIT_MANAGER" start "$1"
+            else
+                "$ESCALATION_TOOL" "$INIT_MANAGER" "$1" start
+            fi
             ;;
     esac
 }
 
 stopService() {
     case "$INIT_MANAGER" in
-        systemctl)
-            "$ESCALATION_TOOL" "$INIT_MANAGER" stop "$1"
-            ;;
         rc-service)
             "$ESCALATION_TOOL" "$INIT_MANAGER" "$1" stop
             ;;
-        sv)
-            "$ESCALATION_TOOL" sv stop "$1"
+        systemctl|sv)
+            "$ESCALATION_TOOL" "$INIT_MANAGER" "$1" stop
+            ;;
+        service)
+            if [ -d "/etc/rc.d" ]; then
+                "$ESCALATION_TOOL" "$INIT_MANAGER" stop "$1"
+            else
+                "$ESCALATION_TOOL" "$INIT_MANAGER" "$1" stop
+            fi
             ;;
     esac
 }
@@ -52,9 +60,16 @@ enableService() {
             "$ESCALATION_TOOL" rc-update add "$1"
             ;;
         sv)
+            "$ESCALATION_TOOL" mkdir -p "/run/runit/supervise.$1"
             "$ESCALATION_TOOL" ln -sf "/etc/sv/$1" "/var/service/"
-            printf "%b\n" "${YELLOW}Waiting 5 seconds...${RC}"
             sleep 5
+            ;;
+        service)
+            if [ -d "/etc/rc.d" ]; then
+                "$ESCALATION_TOOL" chmod +x "/etc/rc.d/rc.$1"
+            else
+                "$ESCALATION_TOOL" update-rc.d "$1" defaults
+            fi
             ;;
     esac
 }
@@ -70,6 +85,13 @@ disableService() {
         sv)
             "$ESCALATION_TOOL" rm -f "/var/service/$1"
             ;;
+        service)
+            if [ -d "/etc/rc.d" ]; then
+                "$ESCALATION_TOOL" chmod -x "/etc/rc.d/rc.$1"
+            else
+                "$ESCALATION_TOOL" update-rc.d -f "$1" remove
+            fi
+            ;;
     esac
 }
 
@@ -78,7 +100,11 @@ startAndEnableService() {
         systemctl)
             "$ESCALATION_TOOL" "$INIT_MANAGER" enable --now "$1"
             ;;
-        rc-service | sv)
+        rc-service|sv)
+            enableService "$1"
+            startService "$1"
+            ;;
+        service)
             enableService "$1"
             startService "$1"
             ;;
@@ -94,9 +120,18 @@ isServiceActive() {
             "$ESCALATION_TOOL" "$INIT_MANAGER" "$1" status --quiet
             ;;
         sv)
-            "$ESCALATION_TOOL" sv status "$1" >/dev/null 2>&1
+            "$ESCALATION_TOOL" "$INIT_MANAGER" status "$1" >/dev/null 2>&1
+            ;;
+        service)
+            if [ "$INIT_MANAGER" = "service" ]; then
+                "$ESCALATION_TOOL" "$INIT_MANAGER" list 2>/dev/null \
+                    | sed 's/\x1B\[[0-9;]*[a-zA-Z]//g' \
+                    | grep -q -E "^$1.*\[on\]"
+            else
+                "$ESCALATION_TOOL" "$INIT_MANAGER" "$1" status | grep -q 'running'
+            fi
             ;;
     esac
 }
 
-checkInitManager 'systemctl rc-service sv'
+checkInitManager 'systemctl rc-service sv service'
