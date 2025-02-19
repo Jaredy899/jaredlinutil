@@ -15,6 +15,9 @@ installThunderBird() {
             xbps-install)
                 "$ESCALATION_TOOL" "$PACKAGER" -y thunderbird
                 ;;
+            slapt-get
+                "$ESCALATION_TOOL" "$PACKAGER" -y -i mozilla-thunderbird
+                ;;
             *)
                 "$ESCALATION_TOOL" "$PACKAGER" install -y thunderbird 
                 ;;

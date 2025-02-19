@@ -40,6 +40,9 @@ Signed-By: /usr/share/keyrings/librewolf.gpg" | "$ESCALATION_TOOL" tee /etc/apt/
                 checkFlatpak
                 flatpak install flathub io.gitlab.librewolf-community
                 ;;
+            slapt-get)
+                "$ESCALATION_TOOL" slapt-src -y -i librewolf
+                ;;
             *)
                 printf "%b\n" "${RED}Unsupported package manager: ""$PACKAGER""${RC}"
                 exit 1

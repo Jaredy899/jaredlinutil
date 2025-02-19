@@ -24,7 +24,10 @@ installSignal() {
                 ;;    
             eopkg)
                 "$ESCALATION_TOOL" "$PACKAGER" -y install signal-desktop
-                ;;            
+                ;;     
+            slapt-get)
+                "$ESCALTION_TOOL" slapt-src -y -i signal-desktop
+                ;;       
             dnf)
                 checkFlatpak
                 flatpak install -y flathub org.signal.Signal

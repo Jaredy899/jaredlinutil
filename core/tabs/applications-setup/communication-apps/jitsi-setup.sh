@@ -21,6 +21,9 @@ installJitsi() {
             dnf)
                 "$ESCALATION_TOOL" "$PACKAGER" install -y jitsi-meet
                 ;;
+            slapt-get)
+                "$ESCALATION_TOOL" slapt-src -y -i jitsi-meet-desktop
+                ;;
             apk)
                 checkFlatpak
                 flatpak install flathub org.jitsi.jitsi-meet
