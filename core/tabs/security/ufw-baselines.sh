@@ -15,6 +15,9 @@ installPkg() {
             xbps-install)
                 "$ESCALATION_TOOL" "$PACKAGER" -Sy ufw
                 ;;
+            slapt-get)
+                "$ESCALATION_TOOL" "$PACKAGER" -y -i ufw
+                ;;
             *)
                 "$ESCALATION_TOOL" "$PACKAGER" install -y ufw
                 ;;
