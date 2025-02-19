@@ -18,6 +18,9 @@ install_package() {
             xbps-install)
                 "$ESCALATION_TOOL" "$PACKAGER" -y "$PACKAGE"
                 ;;
+            slapt-get)
+                "$ESCALATION_TOOL" "$PACKAGER" -y "$PACKAGE"
+                ;;
             *)
                 "$ESCALATION_TOOL" "$PACKAGER" install -y "$PACKAGE"
                 ;;
@@ -46,6 +49,10 @@ setup_ssh() {
         SSH_SERVICE="sshd"
         ;;
     xbps-install)
+        install_package openssh
+        SSH_SERVICE="sshd"
+        ;;
+    slapt-get)
         install_package openssh
         SSH_SERVICE="sshd"
         ;;

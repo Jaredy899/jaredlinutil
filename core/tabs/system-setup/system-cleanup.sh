@@ -34,7 +34,8 @@ cleanup_system() {
             ;;
         slapt-get)
             "$ESCALATION_TOOL" "$PACKAGER" -y --clean
-            "$ESCALATION_TOOL" "$PACKAGER" -y --remove-obsolete 
+            "$ESCALATION_TOOL" "$PACKAGER" -y --remove-obsolete
+            ;;
         *)
             printf "%b\n" "${RED}Unsupported package manager: ${PACKAGER}. Skipping.${RC}"
             ;;

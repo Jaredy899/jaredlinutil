@@ -30,6 +30,7 @@ InstallTermiusFonts() {
                 ;;
             slapt-get)
                 "$ESCALATION_TOOL" "$PACKAGER" -y -i terminus-font
+                ;;
             *)
                 printf "%b\n" "${RED}Unsupported package manager: ""$PACKAGER""${RC}"
                 exit 1

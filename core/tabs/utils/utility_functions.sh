@@ -22,6 +22,9 @@ setup_xrandr() {
             dnf|eopkg)
                 "$ESCALATION_TOOL" "$PACKAGER" install -y xrandr
                 ;;
+            slapt-get)
+                "$ESCALATION_TOOL" "$PACKAGER" -y -i xrandr
+                ;;
             *)
                 "$ESCALATION_TOOL" "$PACKAGER" install -y xorg-x11-server-utils
                 ;;

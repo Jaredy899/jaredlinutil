@@ -64,6 +64,7 @@ fastUpdate() {
             ;;
         slapt-get)
             "$ESCALATION_TOOL" "$PACKAGER" -y -u
+            ;;
         *)
             printf "%b\n" "${RED}Unsupported package manager: ${PACKAGER}${RC}"
             exit 1
@@ -92,6 +93,7 @@ updateSystem() {
             ;;
         slapt-get)
             "$ESCALATION_TOOL" "$PACKAGER" -y --upgrade
+            ;;
         *)
             printf "%b\n" "${RED}Unsupported package manager: ${PACKAGER}${RC}"
             exit 1
