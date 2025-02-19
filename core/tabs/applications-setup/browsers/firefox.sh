@@ -24,6 +24,9 @@ installFirefox() {
             apk)
                 "$ESCALATION_TOOL" "$PACKAGER" add firefox
                 ;;
+            slapt-get)
+                "$ESCALATION_TOOL" "$PACKAGER" --install mozilla-firefox
+                ;;
             *)
                 printf "%b\n" "${RED}Unsupported package manager: ""$PACKAGER""${RC}"
                 exit 1
