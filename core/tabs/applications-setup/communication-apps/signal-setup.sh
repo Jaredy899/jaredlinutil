@@ -26,7 +26,7 @@ installSignal() {
                 "$ESCALATION_TOOL" "$PACKAGER" -y install signal-desktop
                 ;;     
             slapt-get)
-                "$ESCALTION_TOOL" slapt-src -y -i signal-desktop
+                "$ESCALATION_TOOL" slapt-src -y -i signal-desktop
                 ;;       
             dnf)
                 checkFlatpak
