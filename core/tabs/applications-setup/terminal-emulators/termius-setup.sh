@@ -16,9 +16,6 @@ installTermius() {
                 "$ESCALATION_TOOL" "$PACKAGER" install -y ./termius.deb
                 "$ESCALATION_TOOL" rm termius.deb
                 ;;
-            slapt-get)
-                "$ESCALATION_TOOL" slapt-src -y -i warp-terminal
-                ;;
             *)
                 checkFlatpak
                 "$ESCALATION_TOOL" flatpak install flathub com.termius.Termius
