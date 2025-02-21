@@ -40,6 +40,13 @@ view_all_services() {
         sv)
             ls -1 /etc/sv/ | more
             ;;
+        service)
+            if [ -d "/etc/rc.d" ]; then
+                ls -1 /etc/rc.d/rc.* | sed 's/^\/etc\/rc.d\/rc\.//' | more
+            else
+                "$ESCALATION_TOOL" service --status-all | more
+            fi
+            ;;
     esac
 }
 
@@ -56,6 +63,13 @@ view_enabled_services() {
         sv)
             ls -1 /var/service/ | more
             ;;
+        service)
+            if [ -d "/etc/rc.d" ]; then
+                find /etc/rc.d/ -type f -executable -name 'rc.*' | sed 's/^\/etc\/rc.d\/rc\.//' | more
+            else
+                "$ESCALATION_TOOL" service --status-all | grep ' + ' | awk '{print $4}' | more
+            fi
+            ;;
     esac
 }
 
@@ -71,6 +85,13 @@ view_disabled_services() {
             ;;
         sv)
             ls -1 /etc/sv/ | grep -v "$(ls -1 /var/service/)" | more
+            ;;
+        service)
+            if [ -d "/etc/rc.d" ]; then
+                find /etc/rc.d/ -type f ! -executable -name 'rc.*' | sed 's/^\/etc\/rc.d\/rc\.//' | more
+            else
+                "$ESCALATION_TOOL" service --status-all | grep ' - ' | awk '{print $4}' | more
+            fi
             ;;
     esac
 }
@@ -89,6 +110,18 @@ view_started_services() {
             for service in /var/service/*; do
                 [ -d "$service" ] && "$ESCALATION_TOOL" sv status "$(basename "$service")" | grep "^run:" >/dev/null && basename "$service"
             done | more
+            ;;
+        service)
+            if [ -d "/etc/rc.d" ]; then
+                for service in /etc/rc.d/rc.*; do
+                    basename="${service#/etc/rc.d/rc.}"
+                    if "$ESCALATION_TOOL" service "$basename" status | grep -q 'running'; then
+                        echo "$basename"
+                    fi
+                done | more
+            else
+                "$ESCALATION_TOOL" service --status-all | grep 'running' | awk '{print $1}' | more
+            fi
             ;;
     esac
 }
