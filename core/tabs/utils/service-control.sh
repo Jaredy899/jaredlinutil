@@ -114,11 +114,12 @@ view_started_services() {
         service)
             if [ -d "/etc/rc.d" ]; then
                 for service in /etc/rc.d/rc.*; do
+                    [ -f "$service" ] || continue
                     basename="${service#/etc/rc.d/rc.}"
-                    if "$ESCALATION_TOOL" service "$basename" status | grep -q 'running'; then
+                    if [ -x "$service" ] && [ -f "/var/run/${basename}.pid" ]; then
                         echo "$basename"
                     fi
-                done | more
+                done 2>/dev/null | more
             else
                 "$ESCALATION_TOOL" service --status-all | grep 'running' | awk '{print $1}' | more
             fi
