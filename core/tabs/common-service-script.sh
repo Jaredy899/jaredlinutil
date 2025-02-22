@@ -2,7 +2,7 @@
 
 checkInitManager() {
     for manager in $1; do
-        if command_exists "$manager" || command_exists "$ESCALATION_TOOL $manager"; then
+        if command_exists "$manager" || { $ESCALATION_TOOL command_exists "$manager"; }; then
             INIT_MANAGER="$manager"
             printf "%b\n" "${CYAN}Using ${manager} to interact with init system${RC}"
             break
