@@ -15,19 +15,12 @@ setupDWM() {
         apt-get|nala)
             "$ESCALATION_TOOL" "$PACKAGER" install -y build-essential libx11-dev libxinerama-dev libxft-dev libimlib2-dev libx11-xcb-dev libfontconfig1 libx11-6 libxft2 libxinerama1 libxcb-res0-dev git unzip flameshot lxappearance feh mate-polkit
             ;;
-        eopkg)
-            "$ESCALATION_TOOL" "$PACKAGER" install -y -c system.devel
-            "$ESCALATION_TOOL" "$PACKAGER" install -y libxcb-devel libxinerama-devel libxft-devel imlib2-devel git unzip flameshot lxappearance feh mate-polkit xcb-util-devel
-            ;;
         dnf)
             "$ESCALATION_TOOL" "$PACKAGER" install -y "@development-tools" || "$ESCALATION_TOOL" "$PACKAGER" group install -y "Development Tools"
             "$ESCALATION_TOOL" "$PACKAGER" install -y libX11-devel libXinerama-devel libXft-devel imlib2-devel libxcb-devel unzip flameshot lxappearance feh mate-polkit # no need to include git here as it should be already installed via "Development Tools"
             ;;
         zypper)
-            "$ESCALATION_TOOL" "$PACKAGER" install -y make libX11-devel libXinerama-devel libXft-devel imlib2-devel gcc
-            ;;
-        xbps-install)
-            "$ESCALATION_TOOL" "$PACKAGER" -Sy base-devel freetype-devel fontconfig-devel imlib2-devel libXft-devel libXinerama-devel git unzip flameshot lxappearance feh mate-polkit
+            "$ESCALATION_TOOL" "$PACKAGER"  install -y make libX11-devel libXinerama-devel libXft-devel imlib2-devel gcc
             ;;
         *)
             printf "%b\n" "${RED}Unsupported package manager: ""$PACKAGER""${RC}"
@@ -46,9 +39,6 @@ setupPicomDependencies() {
         apk)
             "$ESCALATION_TOOL" "$PACKAGER" add libxcb-dev meson libev-dev uthash-dev libconfig-dev pixman-dev xcb-util-image-dev xcb-util-renderutil-dev pcre2-dev libepoxy-dev dbus-dev xcb-util-dev
             ;;
-        eopkg)
-            "$ESCALATION_TOOL" "$PACKAGER" install -y libxcb-devel meson libev-devel uthash-devel libconfig-devel pixman-devel xcb-util-image-devel xcb-util-renderutil-devel pcre2-devel libepoxy-devel dbus-devel xcb-util-devel
-            ;;
         apt-get|nala)
             "$ESCALATION_TOOL" "$PACKAGER" install -y libxcb1-dev libxcb-res0-dev libconfig-dev libdbus-1-dev libegl-dev libev-dev libgl-dev libepoxy-dev libpcre2-dev libpixman-1-dev libx11-xcb-dev libxcb1-dev libxcb-composite0-dev libxcb-damage0-dev libxcb-dpms0-dev libxcb-glx0-dev libxcb-image0-dev libxcb-present-dev libxcb-randr0-dev libxcb-render0-dev libxcb-render-util0-dev libxcb-shape0-dev libxcb-util-dev libxcb-xfixes0-dev libxext-dev meson ninja-build uthash-dev
             ;;
@@ -57,9 +47,6 @@ setupPicomDependencies() {
             ;;
         zypper)
             "$ESCALATION_TOOL" "$PACKAGER" install -y libxcb-devel libxcb-devel dbus-1-devel gcc git libconfig-devel libdrm-devel libev-devel libX11-devel libX11-xcb1 libXext-devel libxcb-devel Mesa-libGL-devel Mesa-libEGL-devel libepoxy-devel meson pcre2-devel uthash-devel xcb-util-image-devel libpixman-1-0-devel xcb-util-renderutil-devel xcb-util-devel
-            ;;
-        xbps-install)
-            "$ESCALATION_TOOL" "$PACKAGER" -Sy meson libev-devel uthash libconfig-devel pixman-devel xcb-util-image-devel xcb-util-renderutil-devel pcre2-devel libepoxy-devel dbus-devel
             ;;
         *)
             printf "%b\n" "${RED}Unsupported package manager: $PACKAGER${RC}"
@@ -202,6 +189,7 @@ configure_backgrounds() {
 
     # Check if the ~/Pictures directory exists
     if [ ! -d "$PIC_DIR" ]; then
+        # If it doesn't exist, print an error message and return with a status of 1 (indicating failure)
         printf "%b\n" "${RED}Pictures directory does not exist${RC}"
         mkdir ~/Pictures
         printf "%b\n" "${GREEN}Directory was created in Home folder${RC}"
@@ -211,13 +199,16 @@ configure_backgrounds() {
     if [ ! -d "$BG_DIR" ]; then
         # If the backgrounds directory doesn't exist, attempt to clone a repository containing backgrounds
         if ! git clone https://github.com/ChrisTitusTech/nord-background.git "$PIC_DIR/nord-background"; then
+            # If the git clone command fails, print an error message and return with a status of 1
             printf "%b\n" "${RED}Failed to clone the repository${RC}"
             return 1
         fi
         # Rename the cloned directory to 'backgrounds'
         mv "$PIC_DIR/nord-background" "$PIC_DIR/backgrounds"
+        # Print a success message indicating that the backgrounds have been downloaded
         printf "%b\n" "${GREEN}Downloaded desktop backgrounds to $BG_DIR${RC}"    
     else
+        # If the backgrounds directory already exists, print a message indicating that the download is being skipped
         printf "%b\n" "${GREEN}Path $BG_DIR exists for desktop backgrounds, skipping download of backgrounds${RC}"
     fi
 }
@@ -231,9 +222,6 @@ setupDisplayManager() {
         apk)
             "$ESCALATION_TOOL" setup-xorg-base
             ;;
-        eopkg)
-            "$ESCALATION_TOOL" "$PACKAGER" install -y xorg-server xinit
-            ;;
         apt-get|nala)
             "$ESCALATION_TOOL" "$PACKAGER" install -y xorg xinit
             ;;
@@ -242,9 +230,6 @@ setupDisplayManager() {
             ;;
         zypper)
             "$ESCALATION_TOOL" "$PACKAGER" install -y xinit xorg-x11-server
-            ;;
-        xbps-install)
-            "$ESCALATION_TOOL" "$PACKAGER" -Sy xorg-minimal
             ;;
         *)
             printf "%b\n" "${RED}Unsupported package manager: $PACKAGER${RC}"
@@ -286,7 +271,7 @@ setupDisplayManager() {
                 ;;
             *)
                 printf "%b\n" "${RED}Invalid selection! Please choose 1, 2, 3, or 4.${RC}"
-                exit 1
+                return 1
                 ;;
         esac
         case "$PACKAGER" in
@@ -302,9 +287,6 @@ setupDisplayManager() {
                     "$ESCALATION_TOOL" "$PACKAGER" add lightdm-gtk-greeter
                 fi
                 ;;    
-            eopkg)
-                "$ESCALATION_TOOL" "$PACKAGER" install -y "$DM"
-                ;;
             apt-get|nala)
                 "$ESCALATION_TOOL" "$PACKAGER" install -y "$DM"
                 ;;
@@ -314,12 +296,6 @@ setupDisplayManager() {
             zypper)
                 "$ESCALATION_TOOL" "$PACKAGER" install -y "$DM"
                 ;;
-            xbps-install)
-                "$ESCALATION_TOOL" "$PACKAGER" -Sy "$DM"
-                if [ "$DM" = "lightdm" ]; then
-                    "$ESCALATION_TOOL" "$PACKAGER" -Sy lightdm-gtk-greeter
-                fi
-                ;;
             *)
                 printf "%b\n" "${RED}Unsupported package manager: $PACKAGER${RC}"
                 exit 1
@@ -327,15 +303,19 @@ setupDisplayManager() {
         esac
         printf "%b\n" "${GREEN}$DM installed successfully${RC}"
         enableService "$DM"
+        
     fi
 }
 
 install_slstatus() {
-    printf "Do you want to install slstatus? (y/N): " # using printf instead of 'echo' to avoid newline, -n flag for 'echo' is not supported in POSIX
-    read -r response # -r flag to prevent backslashes from being interpreted
+    printf "Do you want to install slstatus? (y/N): "
+    read -r response
     if [ "$response" = "y" ] || [ "$response" = "Y" ]; then
         printf "%b\n" "${YELLOW}Installing slstatus${RC}"
-        cd "$HOME/dwm-titus/slstatus" || { printf "%b\n" "${RED}Failed to change directory to slstatus${RC}"; return 1; }
+        cd "$HOME/dwm-titus/slstatus" || { 
+            printf "%b\n" "${RED}Failed to change directory to slstatus${RC}"
+            return 1
+        }
         if "$ESCALATION_TOOL" make clean install; then
             printf "%b\n" "${GREEN}slstatus installed successfully${RC}"
         else
