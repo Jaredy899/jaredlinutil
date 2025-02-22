@@ -147,7 +147,7 @@ checkPackageManager() {
     if [ "$PACKAGER" = "slapt-get" ]; then
         if ! command_exists slapt-src; then
             printf "%b\n" "${YELLOW}Installing slapt-src and build dependencies...${RC}"
-            $ESCALATION_TOOL slapt-get -i -y slapt-src cmake make gcc automake autoconf pkg-config libtool
+            $ESCALATION_TOOL slapt-get -i -y slapt-src cmake make gcc automake autoconf pkg-config libtool opencl-headers
         fi
         # Update slapt-src database
         printf "%b\n" "${CYAN}Updating slapt-src database...${RC}"
