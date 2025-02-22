@@ -202,7 +202,6 @@ configure_backgrounds() {
 
     # Check if the ~/Pictures directory exists
     if [ ! -d "$PIC_DIR" ]; then
-        # If it doesn't exist, print an error message and return with a status of 1 (indicating failure)
         printf "%b\n" "${RED}Pictures directory does not exist${RC}"
         mkdir ~/Pictures
         printf "%b\n" "${GREEN}Directory was created in Home folder${RC}"
@@ -212,16 +211,13 @@ configure_backgrounds() {
     if [ ! -d "$BG_DIR" ]; then
         # If the backgrounds directory doesn't exist, attempt to clone a repository containing backgrounds
         if ! git clone https://github.com/ChrisTitusTech/nord-background.git "$PIC_DIR/nord-background"; then
-            # If the git clone command fails, print an error message and return with a status of 1
             printf "%b\n" "${RED}Failed to clone the repository${RC}"
             return 1
         fi
         # Rename the cloned directory to 'backgrounds'
         mv "$PIC_DIR/nord-background" "$PIC_DIR/backgrounds"
-        # Print a success message indicating that the backgrounds have been downloaded
         printf "%b\n" "${GREEN}Downloaded desktop backgrounds to $BG_DIR${RC}"    
     else
-        # If the backgrounds directory already exists, print a message indicating that the download is being skipped
         printf "%b\n" "${GREEN}Path $BG_DIR exists for desktop backgrounds, skipping download of backgrounds${RC}"
     fi
 }
@@ -277,15 +273,12 @@ setupDisplayManager() {
         case "$choice" in
             1)
                 DM="sddm"
-                break
                 ;;
             2)
                 DM="lightdm"
-                break
                 ;;
             3)
                 DM="gdm"
-                break
                 ;;
             4)
                 printf "%b\n" "${GREEN}No display manager will be installed${RC}"
