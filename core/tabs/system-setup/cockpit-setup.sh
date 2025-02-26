@@ -31,8 +31,12 @@ configureUFW() {
         "$ESCALATION_TOOL" ufw allow 9090/tcp
         "$ESCALATION_TOOL" ufw reload
         printf "%b\n" "${GREEN}UFW configuration updated to allow Cockpit.${RC}"
+    elif command_exists firewall-cmd; then
+        "$ESCALATION_TOOL" firewall-cmd --permanent --add-port=9090/tcp
+        "$ESCALATION_TOOL" firewall-cmd --reload
+        printf "%b\n" "${GREEN}Firewalld configuration updated to allow Cockpit.${RC}"
     else
-        printf "%b\n" "${YELLOW}UFW is not installed. Please ensure port 9090 is open for Cockpit.${RC}"
+        printf "%b\n" "${YELLOW}Neither UFW nor firewalld is installed. Please ensure port 9090 is open for Cockpit.${RC}"
     fi
     printf "%b\n" "${CYAN}You can access Cockpit via https://$(ip route get 1 | sed -n 's/.*src \([0-9.]\+\).*/\1/p'):9090${RC}"
 }
