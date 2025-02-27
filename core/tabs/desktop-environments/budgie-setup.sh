@@ -106,17 +106,17 @@ installBudgie() {
             installDisplayManager
             ;;
         dnf)
-            "$ESCALATION_TOOL" "$PACKAGER" install -y budgie-desktop budgie-extras
+            "$ESCALATION_TOOL" "$PACKAGER" install -y budgie-desktop-environment
             installDisplayManager
             ;;
         pacman)
             "$ESCALATION_TOOL" "$PACKAGER" -Syu --noconfirm
-            "$ESCALATION_TOOL" "$PACKAGER" -S --noconfirm budgie-desktop budgie-extras
+            "$ESCALATION_TOOL" "$PACKAGER" -S --noconfirm budgie-desktop budgie-control-center budgie-backgrounds budgie-desktop-view budgie-session budgie-extras
             installDisplayManager
             ;;
         zypper)
             "$ESCALATION_TOOL" "$PACKAGER" refresh
-            "$ESCALATION_TOOL" "$PACKAGER" install -y budgie-desktop
+            "$ESCALATION_TOOL" "$PACKAGER" install -y patterns-budgie-budgie
             installDisplayManager
             ;;
         eopkg)
@@ -134,13 +134,8 @@ installBudgie() {
             "$ESCALATION_TOOL" "$PACKAGER" -y budgie-desktop
             installDisplayManager
             ;;
-        slapt-get)
-            "$ESCALATION_TOOL" "$PACKAGER" --update
-            "$ESCALATION_TOOL" "$PACKAGER" --install budgie-desktop
-            installDisplayManager
-            ;;
         *)
-            printf "%b\n" "${RED}Unsupported package manager: $PACKAGE_MANAGER${RC}"
+            printf "%b\n" "${RED}Unsupported package manager: $PACKAGER${RC}"
             exit 1
             ;;
     esac

@@ -78,14 +78,8 @@ installDisplayManager() {
             eopkg)
                 "$ESCALATION_TOOL" "$PACKAGER" install -y "$DM"
                 ;;
-            apk)
-                "$ESCALATION_TOOL" "$PACKAGER" add "$DM"
-                ;;
             xbps-install)
                 "$ESCALATION_TOOL" "$PACKAGER" -y "$DM"
-                ;;
-            slapt-get)
-                "$ESCALATION_TOOL" "$PACKAGER" --install "$DM"
                 ;;
         esac
         enableService "$DM"
@@ -121,18 +115,11 @@ installSway() {
             installDisplayManager
             ;;
         apk)
-            "$ESCALATION_TOOL" "$PACKAGER" update
-            "$ESCALATION_TOOL" "$PACKAGER" add sway swaylock swayidle waybar
-            installDisplayManager
+            echo "sway" | "$ESCALATION_TOOL" setup-desktop
             ;;
         xbps-install)
             "$ESCALATION_TOOL" "$PACKAGER" -Su
             "$ESCALATION_TOOL" "$PACKAGER" -y sway swaylock swayidle waybar
-            installDisplayManager
-            ;;
-        slapt-get)
-            "$ESCALATION_TOOL" "$PACKAGER" --update
-            "$ESCALATION_TOOL" "$PACKAGER" --install sway swaylock swayidle waybar
             installDisplayManager
             ;;
         *)

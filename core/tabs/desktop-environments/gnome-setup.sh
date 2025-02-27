@@ -79,9 +79,6 @@ installDisplayManager() {
             eopkg)
                 "$ESCALATION_TOOL" "$PACKAGER" install -y "$DM"
                 ;;
-            apk)
-                "$ESCALATION_TOOL" "$PACKAGER" add "$DM"
-                ;;
             xbps-install)
                 "$ESCALATION_TOOL" "$PACKAGER" -y "$DM"
                 ;;
@@ -118,11 +115,7 @@ installGnome() {
             installDisplayManager
             ;;
         apk)
-            "$ESCALATION_TOOL" "$PACKAGER" update
-            "$ESCALATION_TOOL" "$PACKAGER" add gnome gnome-apps-core dbus polkit
-            rc-update add dbus default
-            rc-update add polkit default
-            installDisplayManager
+            echo "gnome" | "$ESCALATION_TOOL" setup-desktop
             ;;
         xbps-install)
             "$ESCALATION_TOOL" "$PACKAGER" -Su

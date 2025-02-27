@@ -82,9 +82,6 @@ installDisplayManager() {
             eopkg)
                 "$ESCALATION_TOOL" "$PACKAGER" install -y "$DM"
                 ;;
-            apk)
-                "$ESCALATION_TOOL" "$PACKAGER" add "$DM"
-                ;;
             xbps-install)
                 "$ESCALATION_TOOL" "$PACKAGER" -y "$DM"
                 ;;
@@ -102,11 +99,11 @@ installKDE() {
     case "$PACKAGER" in
         apt-get|nala)
             "$ESCALATION_TOOL" "$PACKAGER" update
-            "$ESCALATION_TOOL" "$PACKAGER" install -y plasma-desktop konsole dolphin
+            "$ESCALATION_TOOL" "$PACKAGER" install -y task-kde-desktop
             installDisplayManager
             ;;
         dnf)
-            "$ESCALATION_TOOL" "$PACKAGER" install -y @kde-desktop
+            "$ESCALATION_TOOL" "$PACKAGER" install -y kde-desktop-environment
             installDisplayManager
             ;;
         pacman)
@@ -125,9 +122,7 @@ installKDE() {
             installDisplayManager
             ;;
         apk)
-            "$ESCALATION_TOOL" "$PACKAGER" update
-            "$ESCALATION_TOOL" "$PACKAGER" add plasma konsole dolphin
-            installDisplayManager
+            echo "plasma" | "$ESCALATION_TOOL" setup-desktop
             ;;
         xbps-install)
             "$ESCALATION_TOOL" "$PACKAGER" -Su

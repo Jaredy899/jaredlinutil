@@ -29,6 +29,11 @@ description = "Cinnamon is a desktop environment derived from GNOME 3 that aims 
 script = "cinnamon-setup.sh"
 task_list = "I SS"
 
+[[data.preconditions]]
+matches = false
+data = "command_exists"
+values = ["apk"]
+
 [[data]]
 name = "MATE"
 description = "MATE is a desktop environment that continues the GNOME 2 experience, offering a classic, intuitive interface with modern code and active development."
@@ -47,17 +52,32 @@ description = "Budgie is a modern desktop environment focusing on simplicity and
 script = "budgie-setup.sh"
 task_list = "I SS"
 
+[[data.preconditions]]
+matches = false
+data = "command_exists"
+values = ["apk"]
+
 [[data]]
 name = "Deepin"
 description = "Deepin Desktop Environment (DDE) is an elegant, user-friendly desktop environment originally created for Deepin Linux, featuring a beautiful design and smooth animations."
 script = "deepin-setup.sh"
 task_list = "I SS"
 
+[[data.preconditions]]
+matches = false
+data = "command_exists"
+values = ["apk", "apt-get"]
+
 [[data]]
 name = "i3"
 description = "i3 is a tiling window manager designed for X11, focused on efficiency and customization for power users and developers."
 script = "i3-setup.sh"
 task_list = "I SS"
+
+[[data.preconditions]]
+matches = false
+data = "command_exists"
+values = ["apk"]
 
 [[data]]
 name = "Sway"

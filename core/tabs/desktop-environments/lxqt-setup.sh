@@ -82,14 +82,8 @@ installDisplayManager() {
             eopkg)
                 "$ESCALATION_TOOL" "$PACKAGER" install -y "$DM"
                 ;;
-            apk)
-                "$ESCALATION_TOOL" "$PACKAGER" add "$DM"
-                ;;
             xbps-install)
                 "$ESCALATION_TOOL" "$PACKAGER" -y "$DM"
-                ;;
-            slapt-get)
-                "$ESCALATION_TOOL" "$PACKAGER" --install "$DM"
                 ;;
         esac
         enableService "$DM"
@@ -125,18 +119,11 @@ installLXQt() {
             installDisplayManager
             ;;
         apk)
-            "$ESCALATION_TOOL" "$PACKAGER" update
-            "$ESCALATION_TOOL" "$PACKAGER" add lxqt-desktop
-            installDisplayManager
+            echo "lxqt" | "$ESCALATION_TOOL" setup-desktop
             ;;
         xbps-install)
             "$ESCALATION_TOOL" "$PACKAGER" -Su
             "$ESCALATION_TOOL" "$PACKAGER" -y lxqt
-            installDisplayManager
-            ;;
-        slapt-get)
-            "$ESCALATION_TOOL" "$PACKAGER" --update
-            "$ESCALATION_TOOL" "$PACKAGER" --install lxqt
             installDisplayManager
             ;;
         *)

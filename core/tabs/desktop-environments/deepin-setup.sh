@@ -100,13 +100,8 @@ installDeepin() {
     printf "%b\n" "${CYAN}Installing Deepin Desktop Environment...${RC}"
     
     case "$PACKAGER" in
-        apt-get|nala)
-            "$ESCALATION_TOOL" "$PACKAGER" update
-            "$ESCALATION_TOOL" "$PACKAGER" install -y deepin-desktop-environment
-            installDisplayManager
-            ;;
         dnf)
-            "$ESCALATION_TOOL" "$PACKAGER" install -y deepin-desktop
+            "$ESCALATION_TOOL" "$PACKAGER" install -y @deepin-desktop-environment
             installDisplayManager
             ;;
         pacman)

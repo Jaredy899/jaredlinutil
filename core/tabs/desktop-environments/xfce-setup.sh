@@ -82,9 +82,6 @@ installDisplayManager() {
             eopkg)
                 "$ESCALATION_TOOL" "$PACKAGER" install -y "$DM"
                 ;;
-            apk)
-                "$ESCALATION_TOOL" "$PACKAGER" add "$DM"
-                ;;
             xbps-install)
                 "$ESCALATION_TOOL" "$PACKAGER" -y "$DM"
                 ;;
@@ -125,9 +122,7 @@ installXFCE() {
             installDisplayManager
             ;;
         apk)
-            "$ESCALATION_TOOL" "$PACKAGER" update
-            "$ESCALATION_TOOL" "$PACKAGER" add xfce4 xfce4-terminal
-            installDisplayManager
+            echo "xfce" | "$ESCALATION_TOOL" setup-desktop
             ;;
         xbps-install)
             "$ESCALATION_TOOL" "$PACKAGER" -Su

@@ -83,14 +83,8 @@ installDisplayManager() {
             eopkg)
                 "$ESCALATION_TOOL" "$PACKAGER" install -y "$DM"
                 ;;
-            apk)
-                "$ESCALATION_TOOL" "$PACKAGER" add "$DM"
-                ;;
             xbps-install)
                 "$ESCALATION_TOOL" "$PACKAGER" -y "$DM"
-                ;;
-            slapt-get)
-                "$ESCALATION_TOOL" "$PACKAGER" --install "$DM"
                 ;;
         esac
         enableService "$DM"
@@ -126,18 +120,11 @@ installMATE() {
             installDisplayManager
             ;;
         apk)
-            "$ESCALATION_TOOL" "$PACKAGER" update
-            "$ESCALATION_TOOL" "$PACKAGER" add mate
-            installDisplayManager
+            echo "mate" | "$ESCALATION_TOOL" setup-desktop
             ;;
         xbps-install)
             "$ESCALATION_TOOL" "$PACKAGER" -Su
             "$ESCALATION_TOOL" "$PACKAGER" -y mate
-            installDisplayManager
-            ;;
-        slapt-get)
-            "$ESCALATION_TOOL" "$PACKAGER" --update
-            "$ESCALATION_TOOL" "$PACKAGER" --install mate
             installDisplayManager
             ;;
         *)
