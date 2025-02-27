@@ -6,6 +6,11 @@ description = "GNOME is a modern, user-friendly desktop environment focused on s
 script = "gnome-setup.sh"
 task_list = "I SS"
 
+[[data.preconditions]]
+matches = false
+data = "command_exists"
+values = ["dnf"]
+
 [[data]]
 name = "KDE Plasma"
 description = "KDE Plasma is a highly customizable desktop environment with a rich feature set, offering extensive personalization options and a polished, modern look and feel."

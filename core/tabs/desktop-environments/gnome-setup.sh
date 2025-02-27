@@ -67,9 +67,6 @@ installDisplayManager() {
             apt-get|nala)
                 "$ESCALATION_TOOL" "$PACKAGER" install -y "$DM"
                 ;;
-            dnf)
-                "$ESCALATION_TOOL" "$PACKAGER" install -y "$DM"
-                ;;
             pacman)
                 "$ESCALATION_TOOL" "$PACKAGER" -S --noconfirm "$DM"
                 if [ "$DM" = "lightdm" ]; then
@@ -102,11 +99,7 @@ installGnome() {
     case "$PACKAGER" in
         apt-get|nala)
             "$ESCALATION_TOOL" "$PACKAGER" update
-            "$ESCALATION_TOOL" "$PACKAGER" install -y gnome-shell gnome-terminal gnome-tweaks gnome-software
-            installDisplayManager
-            ;;
-        dnf)
-            "$ESCALATION_TOOL" "$PACKAGER" install -y @gnome
+            "$ESCALATION_TOOL" "$PACKAGER" install -y task-gnome-desktop
             installDisplayManager
             ;;
         pacman)
@@ -116,7 +109,7 @@ installGnome() {
             ;;
         zypper)
             "$ESCALATION_TOOL" "$PACKAGER" refresh
-            "$ESCALATION_TOOL" "$PACKAGER" install -y -t pattern gnome
+            "$ESCALATION_TOOL" "$PACKAGER" install -y -t pattern gnome gnome_basis
             installDisplayManager
             ;;
         eopkg)
@@ -126,7 +119,9 @@ installGnome() {
             ;;
         apk)
             "$ESCALATION_TOOL" "$PACKAGER" update
-            "$ESCALATION_TOOL" "$PACKAGER" add gnome gnome-apps-core
+            "$ESCALATION_TOOL" "$PACKAGER" add gnome gnome-apps-core dbus polkit
+            rc-update add dbus default
+            rc-update add polkit default
             installDisplayManager
             ;;
         xbps-install)
@@ -140,7 +135,7 @@ installGnome() {
             installDisplayManager
             ;;
         *)
-            printf "%b\n" "${RED}Unsupported package manager: $PACKAGE_MANAGER${RC}"
+            printf "%b\n" "${RED}Unsupported package manager: $PACKAGER${RC}"
             exit 1
             ;;
     esac
