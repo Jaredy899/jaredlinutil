@@ -57,6 +57,10 @@ check_target "x86_64-unknown-linux-musl"
 mkdir -p builds
 
 # Build for each target
+echo -e "${GREEN}Building for x86_64-musl...${NC}"
+cargo build --target x86_64-unknown-linux-musl --release
+cp target/x86_64-unknown-linux-musl/release/linutil builds/linutil
+
 echo -e "${GREEN}Building for aarch64-musl...${NC}"
 cargo build --target aarch64-unknown-linux-musl --release
 cp target/aarch64-unknown-linux-musl/release/linutil builds/linutil-aarch64
@@ -64,10 +68,6 @@ cp target/aarch64-unknown-linux-musl/release/linutil builds/linutil-aarch64
 echo -e "${GREEN}Building for armv7-musl...${NC}"
 cargo build --target armv7-unknown-linux-musleabihf --release
 cp target/armv7-unknown-linux-musleabihf/release/linutil builds/linutil-armv7l
-
-echo -e "${GREEN}Building for x86_64-musl...${NC}"
-cargo build --target x86_64-unknown-linux-musl --release
-cp target/x86_64-unknown-linux-musl/release/linutil builds/linutil
 
 echo -e "${GREEN}All builds completed! Binaries are in the 'builds' directory${NC}"
 ls -lh builds/
