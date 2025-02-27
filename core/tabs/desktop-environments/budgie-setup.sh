@@ -141,5 +141,5 @@ installBudgie() {
 # Main execution flow
 checkEnv
 checkEscalationTool
-checkDisplayManager
 installBudgie 
+checkDisplayManager
