@@ -1,0 +1,64 @@
+name = "Desktop Environments"
+
+[[data]]
+name = "Desktop Environments"
+
+[[data.entries]]
+name = "GNOME"
+description = "GNOME is a modern, user-friendly desktop environment focused on simplicity and elegance, featuring a clean interface and tight integration with core applications."
+script = "gnome-setup.sh"
+task_list = "I SS"
+
+[[data.entries]]
+name = "KDE Plasma"
+description = "KDE Plasma is a highly customizable desktop environment with a rich feature set, offering extensive personalization options and a polished, modern look and feel."
+script = "kde-setup.sh"
+task_list = "I SS"
+
+[[data.entries]]
+name = "XFCE"
+description = "XFCE is a lightweight, fast desktop environment that maintains low system resource usage while providing a complete and easy-to-use desktop experience."
+script = "xfce-setup.sh"
+task_list = "I SS"
+
+[[data.entries]]
+name = "Cinnamon"
+description = "Cinnamon is a desktop environment derived from GNOME 3 that aims to provide a traditional desktop experience with modern features and technologies."
+script = "cinnamon-setup.sh"
+task_list = "I SS"
+
+[[data.entries]]
+name = "MATE"
+description = "MATE is a desktop environment that continues the GNOME 2 experience, offering a classic, intuitive interface with modern code and active development."
+script = "mate-setup.sh"
+task_list = "I SS"
+
+[[data.entries]]
+name = "LXQt"
+description = "LXQt is a lightweight Qt desktop environment that focuses on being a resource-efficient alternative while maintaining a user-friendly interface."
+script = "lxqt-setup.sh"
+task_list = "I SS"
+
+[[data.entries]]
+name = "Budgie"
+description = "Budgie is a modern desktop environment focusing on simplicity and elegance, designed with the modern user in mind."
+script = "budgie-setup.sh"
+task_list = "I SS"
+
+[[data.entries]]
+name = "Deepin"
+description = "Deepin Desktop Environment (DDE) is an elegant, user-friendly desktop environment originally created for Deepin Linux, featuring a beautiful design and smooth animations."
+script = "deepin-setup.sh"
+task_list = "I SS"
+
+[[data.entries]]
+name = "i3"
+description = "i3 is a tiling window manager designed for X11, focused on efficiency and customization for power users and developers."
+script = "i3-setup.sh"
+task_list = "I SS"
+
+[[data.entries]]
+name = "Sway"
+description = "Sway is a tiling Wayland compositor and a drop-in replacement for the i3 window manager for X11, compatible with i3 configuration."
+script = "sway-setup.sh"
+task_list = "I SS" 
