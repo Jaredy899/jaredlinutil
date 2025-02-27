@@ -63,33 +63,33 @@ checkDisplayManager() {
 installDisplayManager() {
     if [ "$DM_EXISTS" -eq 1 ] && [ "$DM" != "none" ]; then
         printf "%b\n" "${CYAN}Installing and enabling $DM display manager...${RC}"
-        case "$PACKAGE_MANAGER" in
+        case "$PACKAGER" in
             apt-get|nala)
-                "$ESCALATION_TOOL" "$PACKAGE_MANAGER" install -y "$DM"
+                "$ESCALATION_TOOL" "$PACKAGER" install -y "$DM"
                 ;;
             dnf)
-                "$ESCALATION_TOOL" "$PACKAGE_MANAGER" install -y "$DM"
+                "$ESCALATION_TOOL" "$PACKAGER" install -y "$DM"
                 ;;
             pacman)
-                "$ESCALATION_TOOL" "$PACKAGE_MANAGER" -S --noconfirm "$DM"
+                "$ESCALATION_TOOL" "$PACKAGER" -S --noconfirm "$DM"
                 if [ "$DM" = "lightdm" ]; then
-                    "$ESCALATION_TOOL" "$PACKAGE_MANAGER" -S --noconfirm lightdm-gtk-greeter
+                    "$ESCALATION_TOOL" "$PACKAGER" -S --noconfirm lightdm-gtk-greeter
                 fi
                 ;;
             zypper)
-                "$ESCALATION_TOOL" "$PACKAGE_MANAGER" install -y "$DM"
+                "$ESCALATION_TOOL" "$PACKAGER" install -y "$DM"
                 ;;
             eopkg)
-                "$ESCALATION_TOOL" "$PACKAGE_MANAGER" install -y "$DM"
+                "$ESCALATION_TOOL" "$PACKAGER" install -y "$DM"
                 ;;
             apk)
-                "$ESCALATION_TOOL" "$PACKAGE_MANAGER" add "$DM"
+                "$ESCALATION_TOOL" "$PACKAGER" add "$DM"
                 ;;
             xbps-install)
-                "$ESCALATION_TOOL" "$PACKAGE_MANAGER" -y "$DM"
+                "$ESCALATION_TOOL" "$PACKAGER" -y "$DM"
                 ;;
             slapt-get)
-                "$ESCALATION_TOOL" "$PACKAGE_MANAGER" --install "$DM"
+                "$ESCALATION_TOOL" "$PACKAGER" --install "$DM"
                 ;;
         esac
         enableService "$DM"
@@ -99,44 +99,44 @@ installDisplayManager() {
 installBudgie() {
     printf "%b\n" "${CYAN}Installing Budgie Desktop Environment...${RC}"
     
-    case "$PACKAGE_MANAGER" in
+    case "$PACKAGER" in
         apt-get|nala)
-            "$ESCALATION_TOOL" "$PACKAGE_MANAGER" update
-            "$ESCALATION_TOOL" "$PACKAGE_MANAGER" install -y budgie-desktop budgie-desktop-environment
+            "$ESCALATION_TOOL" "$PACKAGER" update
+            "$ESCALATION_TOOL" "$PACKAGER" install -y budgie-desktop budgie-desktop-environment
             installDisplayManager
             ;;
         dnf)
-            "$ESCALATION_TOOL" "$PACKAGE_MANAGER" install -y budgie-desktop budgie-extras
+            "$ESCALATION_TOOL" "$PACKAGER" install -y budgie-desktop budgie-extras
             installDisplayManager
             ;;
         pacman)
-            "$ESCALATION_TOOL" "$PACKAGE_MANAGER" -Syu --noconfirm
-            "$ESCALATION_TOOL" "$PACKAGE_MANAGER" -S --noconfirm budgie-desktop budgie-extras
+            "$ESCALATION_TOOL" "$PACKAGER" -Syu --noconfirm
+            "$ESCALATION_TOOL" "$PACKAGER" -S --noconfirm budgie-desktop budgie-extras
             installDisplayManager
             ;;
         zypper)
-            "$ESCALATION_TOOL" "$PACKAGE_MANAGER" refresh
-            "$ESCALATION_TOOL" "$PACKAGE_MANAGER" install -y budgie-desktop
+            "$ESCALATION_TOOL" "$PACKAGER" refresh
+            "$ESCALATION_TOOL" "$PACKAGER" install -y budgie-desktop
             installDisplayManager
             ;;
         eopkg)
-            "$ESCALATION_TOOL" "$PACKAGE_MANAGER" update-repo
-            "$ESCALATION_TOOL" "$PACKAGE_MANAGER" install -y budgie-desktop
+            "$ESCALATION_TOOL" "$PACKAGER" update-repo
+            "$ESCALATION_TOOL" "$PACKAGER" install -y budgie-desktop
             installDisplayManager
             ;;
         apk)
-            "$ESCALATION_TOOL" "$PACKAGE_MANAGER" update
-            "$ESCALATION_TOOL" "$PACKAGE_MANAGER" add budgie-desktop
+            "$ESCALATION_TOOL" "$PACKAGER" update
+            "$ESCALATION_TOOL" "$PACKAGER" add budgie-desktop
             installDisplayManager
             ;;
         xbps-install)
-            "$ESCALATION_TOOL" "$PACKAGE_MANAGER" -Su
-            "$ESCALATION_TOOL" "$PACKAGE_MANAGER" -y budgie-desktop
+            "$ESCALATION_TOOL" "$PACKAGER" -Su
+            "$ESCALATION_TOOL" "$PACKAGER" -y budgie-desktop
             installDisplayManager
             ;;
         slapt-get)
-            "$ESCALATION_TOOL" "$PACKAGE_MANAGER" --update
-            "$ESCALATION_TOOL" "$PACKAGE_MANAGER" --install budgie-desktop
+            "$ESCALATION_TOOL" "$PACKAGER" --update
+            "$ESCALATION_TOOL" "$PACKAGER" --install budgie-desktop
             installDisplayManager
             ;;
         *)

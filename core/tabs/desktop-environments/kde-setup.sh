@@ -63,33 +63,33 @@ checkDisplayManager() {
 installDisplayManager() {
     if [ "$DM_EXISTS" -eq 1 ] && [ "$DM" != "none" ]; then
         printf "%b\n" "${CYAN}Installing and enabling $DM display manager...${RC}"
-        case "$PACKAGE_MANAGER" in
+        case "$PACKAGER" in
             apt-get|nala)
-                "$ESCALATION_TOOL" "$PACKAGE_MANAGER" install -y "$DM"
+                "$ESCALATION_TOOL" "$PACKAGER" install -y "$DM"
                 ;;
             dnf)
-                "$ESCALATION_TOOL" "$PACKAGE_MANAGER" install -y "$DM"
+                "$ESCALATION_TOOL" "$PACKAGER" install -y "$DM"
                 ;;
             pacman)
-                "$ESCALATION_TOOL" "$PACKAGE_MANAGER" -S --noconfirm "$DM"
+                "$ESCALATION_TOOL" "$PACKAGER" -S --noconfirm "$DM"
                 if [ "$DM" = "lightdm" ]; then
-                    "$ESCALATION_TOOL" "$PACKAGE_MANAGER" -S --noconfirm lightdm-gtk-greeter
+                    "$ESCALATION_TOOL" "$PACKAGER" -S --noconfirm lightdm-gtk-greeter
                 fi
                 ;;
             zypper)
-                "$ESCALATION_TOOL" "$PACKAGE_MANAGER" install -y "$DM"
+                "$ESCALATION_TOOL" "$PACKAGER" install -y "$DM"
                 ;;
             eopkg)
-                "$ESCALATION_TOOL" "$PACKAGE_MANAGER" install -y "$DM"
+                "$ESCALATION_TOOL" "$PACKAGER" install -y "$DM"
                 ;;
             apk)
-                "$ESCALATION_TOOL" "$PACKAGE_MANAGER" add "$DM"
+                "$ESCALATION_TOOL" "$PACKAGER" add "$DM"
                 ;;
             xbps-install)
-                "$ESCALATION_TOOL" "$PACKAGE_MANAGER" -y "$DM"
+                "$ESCALATION_TOOL" "$PACKAGER" -y "$DM"
                 ;;
             slapt-get)
-                "$ESCALATION_TOOL" "$PACKAGE_MANAGER" --install "$DM"
+                "$ESCALATION_TOOL" "$PACKAGER" --install "$DM"
                 ;;
         esac
         enableService "$DM"
@@ -99,44 +99,44 @@ installDisplayManager() {
 installKDE() {
     printf "%b\n" "${CYAN}Installing KDE Plasma Desktop Environment...${RC}"
     
-    case "$PACKAGE_MANAGER" in
+    case "$PACKAGER" in
         apt-get|nala)
-            "$ESCALATION_TOOL" "$PACKAGE_MANAGER" update
-            "$ESCALATION_TOOL" "$PACKAGE_MANAGER" install -y plasma-desktop konsole dolphin
+            "$ESCALATION_TOOL" "$PACKAGER" update
+            "$ESCALATION_TOOL" "$PACKAGER" install -y plasma-desktop konsole dolphin
             installDisplayManager
             ;;
         dnf)
-            "$ESCALATION_TOOL" "$PACKAGE_MANAGER" install -y @kde-desktop
+            "$ESCALATION_TOOL" "$PACKAGER" install -y @kde-desktop
             installDisplayManager
             ;;
         pacman)
-            "$ESCALATION_TOOL" "$PACKAGE_MANAGER" -Syu --noconfirm
-            "$ESCALATION_TOOL" "$PACKAGE_MANAGER" -S --noconfirm plasma konsole dolphin
+            "$ESCALATION_TOOL" "$PACKAGER" -Syu --noconfirm
+            "$ESCALATION_TOOL" "$PACKAGER" -S --noconfirm plasma konsole dolphin
             installDisplayManager
             ;;
         zypper)
-            "$ESCALATION_TOOL" "$PACKAGE_MANAGER" refresh
-            "$ESCALATION_TOOL" "$PACKAGE_MANAGER" install -y -t pattern kde kde_plasma
+            "$ESCALATION_TOOL" "$PACKAGER" refresh
+            "$ESCALATION_TOOL" "$PACKAGER" install -y -t pattern kde kde_plasma
             installDisplayManager
             ;;
         eopkg)
-            "$ESCALATION_TOOL" "$PACKAGE_MANAGER" update-repo
-            "$ESCALATION_TOOL" "$PACKAGE_MANAGER" install -y plasma-desktop konsole dolphin
+            "$ESCALATION_TOOL" "$PACKAGER" update-repo
+            "$ESCALATION_TOOL" "$PACKAGER" install -y plasma-desktop konsole dolphin
             installDisplayManager
             ;;
         apk)
-            "$ESCALATION_TOOL" "$PACKAGE_MANAGER" update
-            "$ESCALATION_TOOL" "$PACKAGE_MANAGER" add plasma konsole dolphin
+            "$ESCALATION_TOOL" "$PACKAGER" update
+            "$ESCALATION_TOOL" "$PACKAGER" add plasma konsole dolphin
             installDisplayManager
             ;;
         xbps-install)
-            "$ESCALATION_TOOL" "$PACKAGE_MANAGER" -Su
-            "$ESCALATION_TOOL" "$PACKAGE_MANAGER" -y kde5 kde5-baseapps
+            "$ESCALATION_TOOL" "$PACKAGER" -Su
+            "$ESCALATION_TOOL" "$PACKAGER" -y kde5 kde5-baseapps
             installDisplayManager
             ;;
         slapt-get)
-            "$ESCALATION_TOOL" "$PACKAGE_MANAGER" --update
-            "$ESCALATION_TOOL" "$PACKAGE_MANAGER" --install kde-plasma
+            "$ESCALATION_TOOL" "$PACKAGER" --update
+            "$ESCALATION_TOOL" "$PACKAGER" --install kde-plasma
             installDisplayManager
             ;;
         *)

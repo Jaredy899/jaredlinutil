@@ -63,33 +63,33 @@ checkDisplayManager() {
 installDisplayManager() {
     if [ "$DM_EXISTS" -eq 1 ] && [ "$DM" != "none" ]; then
         printf "%b\n" "${CYAN}Installing and enabling $DM display manager...${RC}"
-        case "$PACKAGE_MANAGER" in
+        case "$PACKAGER" in
             apt-get|nala)
-                "$ESCALATION_TOOL" "$PACKAGE_MANAGER" install -y "$DM"
+                "$ESCALATION_TOOL" "$PACKAGER" install -y "$DM"
                 ;;
             dnf)
-                "$ESCALATION_TOOL" "$PACKAGE_MANAGER" install -y "$DM"
+                "$ESCALATION_TOOL" "$PACKAGER" install -y "$DM"
                 ;;
             pacman)
-                "$ESCALATION_TOOL" "$PACKAGE_MANAGER" -S --noconfirm "$DM"
+                "$ESCALATION_TOOL" "$PACKAGER" -S --noconfirm "$DM"
                 if [ "$DM" = "lightdm" ]; then
-                    "$ESCALATION_TOOL" "$PACKAGE_MANAGER" -S --noconfirm lightdm-gtk-greeter
+                    "$ESCALATION_TOOL" "$PACKAGER" -S --noconfirm lightdm-gtk-greeter
                 fi
                 ;;
             zypper)
-                "$ESCALATION_TOOL" "$PACKAGE_MANAGER" install -y "$DM"
+                "$ESCALATION_TOOL" "$PACKAGER" install -y "$DM"
                 ;;
             eopkg)
-                "$ESCALATION_TOOL" "$PACKAGE_MANAGER" install -y "$DM"
+                "$ESCALATION_TOOL" "$PACKAGER" install -y "$DM"
                 ;;
             apk)
-                "$ESCALATION_TOOL" "$PACKAGE_MANAGER" add "$DM"
+                "$ESCALATION_TOOL" "$PACKAGER" add "$DM"
                 ;;
             xbps-install)
-                "$ESCALATION_TOOL" "$PACKAGE_MANAGER" -y "$DM"
+                "$ESCALATION_TOOL" "$PACKAGER" -y "$DM"
                 ;;
             slapt-get)
-                "$ESCALATION_TOOL" "$PACKAGE_MANAGER" --install "$DM"
+                "$ESCALATION_TOOL" "$PACKAGER" --install "$DM"
                 ;;
         esac
         enableService "$DM"
@@ -99,44 +99,44 @@ installDisplayManager() {
 installLXQt() {
     printf "%b\n" "${CYAN}Installing LXQt Desktop Environment...${RC}"
     
-    case "$PACKAGE_MANAGER" in
+    case "$PACKAGER" in
         apt-get|nala)
-            "$ESCALATION_TOOL" "$PACKAGE_MANAGER" update
-            "$ESCALATION_TOOL" "$PACKAGE_MANAGER" install -y lxqt
+            "$ESCALATION_TOOL" "$PACKAGER" update
+            "$ESCALATION_TOOL" "$PACKAGER" install -y lxqt
             installDisplayManager
             ;;
         dnf)
-            "$ESCALATION_TOOL" "$PACKAGE_MANAGER" group install -y "LXQt Desktop"
+            "$ESCALATION_TOOL" "$PACKAGER" group install -y "LXQt Desktop"
             installDisplayManager
             ;;
         pacman)
-            "$ESCALATION_TOOL" "$PACKAGE_MANAGER" -Syu --noconfirm
-            "$ESCALATION_TOOL" "$PACKAGE_MANAGER" -S --noconfirm lxqt
+            "$ESCALATION_TOOL" "$PACKAGER" -Syu --noconfirm
+            "$ESCALATION_TOOL" "$PACKAGER" -S --noconfirm lxqt
             installDisplayManager
             ;;
         zypper)
-            "$ESCALATION_TOOL" "$PACKAGE_MANAGER" refresh
-            "$ESCALATION_TOOL" "$PACKAGE_MANAGER" install -y -t pattern lxqt
+            "$ESCALATION_TOOL" "$PACKAGER" refresh
+            "$ESCALATION_TOOL" "$PACKAGER" install -y -t pattern lxqt
             installDisplayManager
             ;;
         eopkg)
-            "$ESCALATION_TOOL" "$PACKAGE_MANAGER" update-repo
-            "$ESCALATION_TOOL" "$PACKAGE_MANAGER" install -y lxqt
+            "$ESCALATION_TOOL" "$PACKAGER" update-repo
+            "$ESCALATION_TOOL" "$PACKAGER" install -y lxqt
             installDisplayManager
             ;;
         apk)
-            "$ESCALATION_TOOL" "$PACKAGE_MANAGER" update
-            "$ESCALATION_TOOL" "$PACKAGE_MANAGER" add lxqt-desktop
+            "$ESCALATION_TOOL" "$PACKAGER" update
+            "$ESCALATION_TOOL" "$PACKAGER" add lxqt-desktop
             installDisplayManager
             ;;
         xbps-install)
-            "$ESCALATION_TOOL" "$PACKAGE_MANAGER" -Su
-            "$ESCALATION_TOOL" "$PACKAGE_MANAGER" -y lxqt
+            "$ESCALATION_TOOL" "$PACKAGER" -Su
+            "$ESCALATION_TOOL" "$PACKAGER" -y lxqt
             installDisplayManager
             ;;
         slapt-get)
-            "$ESCALATION_TOOL" "$PACKAGE_MANAGER" --update
-            "$ESCALATION_TOOL" "$PACKAGE_MANAGER" --install lxqt
+            "$ESCALATION_TOOL" "$PACKAGER" --update
+            "$ESCALATION_TOOL" "$PACKAGER" --install lxqt
             installDisplayManager
             ;;
         *)
