@@ -82,14 +82,8 @@ installDisplayManager() {
             eopkg)
                 "$ESCALATION_TOOL" "$PACKAGER" install -y "$DM"
                 ;;
-            apk)
-                "$ESCALATION_TOOL" "$PACKAGER" add "$DM"
-                ;;
             xbps-install)
                 "$ESCALATION_TOOL" "$PACKAGER" -y "$DM"
-                ;;
-            slapt-get)
-                "$ESCALATION_TOOL" "$PACKAGER" --install "$DM"
                 ;;
         esac
         enableService "$DM"
@@ -106,7 +100,7 @@ installBudgie() {
             installDisplayManager
             ;;
         dnf)
-            "$ESCALATION_TOOL" "$PACKAGER" install -y budgie-desktop-environment
+            "$ESCALATION_TOOL" "$PACKAGER" group install -y budgie-desktop-environment
             installDisplayManager
             ;;
         pacman)
@@ -122,11 +116,6 @@ installBudgie() {
         eopkg)
             "$ESCALATION_TOOL" "$PACKAGER" update-repo
             "$ESCALATION_TOOL" "$PACKAGER" install -y budgie-desktop
-            installDisplayManager
-            ;;
-        apk)
-            "$ESCALATION_TOOL" "$PACKAGER" update
-            "$ESCALATION_TOOL" "$PACKAGER" add budgie-desktop
             installDisplayManager
             ;;
         xbps-install)
