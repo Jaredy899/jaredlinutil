@@ -85,9 +85,6 @@ installDisplayManager() {
             xbps-install)
                 "$ESCALATION_TOOL" "$PACKAGER" -y "$DM"
                 ;;
-            slapt-get)
-                "$ESCALATION_TOOL" "$PACKAGER" --install "$DM"
-                ;;
         esac
         enableService "$DM"
     fi
@@ -103,22 +100,22 @@ installKDE() {
             installDisplayManager
             ;;
         dnf)
-            "$ESCALATION_TOOL" "$PACKAGER" install -y kde-desktop-environment
+            "$ESCALATION_TOOL" "$PACKAGER" group install -y kde-desktop-environment
             installDisplayManager
             ;;
         pacman)
             "$ESCALATION_TOOL" "$PACKAGER" -Syu --noconfirm
-            "$ESCALATION_TOOL" "$PACKAGER" -S --noconfirm plasma konsole dolphin
+            "$ESCALATION_TOOL" "$PACKAGER" -S --noconfirm plasma-meta
             installDisplayManager
             ;;
         zypper)
             "$ESCALATION_TOOL" "$PACKAGER" refresh
-            "$ESCALATION_TOOL" "$PACKAGER" install -y -t pattern kde kde_plasma
+            "$ESCALATION_TOOL" "$PACKAGER" install -y patterns-kde-kde
             installDisplayManager
             ;;
         eopkg)
             "$ESCALATION_TOOL" "$PACKAGER" update-repo
-            "$ESCALATION_TOOL" "$PACKAGER" install -y plasma-desktop konsole dolphin
+            "$ESCALATION_TOOL" "$PACKAGER" install -y plasma-desktop
             installDisplayManager
             ;;
         apk)
@@ -126,12 +123,7 @@ installKDE() {
             ;;
         xbps-install)
             "$ESCALATION_TOOL" "$PACKAGER" -Su
-            "$ESCALATION_TOOL" "$PACKAGER" -y kde5 kde5-baseapps
-            installDisplayManager
-            ;;
-        slapt-get)
-            "$ESCALATION_TOOL" "$PACKAGER" --update
-            "$ESCALATION_TOOL" "$PACKAGER" --install kde-plasma
+            "$ESCALATION_TOOL" "$PACKAGER" -y plasma-desktop
             installDisplayManager
             ;;
         *)
