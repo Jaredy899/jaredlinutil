@@ -96,7 +96,7 @@ installBudgie() {
     case "$PACKAGER" in
         apt-get|nala)
             "$ESCALATION_TOOL" "$PACKAGER" update
-            "$ESCALATION_TOOL" "$PACKAGER" install -y budgie-desktop budgie-desktop-environment
+            "$ESCALATION_TOOL" "$PACKAGER" install -y budgie-desktop
             installDisplayManager
             ;;
         dnf)
