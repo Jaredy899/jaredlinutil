@@ -79,17 +79,8 @@ installDisplayManager() {
             zypper)
                 "$ESCALATION_TOOL" "$PACKAGER" install -y "$DM"
                 ;;
-            eopkg)
-                "$ESCALATION_TOOL" "$PACKAGER" install -y "$DM"
-                ;;
-            apk)
-                "$ESCALATION_TOOL" "$PACKAGER" add "$DM"
-                ;;
             xbps-install)
                 "$ESCALATION_TOOL" "$PACKAGER" -y "$DM"
-                ;;
-            slapt-get)
-                "$ESCALATION_TOOL" "$PACKAGER" --install "$DM"
                 ;;
         esac
         enableService "$DM"
@@ -106,7 +97,7 @@ installCinnamon() {
             installDisplayManager
             ;;
         dnf)
-            "$ESCALATION_TOOL" "$PACKAGER" install -y @cinnamon-desktop-environment
+            "$ESCALATION_TOOL" "$PACKAGER" group install -y cinnamon-desktop-environment
             installDisplayManager
             ;;
         pacman)
@@ -119,28 +110,13 @@ installCinnamon() {
             "$ESCALATION_TOOL" "$PACKAGER" install -y -t pattern cinnamon
             installDisplayManager
             ;;
-        eopkg)
-            "$ESCALATION_TOOL" "$PACKAGER" update-repo
-            "$ESCALATION_TOOL" "$PACKAGER" install -y cinnamon
-            installDisplayManager
-            ;;
-        apk)
-            "$ESCALATION_TOOL" "$PACKAGER" update
-            "$ESCALATION_TOOL" "$PACKAGER" add cinnamon
-            installDisplayManager
-            ;;
         xbps-install)
             "$ESCALATION_TOOL" "$PACKAGER" -Su
-            "$ESCALATION_TOOL" "$PACKAGER" -y cinnamon
-            installDisplayManager
-            ;;
-        slapt-get)
-            "$ESCALATION_TOOL" "$PACKAGER" --update
-            "$ESCALATION_TOOL" "$PACKAGER" --install cinnamon
+            "$ESCALATION_TOOL" "$PACKAGER" -y cinnamon-all
             installDisplayManager
             ;;
         *)
-            printf "%b\n" "${RED}Unsupported package manager: $PACKAGE_MANAGER${RC}"
+            printf "%b\n" "${RED}Unsupported package manager: $PACKAGER${RC}"
             exit 1
             ;;
     esac

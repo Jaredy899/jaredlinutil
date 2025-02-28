@@ -105,7 +105,7 @@ installBudgie() {
             ;;
         pacman)
             "$ESCALATION_TOOL" "$PACKAGER" -Syu --noconfirm
-            "$ESCALATION_TOOL" "$PACKAGER" -S --noconfirm budgie-desktop budgie-control-center budgie-backgrounds budgie-desktop-view budgie-session budgie-extras
+            "$ESCALATION_TOOL" "$PACKAGER" -S --noconfirm budgie-desktop budgie-control-center budgie-backgrounds budgie-desktop-view budgie-session budgie-extras ghostty
             installDisplayManager
             ;;
         zypper)
@@ -141,5 +141,5 @@ installBudgie() {
 # Main execution flow
 checkEnv
 checkEscalationTool
-installBudgie 
 checkDisplayManager
+installBudgie 

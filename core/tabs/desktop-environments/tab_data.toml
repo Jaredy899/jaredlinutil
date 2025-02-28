@@ -9,7 +9,7 @@ task_list = "I SS"
 [[data.preconditions]]
 matches = false
 data = "command_exists"
-values = ["dnf"]
+values = ["dnf", "eopkg"]
 
 [[data]]
 name = "KDE Plasma"
@@ -32,7 +32,7 @@ task_list = "I SS"
 [[data.preconditions]]
 matches = false
 data = "command_exists"
-values = ["apk"]
+values = ["apk", "eopkg"]
 
 [[data]]
 name = "MATE"
@@ -66,7 +66,7 @@ task_list = "I SS"
 [[data.preconditions]]
 matches = false
 data = "command_exists"
-values = ["apk", "apt-get"]
+values = ["apk", "apt-get", "eopkg"]
 
 [[data]]
 name = "i3"

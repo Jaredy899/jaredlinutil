@@ -76,14 +76,8 @@ installDisplayManager() {
             zypper)
                 "$ESCALATION_TOOL" "$PACKAGER" install -y "$DM"
                 ;;
-            eopkg)
-                "$ESCALATION_TOOL" "$PACKAGER" install -y "$DM"
-                ;;
             xbps-install)
                 "$ESCALATION_TOOL" "$PACKAGER" -y "$DM"
-                ;;
-            slapt-get)
-                "$ESCALATION_TOOL" "$PACKAGER" --install "$DM"
                 ;;
         esac
         enableService "$DM"
@@ -101,17 +95,12 @@ installGnome() {
             ;;
         pacman)
             "$ESCALATION_TOOL" "$PACKAGER" -Syu --noconfirm
-            "$ESCALATION_TOOL" "$PACKAGER" -S --noconfirm gnome gnome-tweaks gnome-software
+            "$ESCALATION_TOOL" "$PACKAGER" -S --noconfirm gnome gnome-extra
             installDisplayManager
             ;;
         zypper)
             "$ESCALATION_TOOL" "$PACKAGER" refresh
-            "$ESCALATION_TOOL" "$PACKAGER" install -y -t pattern gnome gnome_basis
-            installDisplayManager
-            ;;
-        eopkg)
-            "$ESCALATION_TOOL" "$PACKAGER" update-repo
-            "$ESCALATION_TOOL" "$PACKAGER" install -y gnome-shell gnome-terminal gnome-tweaks gnome-software
+            "$ESCALATION_TOOL" "$PACKAGER" install -y patterns-gnome-gnome
             installDisplayManager
             ;;
         apk)
@@ -120,11 +109,6 @@ installGnome() {
         xbps-install)
             "$ESCALATION_TOOL" "$PACKAGER" -Su
             "$ESCALATION_TOOL" "$PACKAGER" -y gnome
-            installDisplayManager
-            ;;
-        slapt-get)
-            "$ESCALATION_TOOL" "$PACKAGER" --update
-            "$ESCALATION_TOOL" "$PACKAGER" --install gnome
             installDisplayManager
             ;;
         *)
