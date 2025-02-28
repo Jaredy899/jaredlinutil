@@ -46,6 +46,11 @@ description = "LXQt is a lightweight Qt desktop environment that focuses on bein
 script = "lxqt-setup.sh"
 task_list = "I SS"
 
+[[data.preconditions]]
+matches = false
+data = "command_exists"
+values = ["eopkg"]
+
 [[data]]
 name = "Budgie"
 description = "Budgie is a modern desktop environment focusing on simplicity and elegance, designed with the modern user in mind."

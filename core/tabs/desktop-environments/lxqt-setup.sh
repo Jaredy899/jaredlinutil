@@ -79,9 +79,6 @@ installDisplayManager() {
             zypper)
                 "$ESCALATION_TOOL" "$PACKAGER" install -y "$DM"
                 ;;
-            eopkg)
-                "$ESCALATION_TOOL" "$PACKAGER" install -y "$DM"
-                ;;
             xbps-install)
                 "$ESCALATION_TOOL" "$PACKAGER" -y "$DM"
                 ;;
@@ -96,26 +93,21 @@ installLXQt() {
     case "$PACKAGER" in
         apt-get|nala)
             "$ESCALATION_TOOL" "$PACKAGER" update
-            "$ESCALATION_TOOL" "$PACKAGER" install -y lxqt
+            "$ESCALATION_TOOL" "$PACKAGER" install -y task-lxqt-desktop
             installDisplayManager
             ;;
         dnf)
-            "$ESCALATION_TOOL" "$PACKAGER" group install -y "LXQt Desktop"
+            "$ESCALATION_TOOL" "$PACKAGER" group install -y lxqt-desktop-environment
             installDisplayManager
             ;;
         pacman)
             "$ESCALATION_TOOL" "$PACKAGER" -Syu --noconfirm
-            "$ESCALATION_TOOL" "$PACKAGER" -S --noconfirm lxqt
+            "$ESCALATION_TOOL" "$PACKAGER" -S --noconfirm xorg-server xorg-xinit lxqt breeze-icons
             installDisplayManager
             ;;
         zypper)
             "$ESCALATION_TOOL" "$PACKAGER" refresh
-            "$ESCALATION_TOOL" "$PACKAGER" install -y -t pattern lxqt
-            installDisplayManager
-            ;;
-        eopkg)
-            "$ESCALATION_TOOL" "$PACKAGER" update-repo
-            "$ESCALATION_TOOL" "$PACKAGER" install -y lxqt
+            "$ESCALATION_TOOL" "$PACKAGER" install -y patterns-lxqt-lxqt
             installDisplayManager
             ;;
         apk)
