@@ -123,12 +123,12 @@ impl AppState {
             skip_confirmation: args.skip_confirmation,
         };
 
+        state.update_items();
+
         #[cfg(unix)]
-        if let Some(root_warning) = check_root_status() {
+        if let Some(root_warning) = check_root_status(args.size_bypass) {
             state.spawn_float(root_warning, FLOAT_SIZE, FLOAT_SIZE);
         }
-
-        state.update_items();
 
         if let Some(config_path) = args.config {
             let config = Config::read_config(&config_path, &state.tabs);
