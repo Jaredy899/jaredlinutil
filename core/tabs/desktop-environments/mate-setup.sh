@@ -97,11 +97,11 @@ installMATE() {
     case "$PACKAGER" in
         apt-get|nala)
             "$ESCALATION_TOOL" "$PACKAGER" update
-            "$ESCALATION_TOOL" "$PACKAGER" install -y mate-desktop-environment
+            "$ESCALATION_TOOL" "$PACKAGER" install -y task-mate-desktop
             installDisplayManager
             ;;
         dnf)
-            "$ESCALATION_TOOL" "$PACKAGER" groupinstall -y "MATE Desktop"
+            "$ESCALATION_TOOL" "$PACKAGER" group install -y mate-desktop-environment
             installDisplayManager
             ;;
         pacman)
@@ -111,12 +111,12 @@ installMATE() {
             ;;
         zypper)
             "$ESCALATION_TOOL" "$PACKAGER" refresh
-            "$ESCALATION_TOOL" "$PACKAGER" install -y -t pattern mate
+            "$ESCALATION_TOOL" "$PACKAGER" install -y patterns-mate-mate
             installDisplayManager
             ;;
         eopkg)
             "$ESCALATION_TOOL" "$PACKAGER" update-repo
-            "$ESCALATION_TOOL" "$PACKAGER" install -y mate
+            "$ESCALATION_TOOL" "$PACKAGER" install -y mate-desktop
             installDisplayManager
             ;;
         apk)
@@ -128,7 +128,7 @@ installMATE() {
             installDisplayManager
             ;;
         *)
-            printf "%b\n" "${RED}Unsupported package manager: $PACKAGE_MANAGER${RC}"
+            printf "%b\n" "${RED}Unsupported package manager: $PACKAGER${RC}"
             exit 1
             ;;
     esac

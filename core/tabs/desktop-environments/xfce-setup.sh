@@ -85,9 +85,6 @@ installDisplayManager() {
             xbps-install)
                 "$ESCALATION_TOOL" "$PACKAGER" -y "$DM"
                 ;;
-            slapt-get)
-                "$ESCALATION_TOOL" "$PACKAGER" --install "$DM"
-                ;;
         esac
         enableService "$DM"
     fi
@@ -103,7 +100,7 @@ installXFCE() {
             installDisplayManager
             ;;
         dnf)
-            "$ESCALATION_TOOL" "$PACKAGER" group install -y "Xfce Desktop"
+            "$ESCALATION_TOOL" "$PACKAGER" group install -y xfce-desktop-environment
             installDisplayManager
             ;;
         pacman)
@@ -113,7 +110,7 @@ installXFCE() {
             ;;
         zypper)
             "$ESCALATION_TOOL" "$PACKAGER" refresh
-            "$ESCALATION_TOOL" "$PACKAGER" install -y -t pattern xfce
+            "$ESCALATION_TOOL" "$PACKAGER" install -y patterns-xfce-xfce
             installDisplayManager
             ;;
         eopkg)
@@ -129,13 +126,8 @@ installXFCE() {
             "$ESCALATION_TOOL" "$PACKAGER" -y xfce4
             installDisplayManager
             ;;
-        slapt-get)
-            "$ESCALATION_TOOL" "$PACKAGER" --update
-            "$ESCALATION_TOOL" "$PACKAGER" --install xfce4
-            installDisplayManager
-            ;;
         *)
-            printf "%b\n" "${RED}Unsupported package manager: $PACKAGE_MANAGER${RC}"
+            printf "%b\n" "${RED}Unsupported package manager: $PACKAGER${RC}"
             exit 1
             ;;
     esac
