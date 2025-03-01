@@ -84,7 +84,7 @@ checkDisplayManager() {
     read -r choice
     
     # Validate choice
-    if [ "$choice" -ge 1 ] && [ "$choice" -le "${#dm_options[@]}" ] 2>/dev/null; then
+    if [ -n "$choice" ] && [ "$choice" -ge 1 ] && [ "$choice" -le "${#dm_options[@]}" ] 2>/dev/null; then
         DM="${dm_options[$((choice-1))]}"
     else
         printf "%b\n" "${RED}Invalid selection! Defaulting to $DEFAULT_DM.${RC}"
