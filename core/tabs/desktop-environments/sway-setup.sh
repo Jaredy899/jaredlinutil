@@ -3,88 +3,14 @@
 . ../common-script.sh
 . ../common-service-script.sh
 
-# Global variables
-DM_EXISTS=0
-DM="none"  # Default to none for Sway as it's common to start it without a DM
+# Set desktop environment name and display manager preferences
+DE_NAME="Sway"
+DEFAULT_DM="gdm"
+DM_OPTIONS="gdm sddm lightdm none"
+DM_LABELS="GDM|SDDM|LightDM|None (Start Sway manually)"
 
-checkDisplayManager() {
-    printf "%b\n" "${CYAN}Checking for existing display managers...${RC}"
-    
-    # Check for common display managers
-    for dm in gdm gdm3 lightdm sddm lxdm xdm slim; do
-        # Check if the display manager is running
-        if isServiceActive "$dm" 2>/dev/null; then
-            printf "%b\n" "${YELLOW}Display manager $dm is already running.${RC}"
-            DM_EXISTS=0
-            return
-        fi
-        
-        # Check if the display manager is enabled
-        if isServiceEnabled "$dm" 2>/dev/null; then
-            printf "%b\n" "${YELLOW}Display manager $dm is already enabled.${RC}"
-            DM_EXISTS=0
-            return
-        fi
-    done
-    
-    # No display manager found, prompt user to choose one
-    printf "%b\n" "${YELLOW}--------------------------${RC}" 
-    printf "%b\n" "${YELLOW}Pick your Display Manager ${RC}" 
-    printf "%b\n" "${YELLOW}1. None (Start Sway directly from TTY - Recommended) ${RC}" 
-    printf "%b\n" "${YELLOW}2. GDM ${RC}" 
-    printf "%b\n" "${YELLOW}3. SDDM ${RC}" 
-    printf "%b" "${YELLOW}Please select one (1-3): ${RC}"
-    read -r choice
-    
-    case "$choice" in
-        1)
-            DM="none"
-            ;;
-        2)
-            DM="gdm"
-            ;;
-        3)
-            DM="sddm"
-            ;;
-        *)
-            printf "%b\n" "${RED}Invalid selection! Defaulting to None.${RC}"
-            DM="none"
-            ;;
-    esac
-    
-    DM_EXISTS=1
-}
-
-# Function to install display manager if needed
-installDisplayManager() {
-    if [ "$DM_EXISTS" -eq 1 ] && [ "$DM" != "none" ]; then
-        printf "%b\n" "${CYAN}Installing and enabling $DM display manager...${RC}"
-        case "$PACKAGER" in
-            apt-get|nala)
-                "$ESCALATION_TOOL" "$PACKAGER" install -y "$DM"
-                ;;
-            dnf)
-                "$ESCALATION_TOOL" "$PACKAGER" install -y "$DM"
-                ;;
-            pacman)
-                "$ESCALATION_TOOL" "$PACKAGER" -S --noconfirm "$DM"
-                if [ "$DM" = "lightdm" ]; then
-                    "$ESCALATION_TOOL" "$PACKAGER" -S --noconfirm lightdm-gtk-greeter
-                fi
-                ;;
-            zypper)
-                "$ESCALATION_TOOL" "$PACKAGER" install -y "$DM"
-                ;;
-            eopkg)
-                "$ESCALATION_TOOL" "$PACKAGER" install -y "$DM"
-                ;;
-            xbps-install)
-                "$ESCALATION_TOOL" "$PACKAGER" -y "$DM"
-                ;;
-        esac
-        enableService "$DM"
-    fi
-}
+# Source the common display manager script
+. ./common-dm-script.sh
 
 installSway() {
     printf "%b\n" "${CYAN}Installing Sway Window Manager...${RC}"
@@ -92,242 +18,187 @@ installSway() {
     case "$PACKAGER" in
         apt-get|nala)
             "$ESCALATION_TOOL" "$PACKAGER" update
-            "$ESCALATION_TOOL" "$PACKAGER" install -y sway swaylock swayidle waybar
+            "$ESCALATION_TOOL" "$PACKAGER" install -y sway swaylock swayidle waybar wofi mako
             installDisplayManager
             ;;
         dnf)
-            "$ESCALATION_TOOL" "$PACKAGER" install -y sway swaylock swayidle waybar
+            "$ESCALATION_TOOL" "$PACKAGER" install -y sway swaylock swayidle waybar wofi mako
             installDisplayManager
             ;;
         pacman)
             "$ESCALATION_TOOL" "$PACKAGER" -Syu --noconfirm
-            "$ESCALATION_TOOL" "$PACKAGER" -S --noconfirm sway swaylock swayidle waybar
+            "$ESCALATION_TOOL" "$PACKAGER" -S --noconfirm sway swaylock swayidle waybar wofi mako
             installDisplayManager
             ;;
         zypper)
             "$ESCALATION_TOOL" "$PACKAGER" refresh
-            "$ESCALATION_TOOL" "$PACKAGER" install -y sway swaylock swayidle waybar
+            "$ESCALATION_TOOL" "$PACKAGER" install -y sway swaylock swayidle waybar wofi mako
             installDisplayManager
             ;;
         eopkg)
             "$ESCALATION_TOOL" "$PACKAGER" update-repo
-            "$ESCALATION_TOOL" "$PACKAGER" install -y sway swaylock swayidle waybar
+            "$ESCALATION_TOOL" "$PACKAGER" install -y sway swaylock swayidle waybar wofi mako
             installDisplayManager
-            ;;
-        apk)
-            echo "sway" | "$ESCALATION_TOOL" setup-desktop
             ;;
         xbps-install)
             "$ESCALATION_TOOL" "$PACKAGER" -Su
-            "$ESCALATION_TOOL" "$PACKAGER" -y sway swaylock swayidle waybar
+            "$ESCALATION_TOOL" "$PACKAGER" -y sway swaylock swayidle waybar wofi mako
             installDisplayManager
             ;;
         *)
-            printf "%b\n" "${RED}Unsupported package manager: $PACKAGE_MANAGER${RC}"
+            printf "%b\n" "${RED}Unsupported package manager: $PACKAGER${RC}"
             exit 1
             ;;
     esac
-
-    setupSwayConfig
     
-    if [ "$DM" = "none" ]; then
-        printf "%b\n" "${GREEN}Sway Window Manager has been installed successfully!${RC}"
-        printf "%b\n" "${YELLOW}To start Sway, simply run 'sway' from a TTY.${RC}"
-    else
-        printf "%b\n" "${GREEN}Sway Window Manager has been installed successfully!${RC}"
-        printf "%b\n" "${YELLOW}Please reboot your system and select Sway from the session menu at the login screen.${RC}"
-    fi
-}
-
-setupSwayConfig() {
     # Create default Sway config if it doesn't exist
-    if [ ! -d "$HOME/.config/sway" ]; then
-        mkdir -p "$HOME/.config/sway"
-        if [ -f "/etc/sway/config" ]; then
-            printf "%b\n" "${YELLOW}Copying default Sway config...${RC}"
-            cp /etc/sway/config "$HOME/.config/sway/"
-        else
-            printf "%b\n" "${YELLOW}Creating a basic Sway config file...${RC}"
-            cat > "$HOME/.config/sway/config" << 'EOF'
-# Default config for sway
-# Read `man 5 sway` for a complete reference.
+    mkdir -p "$HOME/.config/sway"
+    if [ ! -f "$HOME/.config/sway/config" ]; then
+        printf "%b\n" "${YELLOW}Creating default Sway config...${RC}"
+        cat > "$HOME/.config/sway/config" << 'EOF'
+# Default Sway config created by jaredlinutil
 
-### Variables
-# Logo key. Use Mod1 for Alt.
+# Set mod key (Mod1=Alt, Mod4=Super/Windows)
 set $mod Mod4
-# Home row direction keys, like vim
-set $left h
-set $down j
-set $up k
-set $right l
-# Your preferred terminal emulator
-set $term foot
-# Your preferred application launcher
-set $menu dmenu_path | dmenu | xargs swaymsg exec --
 
-### Output configuration
-# Default wallpaper
-output * bg /usr/share/backgrounds/sway/Sway_Wallpaper_Blue_1920x1080.png fill
+# Font for window titles
+font pango:monospace 10
 
-### Input configuration
-# Example configuration:
-#
-#   input "2:14:SynPS/2_Synaptics_TouchPad" {
-#       dwt enabled
-#       tap enabled
-#       natural_scroll enabled
-#       middle_emulation enabled
-#   }
-#
-# You can get the names of your inputs by running: swaymsg -t get_inputs
-# Read `man 5 sway-input` for more information about this section.
+# Use Mouse+$mod to drag floating windows
+floating_modifier $mod normal
 
-### Key bindings
-# Basics:
-    # Start a terminal
-    bindsym $mod+Return exec $term
+# Start a terminal
+bindsym $mod+Return exec foot
 
-    # Kill focused window
-    bindsym $mod+Shift+q kill
+# Kill focused window
+bindsym $mod+Shift+q kill
 
-    # Start your launcher
-    bindsym $mod+d exec $menu
+# Start application launcher
+bindsym $mod+d exec wofi --show=drun
 
-    # Drag floating windows by holding down $mod and left mouse button.
-    # Resize them with right mouse button + $mod.
-    # Despite the name, also works for non-floating windows.
-    # Change normal to inverse to use left mouse button for resizing and right
-    # mouse button for dragging.
-    floating_modifier $mod normal
+# Change focus
+bindsym $mod+j focus left
+bindsym $mod+k focus down
+bindsym $mod+l focus up
+bindsym $mod+semicolon focus right
 
-    # Reload the configuration file
-    bindsym $mod+Shift+c reload
+# Alternatively, you can use the cursor keys:
+bindsym $mod+Left focus left
+bindsym $mod+Down focus down
+bindsym $mod+Up focus up
+bindsym $mod+Right focus right
 
-    # Exit sway (logs you out of your Wayland session)
-    bindsym $mod+Shift+e exec swaynag -t warning -m 'You pressed the exit shortcut. Do you really want to exit sway? This will end your Wayland session.' -B 'Yes, exit sway' 'swaymsg exit'
+# Move focused window
+bindsym $mod+Shift+j move left
+bindsym $mod+Shift+k move down
+bindsym $mod+Shift+l move up
+bindsym $mod+Shift+semicolon move right
 
-# Moving around:
-    # Move your focus around
-    bindsym $mod+$left focus left
-    bindsym $mod+$down focus down
-    bindsym $mod+$up focus up
-    bindsym $mod+$right focus right
-    # Or use $mod+[up|down|left|right]
-    bindsym $mod+Left focus left
-    bindsym $mod+Down focus down
-    bindsym $mod+Up focus up
-    bindsym $mod+Right focus right
+# Alternatively, you can use the cursor keys:
+bindsym $mod+Shift+Left move left
+bindsym $mod+Shift+Down move down
+bindsym $mod+Shift+Up move up
+bindsym $mod+Shift+Right move right
 
-    # Move the focused window with the same, but add Shift
-    bindsym $mod+Shift+$left move left
-    bindsym $mod+Shift+$down move down
-    bindsym $mod+Shift+$up move up
-    bindsym $mod+Shift+$right move right
-    # Ditto, with arrow keys
-    bindsym $mod+Shift+Left move left
-    bindsym $mod+Shift+Down move down
-    bindsym $mod+Shift+Up move up
-    bindsym $mod+Shift+Right move right
+# Split in horizontal orientation
+bindsym $mod+h split h
 
-# Workspaces:
-    # Switch to workspace
-    bindsym $mod+1 workspace number 1
-    bindsym $mod+2 workspace number 2
-    bindsym $mod+3 workspace number 3
-    bindsym $mod+4 workspace number 4
-    bindsym $mod+5 workspace number 5
-    bindsym $mod+6 workspace number 6
-    bindsym $mod+7 workspace number 7
-    bindsym $mod+8 workspace number 8
-    bindsym $mod+9 workspace number 9
-    bindsym $mod+0 workspace number 10
-    # Move focused container to workspace
-    bindsym $mod+Shift+1 move container to workspace number 1
-    bindsym $mod+Shift+2 move container to workspace number 2
-    bindsym $mod+Shift+3 move container to workspace number 3
-    bindsym $mod+Shift+4 move container to workspace number 4
-    bindsym $mod+Shift+5 move container to workspace number 5
-    bindsym $mod+Shift+6 move container to workspace number 6
-    bindsym $mod+Shift+7 move container to workspace number 7
-    bindsym $mod+Shift+8 move container to workspace number 8
-    bindsym $mod+Shift+9 move container to workspace number 9
-    bindsym $mod+Shift+0 move container to workspace number 10
-    # Note: workspaces can have any name you want, not just numbers.
-    # We just use 1-10 as the default.
+# Split in vertical orientation
+bindsym $mod+v split v
 
-# Layout stuff:
-    # You can "split" the current object of your focus with
-    # $mod+b or $mod+v, for horizontal and vertical splits
-    # respectively.
-    bindsym $mod+b splith
-    bindsym $mod+v splitv
+# Enter fullscreen mode for the focused container
+bindsym $mod+f fullscreen toggle
 
-    # Switch the current container between different layout styles
-    bindsym $mod+s layout stacking
-    bindsym $mod+w layout tabbed
-    bindsym $mod+e layout toggle split
+# Change container layout (stacked, tabbed, toggle split)
+bindsym $mod+s layout stacking
+bindsym $mod+w layout tabbed
+bindsym $mod+e layout toggle split
 
-    # Make the current focus fullscreen
-    bindsym $mod+f fullscreen
+# Toggle tiling / floating
+bindsym $mod+Shift+space floating toggle
 
-    # Toggle the current focus between tiling and floating mode
-    bindsym $mod+Shift+space floating toggle
+# Change focus between tiling / floating windows
+bindsym $mod+space focus mode_toggle
 
-    # Swap focus between the tiling area and the floating area
-    bindsym $mod+space focus mode_toggle
+# Focus the parent container
+bindsym $mod+a focus parent
 
-    # Move focus to the parent container
-    bindsym $mod+a focus parent
+# Define names for default workspaces
+set $ws1 "1"
+set $ws2 "2"
+set $ws3 "3"
+set $ws4 "4"
+set $ws5 "5"
+set $ws6 "6"
+set $ws7 "7"
+set $ws8 "8"
+set $ws9 "9"
+set $ws10 "10"
 
-# Scratchpad:
-    # Sway has a "scratchpad", which is a bag of holding for windows.
-    # You can send windows there and get them back later.
+# Switch to workspace
+bindsym $mod+1 workspace number $ws1
+bindsym $mod+2 workspace number $ws2
+bindsym $mod+3 workspace number $ws3
+bindsym $mod+4 workspace number $ws4
+bindsym $mod+5 workspace number $ws5
+bindsym $mod+6 workspace number $ws6
+bindsym $mod+7 workspace number $ws7
+bindsym $mod+8 workspace number $ws8
+bindsym $mod+9 workspace number $ws9
+bindsym $mod+0 workspace number $ws10
 
-    # Move the currently focused window to the scratchpad
-    bindsym $mod+Shift+minus move scratchpad
+# Move focused container to workspace
+bindsym $mod+Shift+1 move container to workspace number $ws1
+bindsym $mod+Shift+2 move container to workspace number $ws2
+bindsym $mod+Shift+3 move container to workspace number $ws3
+bindsym $mod+Shift+4 move container to workspace number $ws4
+bindsym $mod+Shift+5 move container to workspace number $ws5
+bindsym $mod+Shift+6 move container to workspace number $ws6
+bindsym $mod+Shift+7 move container to workspace number $ws7
+bindsym $mod+Shift+8 move container to workspace number $ws8
+bindsym $mod+Shift+9 move container to workspace number $ws9
+bindsym $mod+Shift+0 move container to workspace number $ws10
 
-    # Show the next scratchpad window or hide the focused scratchpad window.
-    # If there are multiple scratchpad windows, this command cycles through them.
-    bindsym $mod+minus scratchpad show
+# Reload the configuration file
+bindsym $mod+Shift+c reload
 
-# Resizing containers:
+# Exit sway (logs you out of your Wayland session)
+bindsym $mod+Shift+e exec swaynag -t warning -m 'You pressed the exit shortcut. Do you really want to exit sway? This will end your Wayland session.' -B 'Yes, exit sway' 'swaymsg exit'
+
+# Resize window (you can also use the mouse for that)
 mode "resize" {
-    # left will shrink the containers width
-    # right will grow the containers width
-    # up will shrink the containers height
-    # down will grow the containers height
-    bindsym $left resize shrink width 10px
-    bindsym $down resize grow height 10px
-    bindsym $up resize shrink height 10px
-    bindsym $right resize grow width 10px
+        # These bindings trigger as soon as you enter the resize mode
+        bindsym j resize shrink width 10 px or 10 ppt
+        bindsym k resize grow height 10 px or 10 ppt
+        bindsym l resize shrink height 10 px or 10 ppt
+        bindsym semicolon resize grow width 10 px or 10 ppt
 
-    # Ditto, with arrow keys
-    bindsym Left resize shrink width 10px
-    bindsym Down resize grow height 10px
-    bindsym Up resize shrink height 10px
-    bindsym Right resize grow width 10px
+        # Same bindings, but for the arrow keys
+        bindsym Left resize shrink width 10 px or 10 ppt
+        bindsym Down resize grow height 10 px or 10 ppt
+        bindsym Up resize shrink height 10 px or 10 ppt
+        bindsym Right resize grow width 10 px or 10 ppt
 
-    # Return to default mode
-    bindsym Return mode "default"
-    bindsym Escape mode "default"
+        # Back to normal: Enter or Escape or $mod+r
+        bindsym Return mode "default"
+        bindsym Escape mode "default"
+        bindsym $mod+r mode "default"
 }
+
 bindsym $mod+r mode "resize"
 
-# Status Bar:
+# Status Bar
 bar {
-    position top
-    status_command while date +'%Y-%m-%d %I:%M:%S %p'; do sleep 1; done
-    colors {
-        statusline #ffffff
-        background #323232
-        inactive_workspace #32323200 #32323200 #5c5c5c
-    }
+    swaybar_command waybar
 }
 
-include /etc/sway/config.d/*
+# Autostart applications
+exec mako
 EOF
-        fi
     fi
+    
+    # Print success message
+    printDMMessage "$DE_NAME" "sway"
 }
 
 # Main execution flow

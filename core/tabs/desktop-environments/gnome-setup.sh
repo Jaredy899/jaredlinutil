@@ -7,7 +7,7 @@
 DE_NAME="GNOME"
 DEFAULT_DM="gdm"
 DM_OPTIONS="gdm lightdm sddm none"
-DM_LABELS="GDM LightDM SDDM None (Start GNOME manually)"
+DM_LABELS="GDM|LightDM|SDDM|None (Start GNOME manually)"
 
 # Source the common display manager script
 . ./common-dm-script.sh

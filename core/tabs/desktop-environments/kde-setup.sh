@@ -7,7 +7,7 @@
 DE_NAME="KDE Plasma"
 DEFAULT_DM="sddm"
 DM_OPTIONS="sddm lightdm gdm none"
-DM_LABELS="SDDM LightDM GDM None (Start KDE manually)"
+DM_LABELS="SDDM|LightDM|GDM|None (Start KDE manually)"
 
 # Source the common display manager script
 . ./common-dm-script.sh

@@ -9,11 +9,13 @@
 # Global variables (will be set by the sourcing script)
 # DEFAULT_DM should be set before sourcing this script
 # DM_OPTIONS should be set as an array of display managers in order of recommendation
+# DE_NAME should be set to the name of the desktop environment
 
 # Initialize variables if not set by sourcing script
 : "${DEFAULT_DM:=lightdm}"
 : "${DM_OPTIONS:="lightdm gdm sddm none"}"
-: "${DM_LABELS:="LightDM GDM SDDM None (Start manually)"}"
+: "${DM_LABELS:="LightDM|GDM|SDDM|None (Start manually)"}"
+: "${DE_NAME:="Desktop Environment"}"
 
 # Global variables used by this script
 DM_EXISTS=0
@@ -43,7 +45,7 @@ checkDisplayManager() {
     printf "%b\n" "${YELLOW}--------------------------${RC}" 
     printf "%b\n" "${YELLOW}No display manager detected${RC}" 
     printf "%b\n" "${YELLOW}A display manager provides a graphical login screen.${RC}"
-    printf "%b\n" "${YELLOW}For ${CYAN}$(echo "$DE_NAME" | tr '[:lower:]' '[:upper:]')${YELLOW}, the recommended display manager is ${CYAN}$DEFAULT_DM${YELLOW}.${RC}"
+    printf "%b\n" "${YELLOW}For ${CYAN}$DE_NAME${YELLOW}, the recommended display manager is ${CYAN}$DEFAULT_DM${YELLOW}.${RC}"
     printf "%b" "${YELLOW}Do you want to install a display manager? (Y/n): ${RC}"
     read -r install_dm
     
@@ -63,9 +65,9 @@ checkDisplayManager() {
     printf "%b\n" "${YELLOW}--------------------------${RC}" 
     printf "%b\n" "${YELLOW}Pick your Display Manager ${RC}" 
     
-    # Convert space-separated strings to arrays
+    # Convert space-separated options and pipe-separated labels to arrays
     IFS=' ' read -r -a dm_options <<< "$DM_OPTIONS"
-    IFS=' ' read -r -a dm_labels <<< "$DM_LABELS"
+    IFS='|' read -r -a dm_labels <<< "$DM_LABELS"
     
     # Display options with the default one marked as recommended
     i=1

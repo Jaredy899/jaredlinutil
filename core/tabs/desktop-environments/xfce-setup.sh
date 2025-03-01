@@ -7,7 +7,7 @@
 DE_NAME="XFCE"
 DEFAULT_DM="lightdm"
 DM_OPTIONS="lightdm gdm sddm none"
-DM_LABELS="LightDM GDM SDDM None (Start XFCE manually)"
+DM_LABELS="LightDM|GDM|SDDM|None (Start XFCE manually)"
 
 # Source the common display manager script
 . ./common-dm-script.sh
