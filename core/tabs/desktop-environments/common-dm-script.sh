@@ -8,7 +8,8 @@
 
 # Global variables (will be set by the sourcing script)
 # DEFAULT_DM should be set before sourcing this script
-# DM_OPTIONS should be set as an array of display managers in order of recommendation
+# DM_OPTIONS should be set as space-separated list of display managers in order of recommendation
+# DM_LABELS should be set as pipe-separated list of labels corresponding to DM_OPTIONS
 # DE_NAME should be set to the name of the desktop environment
 
 # Initialize variables if not set by sourcing script
@@ -20,6 +21,11 @@
 # Global variables used by this script
 DM_EXISTS=0
 DM="$DEFAULT_DM"  # Will be overridden if user selects a different one
+
+# Skip display manager handling for Alpine Linux
+if [ "$PACKAGER" = "apk" ]; then
+    return 0
+fi
 
 checkDisplayManager() {
     printf "%b\n" "${CYAN}Checking for existing display managers...${RC}"
@@ -65,31 +71,33 @@ checkDisplayManager() {
     printf "%b\n" "${YELLOW}--------------------------${RC}" 
     printf "%b\n" "${YELLOW}Pick your Display Manager ${RC}" 
     
-    # Convert space-separated options and pipe-separated labels to arrays
-    IFS=' ' read -r -a dm_options <<< "$DM_OPTIONS"
-    IFS='|' read -r -a dm_labels <<< "$DM_LABELS"
+    # Display options
+    printf "%b\n" "${YELLOW}1. LightDM${RC}"
+    printf "%b\n" "${YELLOW}2. GDM${RC}"
+    printf "%b\n" "${YELLOW}3. SDDM${RC}"
+    printf "%b\n" "${YELLOW}4. None (Start manually)${RC}"
     
-    # Display options with the default one marked as recommended
-    i=1
-    for label in "${dm_labels[@]}"; do
-        if [ "${dm_options[$((i-1))]}" = "$DEFAULT_DM" ]; then
-            printf "%b\n" "${YELLOW}$i. $label (Recommended) ${RC}"
-        else
-            printf "%b\n" "${YELLOW}$i. $label ${RC}"
-        fi
-        i=$((i+1))
-    done
-    
-    printf "%b" "${YELLOW}Please select one (1-${#dm_options[@]}): ${RC}"
+    printf "%b" "${YELLOW}Please select one (1-4): ${RC}"
     read -r choice
     
-    # Validate choice
-    if [ -n "$choice" ] && [ "$choice" -ge 1 ] && [ "$choice" -le "${#dm_options[@]}" ] 2>/dev/null; then
-        DM="${dm_options[$((choice-1))]}"
-    else
-        printf "%b\n" "${RED}Invalid selection! Defaulting to $DEFAULT_DM.${RC}"
-        DM="$DEFAULT_DM"
-    fi
+    case "$choice" in
+        1)
+            DM="lightdm"
+            ;;
+        2)
+            DM="gdm"
+            ;;
+        3)
+            DM="sddm"
+            ;;
+        4)
+            DM="none"
+            ;;
+        *)
+            printf "%b\n" "${RED}Invalid selection! Defaulting to $DEFAULT_DM.${RC}"
+            DM="$DEFAULT_DM"
+            ;;
+    esac
     
     DM_EXISTS=1
 }

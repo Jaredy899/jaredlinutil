@@ -12,7 +12,7 @@ DM_LABELS="GDM|LightDM|SDDM|None (Start GNOME manually)"
 # Source the common display manager script
 . ./common-dm-script.sh
 
-installGnome() {
+installGNOME() {
     printf "%b\n" "${CYAN}Installing GNOME Desktop Environment...${RC}"
     
     case "$PACKAGER" in
@@ -45,12 +45,16 @@ installGnome() {
             ;;
     esac
     
-    # Print success message
-    printDMMessage "$DE_NAME" "gnome-session"
+    # Print success message if not Alpine Linux
+    if [ "$PACKAGER" != "apk" ]; then
+        printDMMessage "$DE_NAME" "gnome-session"
+    fi
 }
 
 # Main execution flow
 checkEnv
 checkEscalationTool
-checkDisplayManager
-installGnome 
+if [ "$PACKAGER" != "apk" ]; then
+    checkDisplayManager
+fi
+installGNOME 

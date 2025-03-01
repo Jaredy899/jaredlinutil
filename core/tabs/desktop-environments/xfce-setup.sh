@@ -54,12 +54,16 @@ installXFCE() {
             ;;
     esac
     
-    # Print success message
-    printDMMessage "$DE_NAME" "startxfce4"
+    # Print success message if not Alpine Linux
+    if [ "$PACKAGER" != "apk" ]; then
+        printDMMessage "$DE_NAME" "startxfce4"
+    fi
 }
 
 # Main execution flow
 checkEnv
 checkEscalationTool
-checkDisplayManager
+if [ "$PACKAGER" != "apk" ]; then
+    checkDisplayManager
+fi
 installXFCE 

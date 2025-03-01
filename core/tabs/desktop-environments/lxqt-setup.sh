@@ -49,12 +49,16 @@ installLXQt() {
             ;;
     esac
     
-    # Print success message
-    printDMMessage "$DE_NAME" "startlxqt"
+    # Print success message if not Alpine Linux
+    if [ "$PACKAGER" != "apk" ]; then
+        printDMMessage "$DE_NAME" "startlxqt"
+    fi
 }
 
 # Main execution flow
 checkEnv
 checkEscalationTool
-checkDisplayManager
+if [ "$PACKAGER" != "apk" ]; then
+    checkDisplayManager
+fi
 installLXQt 

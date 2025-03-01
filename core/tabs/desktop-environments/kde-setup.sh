@@ -54,12 +54,16 @@ installKDE() {
             ;;
     esac
     
-    # Print success message
-    printDMMessage "$DE_NAME" "startplasma-x11"
+    # Print success message if not Alpine Linux
+    if [ "$PACKAGER" != "apk" ]; then
+        printDMMessage "$DE_NAME" "startplasma-x11"
+    fi
 }
 
 # Main execution flow
 checkEnv
 checkEscalationTool
-checkDisplayManager
+if [ "$PACKAGER" != "apk" ]; then
+    checkDisplayManager
+fi
 installKDE 

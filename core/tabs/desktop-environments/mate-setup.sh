@@ -55,12 +55,16 @@ installMATE() {
             ;;
     esac
     
-    # Print success message
-    printDMMessage "$DE_NAME" "mate-session"
+    # Print success message if not Alpine Linux
+    if [ "$PACKAGER" != "apk" ]; then
+        printDMMessage "$DE_NAME" "mate-session"
+    fi
 }
 
 # Main execution flow
 checkEnv
 checkEscalationTool
-checkDisplayManager
+if [ "$PACKAGER" != "apk" ]; then
+    checkDisplayManager
+fi
 installMATE 
