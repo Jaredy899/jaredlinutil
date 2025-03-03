@@ -16,11 +16,6 @@ installBudgie() {
     printf "%b\n" "${CYAN}Installing Budgie Desktop Environment...${RC}"
     
     case "$PACKAGER" in
-        apt-get|nala)
-            "$ESCALATION_TOOL" "$PACKAGER" update
-            "$ESCALATION_TOOL" "$PACKAGER" install -y budgie-desktop
-            installDisplayManager
-            ;;
         dnf)
             "$ESCALATION_TOOL" "$PACKAGER" group install -y budgie-desktop-environment
             installDisplayManager
