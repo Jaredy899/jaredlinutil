@@ -27,8 +27,11 @@ installNeovim() {
             make CMAKE_BUILD_TYPE=Release
             "$ESCALATION_TOOL" make install
             ;;
-        dnf|zypper)
+        dnf)
             "$ESCALATION_TOOL" "$PACKAGER" install -y neovim ripgrep fzf python3-virtualenv luarocks golang ShellCheck git
+            ;;
+        zypper)
+            "$ESCALATION_TOOL" "$PACKAGER" install -y neovim ripgrep fzf python3-virtualenv lua53-luarocks golang ShellCheck git
             ;;
         apk)
             "$ESCALATION_TOOL" "$PACKAGER" add neovim ripgrep fzf py3-virtualenv luarocks go shellcheck git
