@@ -10,9 +10,7 @@ installTermius() {
                 "$AUR_HELPER" -S --needed --noconfirm termius
                 ;;
             apt-get|nala)
-                printf "%b\n" "${YELLOW}Downloading Termius...${RC}"
                 "$ESCALATION_TOOL" wget -O termius.deb https://www.termius.com/download/linux/Termius.deb
-                printf "%b\n" "${YELLOW}Installing Termius...${RC}"
                 "$ESCALATION_TOOL" "$PACKAGER" install -y ./termius.deb
                 "$ESCALATION_TOOL" rm termius.deb
                 ;;
