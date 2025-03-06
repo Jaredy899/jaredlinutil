@@ -65,6 +65,11 @@ description = "GitHub Desktop is a user-friendly application that simplifies the
 script = "developer-tools/githubdesktop.sh"
 task_list = "I"
 
+[[data.preconditions]]
+matches = false
+data = "command_exists"
+values = ["xbps-install"]
+
 [[data.entries]]
 name = "JetBrains Toolbox"
 description = "JetBrains Toolbox is a collection of tools and an app that help developers work with JetBrains products."
