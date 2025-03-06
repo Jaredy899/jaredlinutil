@@ -7,8 +7,9 @@ installJitsi() {
         printf "%b\n" "${YELLOW}Installing Jitsi meet...${RC}"
         case "$PACKAGER" in
             apt-get|nala)
-                curl -fsSL https://download.jitsi.org/jitsi-key.gpg.key | gpg --dearmor | "$ESCALATION_TOOL" tee /usr/share/keyrings/jitsi-keyring.gpg > /dev/null
-                printf "%b\n" 'deb [signed-by=/usr/share/keyrings/jitsi-keyring.gpg] https://download.jitsi.org stable/' | "$ESCALATION_TOOL" tee /etc/apt/sources.list.d/jitsi-stable.list > /dev/null
+                "$ESCALATION_TOOL" "$PACKAGER" install -y gnupg2
+                curl -fsSL https://download.jitsi.org/jitsi-key.gpg.key | "$ESCALATION_TOOL" apt-key add -
+                printf "%b\n" 'deb https://download.jitsi.org stable/' | "$ESCALATION_TOOL" tee /etc/apt/sources.list.d/jitsi-stable.list > /dev/null
                 "$ESCALATION_TOOL" "$PACKAGER" update
                 "$ESCALATION_TOOL" "$PACKAGER" -y install jitsi-meet
                 ;;
