@@ -11,6 +11,7 @@ installSlack() {
                 ;;
             slapt-get)
                 "$ESCALATION_TOOL" slapt-src -y -i slack
+                ;;
             *)  
                 checkFlatpak
                 flatpak install -y flathub com.slack.Slack
