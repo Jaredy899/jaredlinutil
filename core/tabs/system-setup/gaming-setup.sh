@@ -78,7 +78,6 @@ installAdditionalDepend() {
             ;;
         apt-get | nala)
             printf "%b\n" "${YELLOW}Installing Lutris...${RC}"
-            # Add the Lutris PPA repository
             "$ESCALATION_TOOL" add-apt-repository ppa:lutris-team/lutris -y
             "$ESCALATION_TOOL" "$PACKAGER" update
             "$ESCALATION_TOOL" "$PACKAGER" install -y lutris
