@@ -14,7 +14,7 @@ installSlack() {
                 ;;
             *)  
                 checkFlatpak
-                flatpak install -y flathub com.slack.Slack
+                "$ESCALATION_TOOL" flatpak install -y flathub com.slack.Slack
                 ;;
         esac
     else
