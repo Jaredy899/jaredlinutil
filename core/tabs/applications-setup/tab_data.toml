@@ -64,9 +64,8 @@ name = "Github Desktop"
 description = "GitHub Desktop is a user-friendly application that simplifies the process of managing Git repositories and interacting with GitHub, providing a graphical interface for tasks like committing, branching, and syncing changes."
 script = "developer-tools/githubdesktop.sh"
 task_list = "I"
-hidden = true
 
-[[data.preconditions]]
+[[data.entries.preconditions]]
 matches = false
 data = "command_exists"
 values = ["xbps-install"]
