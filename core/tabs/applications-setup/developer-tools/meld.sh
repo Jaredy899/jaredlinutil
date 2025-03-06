@@ -10,7 +10,7 @@ installMeld() {
                 "$ESCALATION_TOOL" "$PACKAGER" -S --needed --noconfirm meld
                 ;;
             apt-get|nala|eopkg)
-                "$ESCALATION_TOOL" "$PACKAGER" -y install meld
+                "$ESCALATION_TOOL" "$PACKAGER" install -y meld
                 ;;
             apk)
                 "$ESCALATION_TOOL" "$PACKAGER" add meld
