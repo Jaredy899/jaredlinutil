@@ -11,7 +11,7 @@ installJitsi() {
                 curl -fsSL https://download.jitsi.org/jitsi-key.gpg.key | "$ESCALATION_TOOL" apt-key add -
                 printf "%b\n" 'deb https://download.jitsi.org stable/' | "$ESCALATION_TOOL" tee /etc/apt/sources.list.d/jitsi-stable.list > /dev/null
                 "$ESCALATION_TOOL" "$PACKAGER" update
-                "$ESCALATION_TOOL" "$PACKAGER" -y install jitsi-meet
+                "$ESCALATION_TOOL" "$PACKAGER" install -y jitsi-meet
                 ;;
             zypper)
                 "$ESCALATION_TOOL" "$PACKAGER" --non-interactive install jitsi
