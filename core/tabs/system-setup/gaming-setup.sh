@@ -77,19 +77,12 @@ installAdditionalDepend() {
             "$ESCALATION_TOOL" "$PACKAGER" -S --needed --noconfirm $DISTRO_DEPS
             ;;
         apt-get | nala)
-            version=$(git -c 'versionsort.suffix=-' ls-remote --tags --sort='v:refname' https://github.com/lutris/lutris |
-                grep -v 'beta' |
-                tail -n1 |
-                cut -d '/' --fields=3)
-
-            version_no_v=$(echo "$version" | tr -d v)
-            curl -sSLo "lutris_${version_no_v}_all.deb" "https://github.com/lutris/lutris/releases/download/${version}/lutris_${version_no_v}_all.deb"
-
             printf "%b\n" "${YELLOW}Installing Lutris...${RC}"
-            "$ESCALATION_TOOL" "$PACKAGER" install -y ./lutris_"${version_no_v}"_all.deb
-
-            rm lutris_"${version_no_v}"_all.deb
-
+            # Add the Lutris PPA repository
+            "$ESCALATION_TOOL" add-apt-repository ppa:lutris-team/lutris -y
+            "$ESCALATION_TOOL" "$PACKAGER" update
+            "$ESCALATION_TOOL" "$PACKAGER" install -y lutris
+            
             printf "%b\n" "${GREEN}Lutris Installation complete.${RC}"
             printf "%b\n" "${YELLOW}Installing steam...${RC}"
 
