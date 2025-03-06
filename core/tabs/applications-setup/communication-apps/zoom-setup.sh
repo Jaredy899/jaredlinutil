@@ -14,7 +14,7 @@ installZoom() {
                 ;;
             *)
                 checkFlatpak
-                flatpak install -y flathub us.zoom.Zoom
+                "$ESCALATION_TOOL" flatpak install -y flathub us.zoom.Zoom
                 ;;
         esac
     else
