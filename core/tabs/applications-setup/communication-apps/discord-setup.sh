@@ -23,9 +23,9 @@ installDiscord() {
             slapt-get)
                 "$ESCALATION_TOOL" "$PACKAGER" -y -i discord
                 ;;
-            apk|xbps-install)
+            apk | xbps-install)
                 checkFlatpak
-                flatpak install -y flathub com.discordapp.Discord
+                "$ESCALATION_TOOL" flatpak install -y flathub com.discordapp.Discord
                 ;;
             *)
                 printf "%b\n" "${RED}Unsupported package manager: ""$PACKAGER""${RC}"
