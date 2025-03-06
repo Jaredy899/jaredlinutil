@@ -27,7 +27,7 @@ installDepend() {
             $AUR_HELPER -S --needed --noconfirm $DEPENDENCIES $DISTRO_DEPS
             ;;
         apt-get | nala)
-            DISTRO_DEPS="libasound2-plugins:i386 libsdl2-2.0-0:i386 libdbus-1-3:i386 libsqlite3-0:i386 wine64 wine32 wget"
+            DISTRO_DEPS="libasound2-plugins:i386 libsdl2-2.0-0:i386 libdbus-1-3:i386 libsqlite3-0:i386 wine64 wine32"
 
             "$ESCALATION_TOOL" dpkg --add-architecture i386
 
@@ -77,21 +77,19 @@ installAdditionalDepend() {
             "$ESCALATION_TOOL" "$PACKAGER" -S --needed --noconfirm $DISTRO_DEPS
             ;;
         apt-get | nala)
+            version=$(git -c 'versionsort.suffix=-' ls-remote --tags --sort='v:refname' https://github.com/lutris/lutris |
+                grep -v 'beta' |
+                tail -n1 |
+                cut -d '/' --fields=3)
+
+            version_no_v=$(echo "$version" | tr -d v)
+            curl -sSLo "lutris_${version_no_v}_all.deb" "https://github.com/lutris/lutris/releases/download/${version}/lutris_${version_no_v}_all.deb"
+
             printf "%b\n" "${YELLOW}Installing Lutris...${RC}"
-            if lsb_release -i | grep -qi Debian; then
-                "$ESCALATION_TOOL" "$PACKAGER" install -y python3-yaml python3-requests python3-pil python3-gi gir1.2-gtk-3.0 gir1.2-gnomedesktop-3.0 gir1.2-webkit2-4.0 gir1.2-notify-0.7 psmisc cabextract unzip p7zip curl fluid-soundfont-gm libwxgtk3.0-gtk3-0v5
-                LATEST_VERSION=$(wget -qO- https://lutris.net/releases/ | grep -o 'lutris_[0-9.]*_all\.deb' | sort -V | tail -n 1 | grep -o '[0-9.]*')
-                printf "%b\n" "${CYAN}Downloading Lutris version ${LATEST_VERSION}...${RC}"
-                wget -O "lutris_${LATEST_VERSION}_all.deb" "https://lutris.net/releases/lutris_${LATEST_VERSION}_all.deb"
-                "$ESCALATION_TOOL" dpkg -i "lutris_${LATEST_VERSION}_all.deb"
-                "$ESCALATION_TOOL" "$PACKAGER" install -f -y  # Fix any missing dependencies
-                rm "lutris_${LATEST_VERSION}_all.deb"
-            else
-                "$ESCALATION_TOOL" add-apt-repository ppa:lutris-team/lutris -y
-                "$ESCALATION_TOOL" "$PACKAGER" update
-                "$ESCALATION_TOOL" "$PACKAGER" install -y lutris
-            fi
-            
+            "$ESCALATION_TOOL" "$PACKAGER" install -y ./lutris_"${version_no_v}"_all.deb
+
+            rm lutris_"${version_no_v}"_all.deb
+
             printf "%b\n" "${GREEN}Lutris Installation complete.${RC}"
             printf "%b\n" "${YELLOW}Installing steam...${RC}"
 
