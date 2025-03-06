@@ -29,9 +29,9 @@ installVsCodium() {
             slapt-get)
                 "$ESCALATION_TOOL" slapt-src -y -i vscodium
                 ;;
-            apk)
+            apk | xbps-install)
                 checkFlatpak
-                flatpak install -y flathub com.vscodium.codium
+                "$ESCALATION_TOOL" flatpak install -y flathub com.vscodium.codium
                 ;;
             *)
                 printf "%b\n" "${RED}Unsupported package manager: ""$PACKAGER""${RC}"

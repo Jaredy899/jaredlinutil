@@ -15,11 +15,6 @@ description = "Jitsi Meet is an open-source video conferencing tool that allows 
 script = "communication-apps/jitsi-setup.sh"
 task_list = "I"
 
-[[data.preconditions]]
-matches = false
-data = "command_exists"
-values = ["xpbs-install"]
-
 [[data.entries]]
 name = "Signal"
 description = "Signal is a privacy-focused messaging app that provides end-to-end encryption for secure text, voice, and video communication."
@@ -100,6 +95,11 @@ description = "Sublime Text is a fast, lightweight, and customizable text editor
 script = "developer-tools/sublime.sh"
 task_list = "I"
 
+[[data.entries.preconditions]]
+matches = false
+data = "command_exists"
+values = ["xbps-install"]
+
 [[data.entries]]
 name = "VS Code"
 description = "Visual Studio Code (VS Code) is a lightweight, open-source code editor with built-in support for debugging, version control, and extensions for various programming languages and frameworks."
@@ -125,6 +125,11 @@ name = "Office Suites"
 name = "FreeOffice"
 script = "office-suites/freeoffice.sh"
 task_list = "I"
+
+[[data.entries.preconditions]]
+matches = false
+data = "command_exists"
+values = ["xbps-install"]
 
 [[data.entries]]
 name = "LibreOffice"
