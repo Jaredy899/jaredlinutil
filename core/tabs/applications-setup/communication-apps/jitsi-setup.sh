@@ -24,9 +24,9 @@ installJitsi() {
             slapt-get)
                 "$ESCALATION_TOOL" slapt-src -y -i jitsi-meet-desktop
                 ;;
-            apk)
+            apk|xbps-install)
                 checkFlatpak
-                flatpak install flathub org.jitsi.jitsi-meet
+                 "$ESCALATION_TOOL" flatpak install flathub org.jitsi.jitsi-meet
                 ;;
             *)
                 printf "%b\n" "${RED}Unsupported package manager: ""$PACKAGER""${RC}"

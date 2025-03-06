@@ -15,6 +15,11 @@ description = "Jitsi Meet is an open-source video conferencing tool that allows 
 script = "communication-apps/jitsi-setup.sh"
 task_list = "I"
 
+[[data.preconditions]]
+matches = false
+data = "command_exists"
+values = ["xpbs-install"]
+
 [[data.entries]]
 name = "Signal"
 description = "Signal is a privacy-focused messaging app that provides end-to-end encryption for secure text, voice, and video communication."
