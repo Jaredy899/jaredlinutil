@@ -16,9 +16,11 @@ checkRepo() {
     printf "%b\n" "${GREEN}Nvidia non-free repository is already enabled.${RC}"
   else
     printf "%b\n" "${YELLOW}Nvidia non-free repository is not enabled. Enabling now...${RC}"
-
-    # Enable the repository
-    "$ESCALATION_TOOL" dnf config-manager --set-enabled "$REPO_ID"
+    if dnf --version | grep -q "5."; then
+      "$ESCALATION_TOOL" dnf config-manager setopt --repo="$REPO_ID" enabled=1
+    else
+      "$ESCALATION_TOOL" dnf config-manager --set-enabled "$REPO_ID"
+    fi
 
     # Refreshing repository list
     "$ESCALATION_TOOL" dnf makecache
