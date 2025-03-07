@@ -19,7 +19,6 @@ installRPMFusion() {
                     "$ESCALATION_TOOL" "$PACKAGER" config-manager --set-enabled rpmfusion-nonfree-updates
                     "$ESCALATION_TOOL" "$PACKAGER" config-manager --set-enabled rpmfusion-free-updates
                 fi
-                
                 printf "%b\n" "${GREEN}RPM Fusion installed and enabled${RC}"
             else
                 printf "%b\n" "${GREEN}RPM Fusion already installed${RC}"
