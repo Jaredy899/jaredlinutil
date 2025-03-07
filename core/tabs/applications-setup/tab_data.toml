@@ -222,6 +222,11 @@ description = "Google Chrome is a fast, secure, and free web browser, built for 
 script = "browsers/google-chrome.sh"
 task_list = "I"
 
+[[data.entries.preconditions]]
+matches = false
+data = "command_exists"
+values = ["xbps-install"]
+
 [[data.entries]]
 name = "LibreWolf"
 description = "LibreWolf is a fork of Firefox, focused on privacy, security, and freedom."
@@ -245,6 +250,11 @@ name = "Thorium"
 description = "Thorium is a Chromium-based browser focused on privacy and performance."
 script = "browsers/thorium.sh"
 task_list = "I"
+
+[[data.entries.preconditions]]
+matches = false
+data = "command_exists"
+values = ["xbps-install"]
 
 [[data.entries]]
 name = "Vivaldi"
