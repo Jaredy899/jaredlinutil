@@ -37,8 +37,8 @@ install_docker() {
             "$ESCALATION_TOOL" "$PACKAGER" -y install docker-ce docker-ce-cli containerd.io docker-buildx-plugin
             "$ESCALATION_TOOL" systemctl enable --now docker
             ;;
-        zypper)
-            "$ESCALATION_TOOL" "$PACKAGER" --non-interactive install docker
+        zypper|eopkg)
+            "$ESCALATION_TOOL" "$PACKAGER" install -y docker
             ;;
         pacman)
             "$ESCALATION_TOOL" "$PACKAGER" -S --noconfirm docker
@@ -48,9 +48,6 @@ install_docker() {
             ;;
         xbps-install)
             "$ESCALATION_TOOL" "$PACKAGER" -y docker
-            ;;
-        eopkg)
-            "$ESCALATION_TOOL" "$PACKAGER" -y install docker
             ;;
         slapt-get)
             "$ESCALATION_TOOL" "$PACKAGER" -y -i docker
