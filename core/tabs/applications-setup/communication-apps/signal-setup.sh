@@ -25,13 +25,9 @@ installSignal() {
             slapt-get)
                 "$ESCALATION_TOOL" slapt-src -y -i signal-desktop
                 ;;       
-            dnf)
+            dnf|apk)
                 checkFlatpak
-                flatpak install -y flathub org.signal.Signal
-                ;;
-            apk)
-                checkFlatpak
-                flatpak install -y flathub org.signal.Signal
+                "$ESCALATION_TOOL" flatpak install -y flathub org.signal.Signal
                 ;;
             *)
                 printf "%b\n" "${RED}Unsupported package manager: ""$PACKAGER""${RC}"

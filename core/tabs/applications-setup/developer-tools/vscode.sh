@@ -39,7 +39,7 @@ installVsCode() {
                 ;;
             apk)
                 checkFlatpak
-                flatpak install -y flathub com.visualstudio.code
+                "$ESCALATION_TOOL" flatpak install -y flathub com.visualstudio.code
                 ;;
             *)
                 printf "%b\n" "${RED}Unsupported package manager: ""$PACKAGER""${RC}"
