@@ -3,7 +3,7 @@
 . ../../common-script.sh
 
 installSignal() {
-    if ! command_exists org.signal.Signal && ! command_exists signal; then
+    if ! command_exists org.signal.Signal && ! command_exists signal && ! command_exists signal-desktop; then
         printf "%b\n" "${YELLOW}Installing Signal...${RC}"
         case "$PACKAGER" in
             apt-get|nala)
