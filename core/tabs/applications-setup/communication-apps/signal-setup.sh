@@ -13,8 +13,8 @@ installSignal() {
                 "$ESCALATION_TOOL" "$PACKAGER" update
                 "$ESCALATION_TOOL" "$PACKAGER" -y install signal-desktop
                 ;;
-            zypper)
-                "$ESCALATION_TOOL" "$PACKAGER" --non-interactive install signal-desktop
+            zypper|eopkg)
+                "$ESCALATION_TOOL" "$PACKAGER" install -y signal-desktop
                 ;;
             pacman)
                 "$ESCALATION_TOOL" "$PACKAGER" -S --noconfirm signal-desktop
@@ -22,9 +22,6 @@ installSignal() {
             xbps-install)
                 "$ESCALATION_TOOL" "$PACKAGER" -y Signal-Desktop
                 ;;    
-            eopkg)
-                "$ESCALATION_TOOL" "$PACKAGER" -y install signal-desktop
-                ;;     
             slapt-get)
                 "$ESCALATION_TOOL" slapt-src -y -i signal-desktop
                 ;;       

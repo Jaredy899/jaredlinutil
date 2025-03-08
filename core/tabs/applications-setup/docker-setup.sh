@@ -82,8 +82,8 @@ install_docker_compose() {
             fi
             "$ESCALATION_TOOL" "$PACKAGER" install -y docker-compose-plugin
             ;;
-        zypper)
-            "$ESCALATION_TOOL" "$PACKAGER" --non-interactive install docker-compose
+        zypper|eopkg)
+            "$ESCALATION_TOOL" "$PACKAGER" install -y docker-compose
             ;;
         pacman)
             "$ESCALATION_TOOL" "$PACKAGER" -S --needed --noconfirm docker-compose

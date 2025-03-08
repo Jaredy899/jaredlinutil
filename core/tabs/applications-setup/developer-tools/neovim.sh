@@ -40,7 +40,7 @@ installNeovim() {
             "$ESCALATION_TOOL" "$PACKAGER" -y neovim ripgrep fzf python3-virtualenv luarocks go shellcheck git
             ;;
         eopkg)
-            "$ESCALATION_TOOL" "$PACKAGER" -y install neovim ripgrep fzf virtualenv luarocks golang shellcheck git
+            "$ESCALATION_TOOL" "$PACKAGER" install -y neovim ripgrep fzf virtualenv luarocks golang shellcheck git
             ;;
         slapt-get)
             "$ESCALATION_TOOL" slapt-src -y -i neovim
