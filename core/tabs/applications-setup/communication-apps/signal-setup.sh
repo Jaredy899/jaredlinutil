@@ -20,7 +20,7 @@ installSignal() {
                 "$ESCALATION_TOOL" "$PACKAGER" -S --noconfirm signal-desktop
                 ;;
             xbps-install)
-                "$ESCALATION_TOOL" "$PACKAGER" -y Signal-Desktop
+                "$ESCALATION_TOOL" "$PACKAGER" -Sy Signal-Desktop
                 ;;    
             slapt-get)
                 "$ESCALATION_TOOL" slapt-src -y -i signal-desktop

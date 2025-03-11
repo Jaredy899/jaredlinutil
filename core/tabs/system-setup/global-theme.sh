@@ -9,7 +9,7 @@ install_theme_tools() {
             "$ESCALATION_TOOL" "$PACKAGER" -S --needed --noconfirm qt6ct kvantum
             ;;
         xbps-install)
-            "$ESCALATION_TOOL" "$PACKAGER" -y qt6ct kvantum
+            "$ESCALATION_TOOL" "$PACKAGER" -Sy qt6ct kvantum
             ;;
         *)
             "$ESCALATION_TOOL" "$PACKAGER" install -y qt6ct kvantum

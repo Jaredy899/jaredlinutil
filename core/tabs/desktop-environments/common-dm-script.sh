@@ -126,7 +126,7 @@ installDisplayManager() {
                 "$ESCALATION_TOOL" "$PACKAGER" install -y "$DM"
                 ;;
             xbps-install)
-                "$ESCALATION_TOOL" "$PACKAGER" -y "$DM"
+                "$ESCALATION_TOOL" "$PACKAGER" -Sy "$DM"
                 ;;
         esac
         enableService "$DM"

@@ -13,7 +13,7 @@ installRofi() {
                 "$ESCALATION_TOOL" "$PACKAGER" add rofi
                 ;;
             xbps-install)
-                "$ESCALATION_TOOL" "$PACKAGER" -y rofi  
+                "$ESCALATION_TOOL" "$PACKAGER" -Sy rofi  
                 ;;
             slapt-get)
                 "$ESCALATION_TOOL" "$PACKAGER" -y -i rofi

@@ -37,7 +37,7 @@ installNeovim() {
             "$ESCALATION_TOOL" "$PACKAGER" add neovim ripgrep fzf py3-virtualenv luarocks go shellcheck git
             ;;
         xbps-install)
-            "$ESCALATION_TOOL" "$PACKAGER" -y neovim ripgrep fzf python3-virtualenv luarocks go shellcheck git
+            "$ESCALATION_TOOL" "$PACKAGER" -Sy neovim ripgrep fzf python3-virtualenv luarocks go shellcheck git
             ;;
         eopkg)
             "$ESCALATION_TOOL" "$PACKAGER" install -y neovim ripgrep fzf virtualenv luarocks golang shellcheck git

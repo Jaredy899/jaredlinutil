@@ -20,7 +20,7 @@ if ! command_exists openssl; then
             "$ESCALATION_TOOL" "$PACKAGER" add openssl
             ;;
         xbps-install)
-            "$ESCALATION_TOOL" "$PACKAGER" -y openssl
+            "$ESCALATION_TOOL" "$PACKAGER" -Sy openssl
             ;;
         slapt-get)
             "$ESCALATION_TOOL" "$PACKAGER" -y -i openssl

@@ -29,7 +29,7 @@ installVsCode() {
                 "$ESCALATION_TOOL" "$PACKAGER" install -y code
                 ;;
             xbps-install)
-                "$ESCALATION_TOOL" "$PACKAGER" -y vscode
+                "$ESCALATION_TOOL" "$PACKAGER" -Sy vscode
                 ;;
             eopkg)
                 "$ESCALATION_TOOL" "$PACKAGER" -y install vscode

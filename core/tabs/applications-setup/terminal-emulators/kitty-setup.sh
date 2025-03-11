@@ -14,7 +14,7 @@ installKitty() {
                 "$ESCALATION_TOOL" "$PACKAGER" add kitty
                 ;;
             xbps-install)
-                "$ESCALATION_TOOL" "$PACKAGER" -y kitty
+                "$ESCALATION_TOOL" "$PACKAGER" -Sy kitty
                 ;;
             slapt-get)
                 "$ESCALATION_TOOL" "$PACKAGER" -y -i kitty

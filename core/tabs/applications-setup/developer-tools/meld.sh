@@ -16,7 +16,7 @@ installMeld() {
                 "$ESCALATION_TOOL" "$PACKAGER" add meld
                 ;;
             xbps-install)
-                "$ESCALATION_TOOL" "$PACKAGER" -y meld
+                "$ESCALATION_TOOL" "$PACKAGER" -Sy meld
                 ;;
             slapt-get)
                 "$ESCALATION_TOOL" "$PACKAGER" -y -i meld

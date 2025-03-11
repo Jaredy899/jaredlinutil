@@ -10,7 +10,7 @@ installPodman() {
                 "$ESCALATION_TOOL" "$PACKAGER" -S --noconfirm --needed podman
                 ;;
             xbps-install)
-                "$ESCALATION_TOOL" "$PACKAGER" -y podman
+                "$ESCALATION_TOOL" "$PACKAGER" -Sy podman
                 ;;
             slapt-get)
                 "$ESCALATION_TOOL" "$PACKAGER" -y -i podman

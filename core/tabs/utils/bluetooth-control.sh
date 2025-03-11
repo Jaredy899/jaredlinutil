@@ -15,7 +15,7 @@ setupBluetooth() {
                 "$ESCALATION_TOOL" "$PACKAGER" add bluez
                 ;;
             xbps-install)
-                "$ESCALATION_TOOL" "$PACKAGER" -y bluez
+                "$ESCALATION_TOOL" "$PACKAGER" -Sy bluez
                 ;;
             slapt-get)
                 "$ESCALATION_TOOL" "$PACKAGER" -y -i bluez
