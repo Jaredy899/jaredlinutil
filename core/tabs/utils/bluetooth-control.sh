@@ -34,7 +34,7 @@ setupBluetooth() {
         SERVICE_NAME="bluetoothd"
     fi
     
-    startService "$SERVICE_NAME"
+    startAndEnableService "$SERVICE_NAME"
 }
 
 # Function to display the main menu
