@@ -100,7 +100,7 @@ startAndEnableService() {
         systemctl)
             "$ESCALATION_TOOL" "$INIT_MANAGER" enable --now "$1"
             ;;
-        rc-service|sv)
+        rc-service | sv)
             enableService "$1"
             startService "$1"
             ;;
