@@ -28,7 +28,13 @@ setupBluetooth() {
         printf "%b\n" "${GREEN}Bluez is already installed.${RC}"
     fi
 
-    startService bluetooth
+    # Determine the correct service name based on init system
+    SERVICE_NAME="bluetooth"
+    if [ "$INIT_MANAGER" = "sv" ]; then 
+        SERVICE_NAME="bluetoothd"
+    fi
+    
+    startService "$SERVICE_NAME"
 }
 
 # Function to display the main menu
