@@ -27,7 +27,7 @@ cleanup_system() {
             "$ESCALATION_TOOL" "$PACKAGER" cache clean
             ;;
         xbps-install)
-            "$ESCALATION_TOOL" xbps-remove -Oo
+            "$ESCALATION_TOOL" xbps-remove -Ooy
             ;;
         eopkg)
             "$ESCALATION_TOOL" "$PACKAGER" -y remove-orphans
