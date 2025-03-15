@@ -89,9 +89,6 @@ install_docker_compose() {
         xbps-install)
             "$ESCALATION_TOOL" "$PACKAGER" -Sy docker-compose
             ;;
-        eopkg)
-            "$ESCALATION_TOOL" "$PACKAGER" -y install docker-compose
-            ;;
         slapt-get)
             "$ESCALATION_TOOL" "$PACKAGER" -y -i docker-compose
             ;;
