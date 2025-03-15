@@ -143,4 +143,3 @@ checkEnv
 checkEscalationTool
 install_components
 docker_permission
-printf "%b\n" "${GREEN}Docker setup completed successfully!${RC}"
