@@ -126,17 +126,8 @@ docker_permission() {
     printf "%b\n" "${YELLOW}Adding current user to the docker group...${RC}"
     "$ESCALATION_TOOL" usermod -aG docker "$USER"
     
-    # Run a test command with sg to apply group changes immediately within the script
-    if command -v sg >/dev/null 2>&1; then
-        printf "%b\n" "${YELLOW}Applying group changes for this session...${RC}"
-        # sg docker -c "id" > /dev/null 2>&1
-        sg docker -c "touch /dev/null" > /dev/null 2>&1
-        printf "%b\n" "${GREEN}Docker group permissions applied for this session.${RC}"
-    else
-        printf "%b\n" "${YELLOW}NOTE: You'll need to log out and log back in, or run 'newgrp docker' in your terminal to apply the group changes.${RC}"
-    fi
-    
-    printf "%b\n" "${GREEN}Current user added to the docker group successfully.${RC}"
+    printf "%b\n" "${YELLOW}To use Docker without sudo:${RC}"
+    printf "%b\n" "${GREEN}Log out and back in, run 'newgrp docker', or restart your terminal.${RC}"
 }
 
 checkEnv
