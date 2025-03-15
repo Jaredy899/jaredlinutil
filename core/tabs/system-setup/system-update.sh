@@ -89,7 +89,7 @@ updateSystem() {
             "$ESCALATION_TOOL" "$PACKAGER" upgrade
             ;;
         xbps-install)
-            "$ESCALATION_TOOL" "$PACKAGER" -Su
+            "$ESCALATION_TOOL" "$PACKAGER" -yu
             ;;
         slapt-get)
             "$ESCALATION_TOOL" "$PACKAGER" -y --upgrade
