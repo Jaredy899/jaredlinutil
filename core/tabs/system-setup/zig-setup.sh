@@ -2,7 +2,7 @@
 
 . ../common-script.sh
 
-ZIG_VERSION="0.13.0"
+ZIG_VERSION="0.14.0"
 INSTALL_DIR="/usr/local/bin"
 LIB_DIR="/usr/local/lib"
 
@@ -13,7 +13,7 @@ installZig() {
         # First try package manager installation
         case "$PACKAGER" in
             pacman)
-                "$ESCALATION_TOOL" "$PACKAGER" -S --needed zig=0.13.0
+                "$ESCALATION_TOOL" "$PACKAGER" -S --needed zig
                 ;;
             dnf|eopkg)
                 "$ESCALATION_TOOL" "$PACKAGER" install -y zig
