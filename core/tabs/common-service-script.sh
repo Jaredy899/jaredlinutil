@@ -61,7 +61,6 @@ enableService() {
             ;;
         sv)
             "$ESCALATION_TOOL" mkdir -p "/run/runit/supervise.$1"
-            "$ESCALATION_TOOL" mkdir -p "/var/service"
             "$ESCALATION_TOOL" ln -sf "/etc/sv/$1" "/var/service/"
             sleep 5
             ;;
