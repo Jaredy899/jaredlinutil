@@ -10,18 +10,6 @@ installFastfetch() {
                 "$ESCALATION_TOOL" "$PACKAGER" -S --needed --noconfirm fastfetch
                 ;;
             apt-get|nala)
-                if command -v fastfetch >/dev/null 2>&1; then
-                    INSTALLED_VERSION=$(fastfetch --version | head -n 1 | awk '{print $2}')
-                    LATEST_VERSION=$(curl -sSL "https://api.github.com/repos/fastfetch-cli/fastfetch/releases/latest" | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/' | sed 's/^v//')
-                    if [ "$INSTALLED_VERSION" = "$LATEST_VERSION" ]; then
-                        printf "%b\n" "${GREEN}Fastfetch is already up to date (version $INSTALLED_VERSION).${RC}"
-                        return 0
-                    else
-                        printf "%b\n" "${YELLOW}Updating Fastfetch from version $INSTALLED_VERSION to $LATEST_VERSION...${RC}"
-                    fi
-                else
-                    printf "%b\n" "${YELLOW}Installing Fastfetch...${RC}"
-                fi
                 case "$ARCH" in
                     x86_64)
                         DEB_FILE="fastfetch-linux-amd64.deb"
