@@ -15,9 +15,6 @@ installCUPS() {
     xbps-install)
         "$ESCALATION_TOOL" "$PACKAGER" -Sy cups
         ;;
-    slapt-get)
-        "$ESCALATION_TOOL" "$PACKAGER" -y -i cups
-        ;;
     *)
         printf "%b\n" "${RED}Unsupported package manager ${PACKAGER}${RC}"
         exit 1

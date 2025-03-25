@@ -22,9 +22,6 @@ if ! command_exists openssl; then
         xbps-install)
             "$ESCALATION_TOOL" "$PACKAGER" -Sy openssl
             ;;
-        slapt-get)
-            "$ESCALATION_TOOL" "$PACKAGER" -y -i openssl
-            ;;
         *)
             printf "%b\n" "${RED}Unsupported package manager: ""$PACKAGER""${RC}"
             exit 1

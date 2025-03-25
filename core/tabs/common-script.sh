@@ -146,17 +146,6 @@ checkPackageManager() {
         "$ESCALATION_TOOL" "$PACKAGER" update
     fi
 
-    ## Setup slapt-get and slapt-src
-    if [ "$PACKAGER" = "slapt-get" ]; then
-        if ! command_exists slapt-src; then
-            printf "%b\n" "${YELLOW}Installing slapt-src and build dependencies...${RC}"
-            $ESCALATION_TOOL slapt-get -i -y slapt-src cmake make gcc automake autoconf pkg-config libtool opencl-headers
-        fi
-        # Update slapt-src database
-        printf "%b\n" "${CYAN}Updating slapt-src database...${RC}"
-        $ESCALATION_TOOL slapt-src -u
-    fi
-
     if [ -z "$PACKAGER" ]; then
         printf "%b\n" "${RED}Can't find a supported package manager${RC}"
         exit 1
@@ -203,7 +192,7 @@ checkEnv() {
     checkArch
     checkEscalationTool
     checkCommandRequirements "curl groups $ESCALATION_TOOL"
-    checkPackageManager 'eopkg nala apt-get dnf pacman zypper apk xbps-install slapt-get'
+    checkPackageManager 'nala apt-get dnf pacman zypper apk xbps-install eopkg '
     checkCurrentDirectoryWritable
     checkSuperUser
     checkDistro

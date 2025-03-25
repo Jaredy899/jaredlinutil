@@ -16,9 +16,6 @@ installZsh() {
           xbps-install)
               "$ESCALATION_TOOL" "$PACKAGER" -Sy zsh
               ;;
-          slapt-get)
-              "$ESCALATION_TOOL" "$PACKAGER" -y -i zsh
-              ;;
           *)
               "$ESCALATION_TOOL" "$PACKAGER" install -y zsh
               ;;

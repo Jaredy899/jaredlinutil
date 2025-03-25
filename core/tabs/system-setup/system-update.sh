@@ -62,9 +62,6 @@ fastUpdate() {
         eopkg)
             "$ESCALATION_TOOL" "$PACKAGER" -y update-repo
             ;;
-        slapt-get)
-            "$ESCALATION_TOOL" "$PACKAGER" -y -u
-            ;;
         *)
             printf "%b\n" "${RED}Unsupported package manager: ${PACKAGER}${RC}"
             exit 1
@@ -90,9 +87,6 @@ updateSystem() {
             ;;
         xbps-install)
             "$ESCALATION_TOOL" "$PACKAGER" -yu
-            ;;
-        slapt-get)
-            "$ESCALATION_TOOL" "$PACKAGER" -y --upgrade
             ;;
         *)
             printf "%b\n" "${RED}Unsupported package manager: ${PACKAGER}${RC}"

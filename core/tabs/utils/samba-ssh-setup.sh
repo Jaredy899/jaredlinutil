@@ -18,9 +18,6 @@ install_package() {
             xbps-install)
                 "$ESCALATION_TOOL" "$PACKAGER" -Sy "$PACKAGE"
                 ;;
-            slapt-get)
-                "$ESCALATION_TOOL" "$PACKAGER" -y "$PACKAGE"
-                ;;
             *)
                 "$ESCALATION_TOOL" "$PACKAGER" install -y "$PACKAGE"
                 ;;

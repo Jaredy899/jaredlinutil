@@ -62,10 +62,6 @@ installDepend() {
             # shellcheck disable=SC2086
             "$ESCALATION_TOOL" "$PACKAGER" install -y $SOLUS_DEPENDENCIES $COMPILEDEPS
             ;;
-        slapt-get)
-            "$ESCALATION_TOOL" "$PACKAGER" -u
-            "$ESCALATION_TOOL" "$PACKAGER" -y -i tar tree multitail trash-cli cmake make jq
-            ;;
         *)
             "$ESCALATION_TOOL" "$PACKAGER" install -y "$DEPENDENCIES"
             ;;

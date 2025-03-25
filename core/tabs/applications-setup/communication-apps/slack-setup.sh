@@ -9,9 +9,6 @@ installSlack() {
             pacman)
                 "$AUR_HELPER" -S --needed --noconfirm slack-desktop
                 ;;
-            slapt-get)
-                "$ESCALATION_TOOL" slapt-src -y -i slack
-                ;;
             *)  
                 checkFlatpak
                 "$ESCALATION_TOOL" flatpak install -y flathub com.slack.Slack

@@ -22,9 +22,6 @@ installJitsi() {
             dnf)
                 "$ESCALATION_TOOL" "$PACKAGER" install -y jitsi-meet
                 ;;
-            slapt-get)
-                "$ESCALATION_TOOL" slapt-src -y -i jitsi-meet-desktop
-                ;;
             apk|xbps-install)
                 checkFlatpak
                 "$ESCALATION_TOOL" flatpak install -y flathub org.jitsi.jitsi-meet

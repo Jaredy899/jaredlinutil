@@ -21,10 +21,7 @@ installSignal() {
                 ;;
             xbps-install)
                 "$ESCALATION_TOOL" "$PACKAGER" -Sy Signal-Desktop
-                ;;    
-            slapt-get)
-                "$ESCALATION_TOOL" slapt-src -y -i signal-desktop
-                ;;       
+                ;;  
             dnf|apk)
                 checkFlatpak
                 "$ESCALATION_TOOL" flatpak install -y flathub org.signal.Signal

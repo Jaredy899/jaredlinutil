@@ -18,9 +18,6 @@ installTelegram() {
             eopkg)
                 "$ESCALATION_TOOL" "$PACKAGER" install -y telegram
                 ;;
-            slapt-get)
-                "$ESCALATION_TOOL" "$PACKAGER" -y -i telegram
-                ;;
             *)
                 "$ESCALATION_TOOL" "$PACKAGER" install -y telegram-desktop 
                 ;;

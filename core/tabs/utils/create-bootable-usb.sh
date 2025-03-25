@@ -26,8 +26,6 @@ installDependencies() {
                 "${ESCALATION_TOOL}" "${PACKAGER}" -S --noconfirm --needed ${DEPENDENCIES};;
             apk)
                 "${ESCALATION_TOOL}" "${PACKAGER}" add ${DEPENDENCIES};;
-            slapt-get)
-                "${ESCALATION_TOOL}" "{$PACKAGER}" -y -i ${DEPENDENCIES};;
             *)
                 printf "%b\n" "${RED}Unsupported package manager.${RC}"
                 exit 1

@@ -9,9 +9,6 @@ installZoom() {
             pacman)
                 "$AUR_HELPER" -S --needed --noconfirm zoom
                 ;;
-            slapt-get)
-                "$ESCALATION_TOOL" slapt-src -y -i zoom-linux
-                ;;
             *)
                 checkFlatpak
                 "$ESCALATION_TOOL" flatpak install -y flathub us.zoom.Zoom

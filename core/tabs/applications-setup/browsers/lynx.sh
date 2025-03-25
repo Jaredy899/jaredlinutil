@@ -15,9 +15,6 @@ installLynx() {
             xbps-install)
                 "$ESCALATION_TOOL" "$PACKAGER" -Sy lynx
                 ;;
-            slapt-get)
-                "$ESCALATION_TOOL" "$PACKAGER" -y -i lynx
-                ;;
             *)
                 "$ESCALATION_TOOL" "$PACKAGER" install -y lynx
                 ;;
