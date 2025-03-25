@@ -21,3 +21,14 @@ task_list = "I SS"
 matches = true
 data = "command_exists"
 values = [ "firewall-cmd" ]
+
+[[data]]
+name = "iptables Firewall Baselines"
+description = "Configure raw iptables with recommended security baseline rules. iptables is the underlying firewall technology in Linux used by both UFW and FirewallD, but can be configured directly for more granular control."
+script = "iptables-baselines.sh"
+task_list = "I SS"
+
+[[data.preconditions]]
+matches = false
+data = "command_exists"
+values = [ "firewall-cmd", "ufw" ]
