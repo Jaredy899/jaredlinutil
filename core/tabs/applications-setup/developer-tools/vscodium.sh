@@ -29,7 +29,7 @@ installVsCodium() {
             slapt-get)
                 "$ESCALATION_TOOL" slapt-src -y -i vscodium
                 ;;
-            apk | xbps-install)
+            apk|xbps-install|eopkg)
                 checkFlatpak
                 "$ESCALATION_TOOL" flatpak install -y flathub com.vscodium.codium
                 ;;

@@ -10,7 +10,7 @@ installOnlyOffice() {
                 curl -O https://download.onlyoffice.com/install/desktop/editors/linux/onlyoffice-desktopeditors_amd64.deb
                 "$ESCALATION_TOOL" "$PACKAGER" install -y ./onlyoffice-desktopeditors_amd64.deb
                 ;;
-            zypper|dnf|xbps-install)
+            zypper|dnf|xbps-install|eopkg|apk)
                 checkFlatpak
                 "$ESCALATION_TOOL" flatpak install -y flathub org.onlyoffice.desktopeditors
                 ;;
