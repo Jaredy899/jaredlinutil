@@ -191,7 +191,7 @@ task_list = "I FM MP"
 [[data.entries.preconditions]]
 matches = false
 data = "command_exists"
-values = [apt-get", "nala", "apk", "dnf"]
+values = ["apt-get", "nala", "apk", "dnf"]
 
 [[data.entries]]
 name = "Kitty"
