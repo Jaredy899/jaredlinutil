@@ -311,7 +311,7 @@ description = "Universal Android Debloater (UAD) is a tool designed to help user
 script = "android-debloat.sh"
 task_list = "I"
 
-[[data.entries.preconditions]]
+[[data.preconditions]]
 matches = false
 data = "command_exists"
 values = ["eopkg"]
@@ -352,7 +352,7 @@ description = "Podman Compose is a tool for defining and running multi-container
 script = "podman-compose-setup.sh"
 task_list = "I SS"
 
-[[data.entries.preconditions]]
+[[data.preconditions]]
 matches = false
 data = "command_exists"
 values = ["eopkg", "apk"]
@@ -419,7 +419,7 @@ matches = true
 data = { environment = "XDG_SESSION_TYPE" }
 values = ["wayland", "Wayland"]
 
-[[data.entries.preconditions]]
+[[data.preconditions]]
 matches = false
 data = "command_exists"
 values = ["xbps-install", "eopkg", "apk", "zypper"]
