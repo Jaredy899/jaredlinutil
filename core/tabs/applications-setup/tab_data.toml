@@ -187,14 +187,6 @@ name = "Ghostty"
 description = "Ghostty is a fast, feature-rich, and cross-platform terminal emulator that uses platform-native UI and GPU acceleration."
 script = "terminal-emulators/ghostty-setup.sh"
 task_list = "I FM MP"
-[[data.entries.preconditions]]
-matches = true
-data = "containing_file"
-values = ["/etc/os-release"]
-[[data.entries.preconditions]]
-matches = true
-data = "containing_file"
-values = ["Tumbleweed"]
 
 [[data.entries.preconditions]]
 matches = false
