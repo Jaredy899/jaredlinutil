@@ -189,14 +189,14 @@ script = "terminal-emulators/ghostty-setup.sh"
 task_list = "I FM MP"
 
 [[data.entries.preconditions]]
+matches = true
+data = "os_release"
+values = ["ID=opensuse-tumbleweed", "ID_LIKE=opensuse suse"]
+
+[[data.entries.preconditions]]
 matches = false
 data = "command_exists"
 values = ["apt-get", "nala", "apk", "dnf"]
-
-[[data.entries.preconditions]]
-matches = true
-data = "os_release"
-values = ["ID=opensuse-tumbleweed"]
 
 [[data.entries]]
 name = "Kitty"
