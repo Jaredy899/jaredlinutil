@@ -193,6 +193,16 @@ matches = false
 data = "command_exists"
 values = ["apt-get", "nala", "apk", "dnf"]
 
+[[data.entries.preconditions]]
+matches = true
+data = "containing_file"
+values = ["/etc/os-release"]
+
+[[data.entries.preconditions]]
+matches = true
+data = "containing_file"
+values = ["Tumbleweed"]
+
 [[data.entries]]
 name = "Kitty"
 description = "kitty is a free and open-source GPU-accelerated terminal emulator for Linux, macOS, and some BSD distributions, focused on performance and features. kitty is written in a mix of C and Python programming languages. This command installs and configures kitty."
