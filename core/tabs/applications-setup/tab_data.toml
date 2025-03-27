@@ -192,9 +192,6 @@ task_list = "I FM MP"
 matches = false
 data = "command_exists"
 values = ["apt-get", "nala", "apk", "dnf"]
-matches = true
-data = { environment = "ID" }
-values = ["opensuse-tumbleweed"]
 
 [[data.entries]]
 name = "Kitty"
