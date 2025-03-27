@@ -192,10 +192,8 @@ task_list = "I FM MP"
 matches = false
 data = "command_exists"
 values = ["apt-get", "nala", "apk", "dnf"]
-
-[[data.entries.preconditions]]
 matches = true
-data = "os_release"
+data = { environment = "ID" }
 values = ["opensuse-tumbleweed"]
 
 [[data.entries]]
