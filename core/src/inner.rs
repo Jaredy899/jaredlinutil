@@ -140,12 +140,6 @@ impl Entry {
                             .iter()
                             .all(|command| which::which(command).is_ok() == *matches),
                         SystemDataType::FileExists => values.iter().all(|p| Path::new(p).is_file()),
-                        SystemDataType::OsRelease => std::fs::read_to_string("/etc/os-release")
-                            .is_ok_and(|data| {
-                                values
-                                    .iter()
-                                    .all(|matching| data.contains(matching) == *matches)
-                            }),
                     }
                 },
             )
@@ -169,7 +163,6 @@ enum SystemDataType {
     ContainingFile(PathBuf),
     FileExists,
     CommandExists,
-    OsRelease,
 }
 
 fn filter_entries(entries: &mut Vec<Entry>) {
