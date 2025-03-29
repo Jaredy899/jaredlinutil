@@ -85,7 +85,8 @@ view_disabled_services() {
             "$ESCALATION_TOOL" rc-update show -v | grep -v "\[" | more
             ;;
         sv)
-            comm -23 <(find /etc/sv/ -maxdepth 1 -type d -not -name "sv" -printf "%f\n" | sort) <(find /var/service/ -maxdepth 1 -type d -not -name "service" -printf "%f\n" | sort) | more
+            # shellcheck disable=SC2012
+            ls -1 /etc/sv/ | grep -v "$(ls -1 /var/service/)" | more
             ;;
         service)
             if [ -d "/etc/rc.d" ]; then
