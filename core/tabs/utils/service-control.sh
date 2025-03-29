@@ -38,7 +38,14 @@ view_all_services() {
             "$ESCALATION_TOOL" rc-update show | more
             ;;
         sv)
-            find /etc/sv/ -maxdepth 1 -type d -not -name "." -not -name ".." -printf "%f\n" | sort | more
+            ls -1 /etc/sv/ | more
+            ;;
+        service)
+            if [ -d "/etc/rc.d" ]; then
+                ls -1 /etc/rc.d/rc.* | sed 's/^\/etc\/rc.d\/rc\.//' | more
+            else
+                "$ESCALATION_TOOL" service --status-all | more
+            fi
             ;;
     esac
 }
@@ -54,7 +61,14 @@ view_enabled_services() {
             "$ESCALATION_TOOL" rc-update show -v | grep "\[" | more
             ;;
         sv)
-            find /var/service/ -maxdepth 1 -type d -not -name "." -not -name ".." -printf "%f\n" | sort | more
+            ls -1 /var/service/ | more
+            ;;
+        service)
+            if [ -d "/etc/rc.d" ]; then
+                find /etc/rc.d/ -type f -executable -name 'rc.*' | sed 's/^\/etc\/rc.d\/rc\.//' | more
+            else
+                "$ESCALATION_TOOL" service --status-all | grep ' + ' | awk '{print $4}' | more
+            fi
             ;;
     esac
 }
@@ -70,7 +84,14 @@ view_disabled_services() {
             "$ESCALATION_TOOL" rc-update show -v | grep -v "\[" | more
             ;;
         sv)
-            find /etc/sv/ -maxdepth 1 -type d -not -name "." -not -name ".." -printf "%f\n" | grep -v "$(find /var/service/ -maxdepth 1 -type d -not -name "." -not -name ".." -printf "%f\n" | paste -sd '|')" | more
+            ls -1 /etc/sv/ | grep -v "$(ls -1 /var/service/)" | more
+            ;;
+        service)
+            if [ -d "/etc/rc.d" ]; then
+                find /etc/rc.d/ -type f ! -executable -name 'rc.*' | sed 's/^\/etc\/rc.d\/rc\.//' | more
+            else
+                "$ESCALATION_TOOL" service --status-all | grep ' - ' | awk '{print $4}' | more
+            fi
             ;;
     esac
 }
@@ -89,6 +110,19 @@ view_started_services() {
             for service in /var/service/*; do
                 [ -d "$service" ] && "$ESCALATION_TOOL" sv status "$(basename "$service")" | grep "^run:" >/dev/null && basename "$service"
             done | more
+            ;;
+        service)
+            if [ -d "/etc/rc.d" ]; then
+                for service in /etc/rc.d/rc.*; do
+                    [ -f "$service" ] || continue
+                    basename="${service#/etc/rc.d/rc.}"
+                    if [ -x "$service" ] && [ -f "/var/run/${basename}.pid" ]; then
+                        echo "$basename"
+                    fi
+                done 2>/dev/null | more
+            else
+                "$ESCALATION_TOOL" service --status-all | grep 'running' | awk '{print $1}' | more
+            fi
             ;;
     esac
 }
