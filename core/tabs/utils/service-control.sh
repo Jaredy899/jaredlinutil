@@ -38,7 +38,7 @@ view_all_services() {
             "$ESCALATION_TOOL" rc-update show | more
             ;;
         sv)
-            ls -1 /etc/sv/ | more
+            find /etc/sv/ -maxdepth 1 -type d -not -name "sv" -printf "%f\n" | sort | more
             ;;
         service)
             if [ -d "/etc/rc.d" ]; then
@@ -61,6 +61,7 @@ view_enabled_services() {
             "$ESCALATION_TOOL" rc-update show -v | grep "\[" | more
             ;;
         sv)
+            # shellcheck disable=SC2012
             ls -1 /var/service/ | more
             ;;
         service)
@@ -84,7 +85,7 @@ view_disabled_services() {
             "$ESCALATION_TOOL" rc-update show -v | grep -v "\[" | more
             ;;
         sv)
-            ls -1 /etc/sv/ | grep -v "$(ls -1 /var/service/)" | more
+            comm -23 <(find /etc/sv/ -maxdepth 1 -type d -not -name "sv" -printf "%f\n" | sort) <(find /var/service/ -maxdepth 1 -type d -not -name "service" -printf "%f\n" | sort) | more
             ;;
         service)
             if [ -d "/etc/rc.d" ]; then
