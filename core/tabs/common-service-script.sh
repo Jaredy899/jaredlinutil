@@ -61,7 +61,11 @@ enableService() {
             ;;
         sv)
             "$ESCALATION_TOOL" mkdir -p "/run/runit/supervise.$1"
-            "$ESCALATION_TOOL" ln -sf "/etc/sv/$1" "/var/service/"
+            if [ -d "/etc/service" ]; then
+                "$ESCALATION_TOOL" ln -sf "/etc/sv/$1" "/etc/service/"
+            else
+                "$ESCALATION_TOOL" ln -sf "/etc/sv/$1" "/var/service/"
+            fi
             sleep 5
             ;;
         service)
@@ -83,7 +87,7 @@ disableService() {
             "$ESCALATION_TOOL" rc-update del "$1"
             ;;
         sv)
-            "$ESCALATION_TOOL" rm -f "/var/service/$1"
+            "$ESCALATION_TOOL" rm -f "/etc/service/$1" "/var/service/$1"
             ;;
         service)
             if [ -d "/etc/rc.d" ]; then
