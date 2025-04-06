@@ -1,4 +1,6 @@
-#!/bin/sh -e
+#!/bin/sh
+
+set -e
 
 . ../common-script.sh
 
@@ -23,7 +25,7 @@ ask_for_host_details() {
     printf "%b" "Enter Remote Host (hostname or IP): " 
     read -r host
     printf "%b" "Enter Remote User: "
-    read -r  user
+    read -r user
     {
         printf "%b\n" "Host $host_alias"
         printf "%b\n" "    HostName $host"
@@ -54,35 +56,43 @@ share_ssh_key() {
     printf "%b\n" "SSH key copied to $host_alias successfully."
 }
 
+# Function to modify SSH config on remote host
+modify_remote_ssh_config() {
+    host_alias="$1"
+    password_auth="$2"
+    pubkey_auth="$3"
+    
+    # Escape the escalation tool for remote execution
+    remote_esc_tool
+    remote_esc_tool=$(printf '%s' "$ESCALATION_TOOL" | sed 's/"/\\"/g')
+    
+    # Escape variables for remote execution
+    password_auth_esc=$(printf '%s' "$password_auth" | sed 's/"/\\"/g')
+    pubkey_auth_esc=$(printf '%s' "$pubkey_auth" | sed 's/"/\\"/g')
+    
+    ssh "$host_alias" '
+        '"$remote_esc_tool"' -S sed -i "s/^#*PasswordAuthentication.*/PasswordAuthentication '"$password_auth_esc"'/" /etc/ssh/sshd_config &&
+        '"$remote_esc_tool"' -S sed -i "s/^#*PubkeyAuthentication.*/PubkeyAuthentication '"$pubkey_auth_esc"'/" /etc/ssh/sshd_config &&
+        '"$remote_esc_tool"' -S systemctl restart sshd
+    '
+}
+
 # Function to disable password authentication and allow only SSH keys
-#repeated twice as changes should take place when in commented state or modified state.
 disable_password_auth() {
     printf "%b\n" "Disabling SSH password authentication and enabling key-only login..."
     printf "%b\n" "Enter the alias of the host: " 
     read -r host_alias
     printf "\n"
-    ssh "$host_alias" "
-        "$ESCALATION_TOOL" -S sed -i 's/^#PasswordAuthentication yes/PasswordAuthentication no/' /etc/ssh/sshd_config &&
-        "$ESCALATION_TOOL"  -S sed -i 's/^PasswordAuthentication yes/PasswordAuthentication no/' /etc/ssh/sshd_config &&
-        "$ESCALATION_TOOL"  -S sed -i 's/^#PubkeyAuthentication no/PubkeyAuthentication yes/' /etc/ssh/sshd_config &&
-        "$ESCALATION_TOOL"  -S sed -i 's/^PubkeyAuthentication no/PubkeyAuthentication yes/' /etc/ssh/sshd_config &&
-        "$ESCALATION_TOOL"  -S systemctl restart sshd
-    "
+    modify_remote_ssh_config "$host_alias" "no" "yes"
     printf "%b\n" "PasswordAuthentication set to no and PubkeyAuthentication set to yes."
 }
 
 enable_password_auth() {
-    printf "%b\n" "Disabling SSH password authentication and enabling key-only login..."
+    printf "%b\n" "Enabling SSH password authentication and disabling key-only login..."
     printf "%b\n" "Enter the alias of the host: "
     read -r host_alias
     printf "\n"
-    ssh "$host_alias" "
-        "$ESCALATION_TOOL"  -S sed -i 's/^#PasswordAuthentication no/PasswordAuthentication yes/' /etc/ssh/sshd_config &&
-        "$ESCALATION_TOOL"  -S sed -i 's/^PasswordAuthentication no/PasswordAuthentication yes/' /etc/ssh/sshd_config &&
-        "$ESCALATION_TOOL"  -S sed -i 's/^#PubkeyAuthentication yes/PubkeyAuthentication no/' /etc/ssh/sshd_config &&
-        "$ESCALATION_TOOL"  -S sed -i 's/^PubkeyAuthentication yes/PubkeyAuthentication no/' /etc/ssh/sshd_config &&
-        "$ESCALATION_TOOL"  -S systemctl restart sshd
-    "
+    modify_remote_ssh_config "$host_alias" "yes" "no"
     printf "%b\n" "PasswordAuthentication set to yes and PubkeyAuthentication set to no."
 }
 
@@ -90,7 +100,7 @@ enable_password_auth() {
 check_password_auth() {
     printf "%b" "Enter the alias of the host: "
     read -r host_alias
-    ssh "$host_alias" "grep '^PasswordAuthentication' /etc/ssh/sshd_config"
+    ssh "$host_alias" 'grep "^PasswordAuthentication" /etc/ssh/sshd_config'
 }
 
 # Function to run a command on a remote server
@@ -99,6 +109,7 @@ run_remote_command() {
     read -r host_alias
     printf "%b" "Enter the command to run: " 
     read -r remote_command
+    # shellcheck disable=SC2029
     ssh "$host_alias" "$remote_command"
 }
 
@@ -116,14 +127,13 @@ copy_file_to_remote() {
 # Function to copy a directory to a remote server
 copy_directory_to_remote() {
     printf "%b" "Enter the local directory path: "
-    read -r  local_dir
+    read -r local_dir
     printf "%b" "Enter the alias of the host: " 
     read -r host_alias
     printf "%b" "Enter the remote destination path: "
     read -r remote_path
     scp -r "$local_dir" "$host_alias:$remote_path"
 }
-
 
 # Function to move a file to a remote server (copy and delete local)
 move_file_to_remote() {
@@ -158,7 +168,7 @@ remove_system() {
 # Function to view SSH configuration
 view_ssh_config() {
     printf "%b\n" "Enter the alias of the host to view (or press Enter to view all): "
-    read -r  host_alias
+    read -r host_alias
     if [ -z "$host_alias" ]; then
         cat ~/.ssh/config
     else
@@ -192,7 +202,7 @@ sync_directories() {
 check_ssh_key_authentication() {
     printf "%b\n" "Enter the alias of the host: "
     read -r host_alias
-    ssh "$host_alias" "grep '^PubkeyAuthentication' /etc/ssh/sshd_config"
+    ssh "$host_alias" 'grep "^PubkeyAuthentication" /etc/ssh/sshd_config'
 }
 
 # Function to show options for the user
@@ -215,37 +225,37 @@ show_menu() {
     printf "%b\n" "15. View SSH configuration"
     printf "%b\n" "16. Backup files from remote host"
     printf "%b\n" "17. Sync directories with remote host"
-    printf "%b\n" "18. Exit"
+    printf "%b\n" "0. Exit"
     printf "%b" "Enter your choice: "
 }
 
 # Function to execute the selected SSH operation
 main() {
     while true; do
-    show_menu
-    read -r choice
-    case $choice in
-        1) ask_for_host_details ;;
-        2) show_available_hosts && printf "%b" "Enter the alias of the host to connect to: " && read -r  host_alias; ssh "$host_alias" ;;
-        3) generate_ssh_key ;;
-        4) share_ssh_key ;;
-        5) disable_password_auth ;;
-        6) enable_password_auth ;;
-        7) check_password_auth ;;
-        8) check_ssh_key_authentication ;;
-        9) run_remote_command ;;
-        10) copy_file_to_remote ;;
-        11) copy_directory_to_remote ;;
-        12) move_file_to_remote ;;
-        13) move_directory_to_remote ;;
-        14) remove_system ;;
-        15) view_ssh_config ;;
-        16) backup_files ;;
-        17) sync_directories ;;
-        18) exit ;;
-        *) printf "%b\n" "Invalid choice. Please try again." ;;
-    esac
-done
+        show_menu
+        read -r choice
+        case $choice in
+            1) ask_for_host_details ;;
+            2) show_available_hosts && printf "%b" "Enter the alias of the host to connect to: " && read -r host_alias && ssh "$host_alias" ;;
+            3) generate_ssh_key ;;
+            4) share_ssh_key ;;
+            5) disable_password_auth ;;
+            6) enable_password_auth ;;
+            7) check_password_auth ;;
+            8) check_ssh_key_authentication ;;
+            9) run_remote_command ;;
+            10) copy_file_to_remote ;;
+            11) copy_directory_to_remote ;;
+            12) move_file_to_remote ;;
+            13) move_directory_to_remote ;;
+            14) remove_system ;;
+            15) view_ssh_config ;;
+            16) backup_files ;;
+            17) sync_directories ;;
+            0) exit 0 ;;
+            *) printf "%b\n" "Invalid choice. Please try again." ;;
+        esac
+    done
 }
 
 checkEnv
