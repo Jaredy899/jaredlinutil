@@ -23,7 +23,7 @@ show_menu() {
     printf "%b\n" "8. Enable a service"
     printf "%b\n" "9. Disable a service"
     printf "%b\n" "10. Create a service from external scripts"
-    printf "%b\n" "11. Exit"
+    printf "%b\n" "0. Exit"
     printf "%b\n" "============================"
 }
 
@@ -376,7 +376,7 @@ main() {
             8) enable_service ;;
             9) disable_service ;; 
             10) create_service_from_external ;;
-            11) printf "%b\n" "Exiting..."; exit 0 ;;
+            0) printf "%b\n" "Exiting..."; exit 0 ;;
             *) printf "%b\n" "Invalid choice. Please try again." ;;
         esac
 
