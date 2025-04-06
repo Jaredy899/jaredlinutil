@@ -60,13 +60,11 @@ enableService() {
             "$ESCALATION_TOOL" rc-update add "$1"
             ;;
         sv)
-            "$ESCALATION_TOOL" mkdir -p "/run/runit/supervise.$1"
             if [ -d "/etc/service" ]; then
                 "$ESCALATION_TOOL" ln -sf "/etc/sv/$1" "/etc/service/"
             else
                 "$ESCALATION_TOOL" ln -sf "/etc/sv/$1" "/var/service/"
             fi
-            sleep 5
             ;;
         service)
             if [ -d "/etc/rc.d" ]; then
@@ -104,13 +102,12 @@ startAndEnableService() {
         systemctl)
             "$ESCALATION_TOOL" "$INIT_MANAGER" enable --now "$1"
             ;;
-        rc-service | sv)
+        rc-service | service)
             enableService "$1"
             startService "$1"
             ;;
-        service)
+        sv)
             enableService "$1"
-            startService "$1"
             ;;
     esac
 }
