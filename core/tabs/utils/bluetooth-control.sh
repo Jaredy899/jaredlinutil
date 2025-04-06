@@ -25,9 +25,9 @@ setupBluetooth() {
         printf "%b\n" "${GREEN}Bluez is already installed.${RC}"
     fi
 
-    # Determine the correct service name based on init system
+    # Set service name based on distribution
     SERVICE_NAME="bluetooth"
-    if [ "$INIT_MANAGER" = "sv" ]; then 
+    if [ "$PACKAGER" = "xbps-install" ]; then
         SERVICE_NAME="bluetoothd"
     fi
     
