@@ -63,7 +63,11 @@ view_enabled_services() {
             ;;
         sv)
             # shellcheck disable=SC2012
-            ls -1 /var/service/ | more
+            if [ -d "/etc/service" ]; then
+                ls -1 /etc/service/ | more
+            else
+                ls -1 /var/service/ | more
+            fi
             ;;
         service)
             if [ -d "/etc/rc.d" ]; then
@@ -87,7 +91,11 @@ view_disabled_services() {
             ;;
         sv)
             # shellcheck disable=SC2010
-            ls -1 /etc/sv/ | grep -v "$(ls -1 /var/service/)" | more
+            if [ -d "/etc/service" ]; then
+                ls -1 /etc/sv/ | grep -v "$(ls -1 /etc/service/)" | more
+            else
+                ls -1 /etc/sv/ | grep -v "$(ls -1 /var/service/)" | more
+            fi
             ;;
         service)
             if [ -d "/etc/rc.d" ]; then
@@ -110,9 +118,15 @@ view_started_services() {
             "$ESCALATION_TOOL" rc-status --servicelist | more
             ;;
         sv)
-            for service in /var/service/*; do
-                [ -d "$service" ] && "$ESCALATION_TOOL" sv status "$(basename "$service")" | grep "^run:" >/dev/null && basename "$service"
-            done | more
+            if [ -d "/etc/service" ]; then
+                for service in /etc/service/*; do
+                    [ -d "$service" ] && "$ESCALATION_TOOL" sv status "$(basename "$service")" | grep "^run:" >/dev/null && basename "$service"
+                done | more
+            else
+                for service in /var/service/*; do
+                    [ -d "$service" ] && "$ESCALATION_TOOL" sv status "$(basename "$service")" | grep "^run:" >/dev/null && basename "$service"
+                done | more
+            fi
             ;;
         service)
             if [ -d "/etc/rc.d" ]; then
@@ -226,6 +240,7 @@ remove_service() {
             SERVICE_DIR="/etc/sv/$SERVICE_NAME"
             if [ -d "$SERVICE_DIR" ]; then
                 "$ESCALATION_TOOL" rm -rf "$SERVICE_DIR"
+                "$ESCALATION_TOOL" rm -f "/etc/service/$SERVICE_NAME" "/var/service/$SERVICE_NAME"
                 printf "%b\n" "Service $SERVICE_NAME has been removed."
             else
                 printf "%b\n" "Service $SERVICE_NAME does not exist."
