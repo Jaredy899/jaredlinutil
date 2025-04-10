@@ -3,6 +3,7 @@
 set -e
 
 . ../common-script.sh
+. ../common-service-script.sh
 
 # Check if ~/.ssh/config exists, if not, create it
 if [ ! -f ~/.ssh/config ]; then
@@ -63,7 +64,6 @@ modify_remote_ssh_config() {
     pubkey_auth="$3"
     
     # Escape the escalation tool for remote execution
-    remote_esc_tool
     remote_esc_tool=$(printf '%s' "$ESCALATION_TOOL" | sed 's/"/\\"/g')
     
     # Escape variables for remote execution
@@ -73,7 +73,12 @@ modify_remote_ssh_config() {
     ssh "$host_alias" '
         '"$remote_esc_tool"' -S sed -i "s/^#*PasswordAuthentication.*/PasswordAuthentication '"$password_auth_esc"'/" /etc/ssh/sshd_config &&
         '"$remote_esc_tool"' -S sed -i "s/^#*PubkeyAuthentication.*/PubkeyAuthentication '"$pubkey_auth_esc"'/" /etc/ssh/sshd_config &&
-        '"$remote_esc_tool"' -S systemctl restart sshd
+        if '"$remote_esc_tool"' -S stopService sshd && '"$remote_esc_tool"' -S startService sshd; then
+            echo "SSH service restarted using sshd service name"
+        else
+            echo "sshd service not found, trying ssh service name"
+            '"$remote_esc_tool"' -S stopService ssh && '"$remote_esc_tool"' -S startService ssh
+        fi
     '
 }
 
