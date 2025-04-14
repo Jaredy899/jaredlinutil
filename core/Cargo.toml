@@ -12,6 +12,6 @@ include_dir = "0.7.4"
 temp-dir = "0.1.14"
 serde = { version = "1.0.219", features = ["derive"], default-features = false }
 toml = { version = "0.8.20", features = ["parse"], default-features = false }
-which = "7.0.0"
+which = "7.0.3"
 ego-tree = "0.10.0"
 
