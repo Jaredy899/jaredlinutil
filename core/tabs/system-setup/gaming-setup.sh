@@ -46,7 +46,11 @@ installDepend() {
             else
                 printf "%b\n" "${CYAN}Fedora < 41 detected. Installing rpmfusion repos.${RC}"
                 "$ESCALATION_TOOL" "$PACKAGER" install https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-"$(rpm -E %fedora)".noarch.rpm https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-"$(rpm -E %fedora)".noarch.rpm -y
-                "$ESCALATION_TOOL" "$PACKAGER" config-manager --enable fedora-cisco-openh264 -y
+                if [ "$("$PACKAGER" --version | cut -d' ' -f3 | cut -d'.' -f1)" -ge 5 ]; then
+                    "$ESCALATION_TOOL" "$PACKAGER" config-manager setopt --set-enabled fedora-cisco-openh264
+                else
+                    "$ESCALATION_TOOL" "$PACKAGER" config-manager --enable fedora-cisco-openh264
+                fi
                 "$ESCALATION_TOOL" "$PACKAGER" install -y $DEPENDENCIES
             fi
             ;;
