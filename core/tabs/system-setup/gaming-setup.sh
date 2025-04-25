@@ -40,15 +40,17 @@ installDepend() {
             "$ESCALATION_TOOL" "$PACKAGER" install -y $DEPENDENCIES $DISTRO_DEPS
             ;;
         dnf)
-            if [ "$(rpm -E %fedora)" -ge 41 ]; then
-                printf "%b\n" "${CYAN}Fedora >= 41 detected. Installing rpmfusion repos.${RC}"
-                "$ESCALATION_TOOL" "$PACKAGER" install https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-"$(rpm -E %fedora)".noarch.rpm https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-"$(rpm -E %fedora)".noarch.rpm -y
-                "$ESCALATION_TOOL" "$PACKAGER" config-manager setopt --repo fedora-cisco-openh264 enabled=1
-                "$ESCALATION_TOOL" "$PACKAGER" install -y $DEPENDENCIES
+            printf "%b\n" "${CYAN}Installing rpmfusion repos.${RC}"
+            "$ESCALATION_TOOL" "$PACKAGER" install https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-"$(rpm -E %fedora)".noarch.rpm https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-"$(rpm -E %fedora)".noarch.rpm -y
+            
+            # Check DNF version and use appropriate config-manager syntax
+            if [ "$(rpm -E %fedora)" -le 40 ]; then
+                "$ESCALATION_TOOL" "$PACKAGER" config-manager --enable fedora-cisco-openh264 -y
             else
-                "$ESCALATION_TOOL" "$PACKAGER" install ffmpeg ffmpeg-libs -y
-                "$ESCALATION_TOOL" "$PACKAGER" install -y $DEPENDENCIES
+                "$ESCALATION_TOOL" "$PACKAGER" config-manager setopt --repo fedora-cisco-openh264 enabled=1
             fi
+            
+            "$ESCALATION_TOOL" "$PACKAGER" install -y $DEPENDENCIES
             ;;
         zypper)
             "$ESCALATION_TOOL" "$PACKAGER" -n install $DEPENDENCIES
