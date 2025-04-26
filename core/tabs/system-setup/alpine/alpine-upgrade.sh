@@ -1,6 +1,6 @@
 #!/bin/sh -e
 
-. ../common-script.sh
+. ../../common-script.sh
 
 upgradeAlpine() {
     printf "%b\n" "${YELLOW}Backing up repositories file...${RC}"
