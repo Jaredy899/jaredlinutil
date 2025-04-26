@@ -1,6 +1,7 @@
 #!/bin/sh -e
 
 . ../common-script.sh
+
 InstallTermiusFonts() {
     if [ ! -f "/usr/share/kbd/consolefonts/ter-c18b.psf.gz" ] && 
        [ ! -f "/usr/share/consolefonts/Uni3-TerminusBold18x10.psf.gz" ] && 
@@ -40,7 +41,7 @@ InstallTermiusFonts() {
 
 SetTermiusFonts() {
         case "$DTYPE" in
-            arch|fedora|void|solus|opensuse-tumbleweed|opensuse-leap)
+            arch|fedora|void|solus|opensuse-*)
                 printf "%b\n" "${YELLOW}Updating FONT= line in /etc/vconsole.conf...${RC}"
                 "$ESCALATION_TOOL" sed -i 's/^FONT=.*/FONT=ter-v32b/' /etc/vconsole.conf
                 if [ -z "$DISPLAY" ] && [ -z "$WAYLAND_DISPLAY" ]; then
