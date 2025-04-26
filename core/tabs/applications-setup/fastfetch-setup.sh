@@ -10,6 +10,9 @@ installFastfetch() {
                 "$ESCALATION_TOOL" "$PACKAGER" -S --needed --noconfirm fastfetch
                 ;;
             apt-get|nala)
+                if "$ESCALATION_TOOL" "$PACKAGER" install -y fastfetch 2>/dev/null; then
+                    return 0
+                fi
                 case "$ARCH" in
                     x86_64)
                         DEB_FILE="fastfetch-linux-amd64.deb"
