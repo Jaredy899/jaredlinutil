@@ -1,4 +1,5 @@
 #!/bin/sh -e
+# shellcheck disable=SC2086
 
 . ../common-script.sh
 
@@ -15,7 +16,6 @@ installDepend() {
             else
                 printf "%b\n" "${GREEN}Multilib is already enabled.${RC}"
             fi
-            # shellcheck disable=SC2086
             "$AUR_HELPER" -S --needed --noconfirm $DEPENDENCIES
             ;;
         apt-get|nala)
@@ -23,7 +23,6 @@ installDepend() {
             "$ESCALATION_TOOL" "$PACKAGER" update
             "$ESCALATION_TOOL" dpkg --add-architecture i386
             "$ESCALATION_TOOL" "$PACKAGER" update
-            # shellcheck disable=SC2086
             "$ESCALATION_TOOL" "$PACKAGER" install -y $DEPENDENCIES "$COMPILEDEPS"
             ;;
         dnf)
@@ -31,7 +30,6 @@ installDepend() {
             if ! "$ESCALATION_TOOL" "$PACKAGER" config-manager --enable powertools 2>/dev/null; then
                 "$ESCALATION_TOOL" "$PACKAGER" config-manager --enable crb 2>/dev/null || true
             fi
-            # shellcheck disable=SC2086
             "$ESCALATION_TOOL" "$PACKAGER" -y install $DEPENDENCIES
             if ! "$ESCALATION_TOOL" "$PACKAGER" -y group install "Development Tools" 2>/dev/null; then
                 "$ESCALATION_TOOL" "$PACKAGER" -y group install development-tools
@@ -49,7 +47,6 @@ installDepend() {
             ;;
         xbps-install)
             COMPILEDEPS='base-devel'
-            # shellcheck disable=SC2086
             "$ESCALATION_TOOL" "$PACKAGER" -y $DEPENDENCIES $COMPILEDEPS
             "$ESCALATION_TOOL" "$PACKAGER" -y void-repo-multilib
             "$ESCALATION_TOOL" "$PACKAGER" -Sy
@@ -59,7 +56,6 @@ installDepend() {
             SOLUS_DEPENDENCIES='tar tree unzip cmake make jq'
             COMPILEDEPS='-c system.devel'
             "$ESCALATION_TOOL" "$PACKAGER" update-repo
-            # shellcheck disable=SC2086
             "$ESCALATION_TOOL" "$PACKAGER" install -y $SOLUS_DEPENDENCIES $COMPILEDEPS
             ;;
         *)
