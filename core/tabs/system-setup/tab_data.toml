@@ -1,7 +1,7 @@
 name = "System Setup"
 
 [[data]]
-name = "Alpine Linux"
+name = "Alpine"
 
 [[data.preconditions]]
 matches = true
@@ -9,7 +9,7 @@ data = "command_exists"
 values = ["apk"]
 
 [[data.entries]]
-name = "Alpine Edge Update"
+name = "Alpine Update"
 description = "Upgrades Alpine Linux to either latest stable or edge repositories"
 script = "alpine/alpine-upgrade.sh"
 task_list = "PFM"
