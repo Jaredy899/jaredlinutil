@@ -883,6 +883,20 @@ impl AppState {
         self.selection.select(Some(0));
         self.filter.clear_search();
         self.update_items();
+        self.check_and_show_tab_warning();
+    }
+
+    fn check_and_show_tab_warning(&mut self) {
+        if let Some(tab) = self.tabs.get(self.current_tab.selected().unwrap()) {
+            if let Some(warning) = &tab.warning {
+                let warning_float = FloatingText::new(
+                    warning.clone(),
+                    "Tab Warning",
+                    true,
+                );
+                self.spawn_float(warning_float, FLOAT_SIZE, FLOAT_SIZE);
+            }
+        }
     }
 
     fn scroll_tab_down(&mut self) {

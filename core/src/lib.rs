@@ -26,6 +26,7 @@ pub enum Command {
 pub struct Tab {
     pub name: String,
     pub tree: Tree<Rc<ListNode>>,
+    pub warning: Option<String>,
 }
 
 #[derive(Clone, Hash, Eq, PartialEq)]

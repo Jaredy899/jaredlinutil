@@ -59,7 +59,7 @@ pub fn get_tabs(validate: bool) -> TabList {
 
     let tabs: Vec<Tab> = tabs
         .into_iter()
-        .map(|(TabEntry { name, data }, directory)| {
+        .map(|(TabEntry { name, data, warning }, directory)| {
             let mut tree = Tree::new(Rc::new(ListNode {
                 name: "root".to_string(),
                 description: String::new(),
@@ -69,7 +69,7 @@ pub fn get_tabs(validate: bool) -> TabList {
             }));
             let mut root = tree.root_mut();
             create_directory(data, &mut root, &directory, validate, true);
-            Tab { name, tree }
+            Tab { name, tree, warning }
         })
         .collect();
 
@@ -88,6 +88,8 @@ struct TabDirectories {
 struct TabEntry {
     name: String,
     data: Vec<Entry>,
+    #[serde(default)]
+    warning: Option<String>,
 }
 
 #[derive(Deserialize)]
