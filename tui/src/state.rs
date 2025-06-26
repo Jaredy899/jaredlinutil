@@ -486,7 +486,7 @@ impl AppState {
                         if self.current_tab.selected().unwrap() != self.tabs.len() - 1 {
                             self.current_tab.select_next();
                         }
-                        self.refresh_tab();
+                        self.refresh_tab_with_warning(false);
                     } else if mouse_in_list {
                         self.selection.select_next()
                     }
@@ -496,7 +496,7 @@ impl AppState {
                         if self.current_tab.selected().unwrap() != 0 {
                             self.current_tab.select_previous();
                         }
-                        self.refresh_tab();
+                        self.refresh_tab_with_warning(false);
                     } else if mouse_in_list {
                         self.selection.select_previous()
                     }
@@ -584,7 +584,10 @@ impl AppState {
             },
 
             Focus::TabList => match key.code {
-                KeyCode::Enter | KeyCode::Char('l') | KeyCode::Right => self.focus = Focus::List,
+                KeyCode::Enter | KeyCode::Char('l') | KeyCode::Right => {
+                    self.focus = Focus::List;
+                    self.check_and_show_tab_warning();
+                },
                 KeyCode::Char('j') | KeyCode::Down => self.scroll_tab_down(),
                 KeyCode::Char('k') | KeyCode::Up => self.scroll_tab_up(),
 
@@ -872,7 +875,7 @@ impl AppState {
         self.update_items();
     }
 
-    fn refresh_tab(&mut self) {
+    fn refresh_tab_with_warning(&mut self, show_warning: bool) {
         self.visit_stack = vec![(
             self.tabs[self.current_tab.selected().unwrap()]
                 .tree
@@ -883,7 +886,9 @@ impl AppState {
         self.selection.select(Some(0));
         self.filter.clear_search();
         self.update_items();
-        self.check_and_show_tab_warning();
+        if show_warning {
+            self.check_and_show_tab_warning();
+        }
     }
 
     fn check_and_show_tab_warning(&mut self) {
@@ -905,7 +910,7 @@ impl AppState {
         } else {
             self.current_tab.select_next();
         }
-        self.refresh_tab();
+        self.refresh_tab_with_warning(false);
     }
 
     fn scroll_tab_up(&mut self) {
@@ -914,6 +919,6 @@ impl AppState {
         } else {
             self.current_tab.select_previous();
         }
-        self.refresh_tab();
+        self.refresh_tab_with_warning(false);
     }
 }
