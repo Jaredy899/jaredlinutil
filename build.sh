@@ -62,11 +62,11 @@ cargo build --target x86_64-unknown-linux-musl --release
 cp target/x86_64-unknown-linux-musl/release/linutil builds/linutil
 
 echo -e "${GREEN}Building for aarch64-musl...${NC}"
-cargo build --target aarch64-unknown-linux-musl --release
+CC_aarch64_unknown_linux_musl="aarch64-linux-gnu-gcc" CFLAGS_aarch64_unknown_linux_musl="-D_FORTIFY_SOURCE=0 -static" cargo build --target aarch64-unknown-linux-musl --release
 cp target/aarch64-unknown-linux-musl/release/linutil builds/linutil-aarch64
 
 echo -e "${GREEN}Building for armv7-musl...${NC}"
-cargo build --target armv7-unknown-linux-musleabihf --release
+CC_armv7_unknown_linux_musleabihf="arm-linux-gnueabihf-gcc" CFLAGS_armv7_unknown_linux_musleabihf="-D_FORTIFY_SOURCE=0 -static" cargo build --target armv7-unknown-linux-musleabihf --release
 cp target/armv7-unknown-linux-musleabihf/release/linutil builds/linutil-armv7l
 
 echo -e "${GREEN}All builds completed! Binaries are in the 'builds' directory${NC}"
