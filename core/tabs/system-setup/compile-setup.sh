@@ -23,7 +23,7 @@ installDepend() {
             "$ESCALATION_TOOL" "$PACKAGER" update
             "$ESCALATION_TOOL" dpkg --add-architecture i386
             "$ESCALATION_TOOL" "$PACKAGER" update
-            "$ESCALATION_TOOL" "$PACKAGER" install -y $DEPENDENCIES "$COMPILEDEPS"
+            "$ESCALATION_TOOL" "$PACKAGER" install -y $DEPENDENCIES $COMPILEDEPS
             ;;
         dnf)
             "$ESCALATION_TOOL" "$PACKAGER" update -y
@@ -47,19 +47,18 @@ installDepend() {
             ;;
         xbps-install)
             COMPILEDEPS='base-devel'
-            "$ESCALATION_TOOL" "$PACKAGER" -y $DEPENDENCIES $COMPILEDEPS
-            "$ESCALATION_TOOL" "$PACKAGER" -y void-repo-multilib
-            "$ESCALATION_TOOL" "$PACKAGER" -Sy
-            "$ESCALATION_TOOL" "$PACKAGER" -y glibc-32bit gcc-multilib
+            "$ESCALATION_TOOL" "$PACKAGER" -Sy $DEPENDENCIES $COMPILEDEPS
+            "$ESCALATION_TOOL" "$PACKAGER" -Sy void-repo-multilib
+            "$ESCALATION_TOOL" "$PACKAGER" -Sy glibc-32bit gcc-multilib
             ;;
         eopkg)
-            SOLUS_DEPENDENCIES='tar tree unzip cmake make jq'
             COMPILEDEPS='-c system.devel'
             "$ESCALATION_TOOL" "$PACKAGER" update-repo
-            "$ESCALATION_TOOL" "$PACKAGER" install -y $SOLUS_DEPENDENCIES $COMPILEDEPS
+            "$ESCALATION_TOOL" "$PACKAGER" install -y tar tree unzip cmake make jq
+            "$ESCALATION_TOOL" "$PACKAGER" install -y $COMPILEDEPS
             ;;
         *)
-            "$ESCALATION_TOOL" "$PACKAGER" install -y "$DEPENDENCIES"
+            "$ESCALATION_TOOL" "$PACKAGER" install -y $DEPENDENCIES
             ;;
     esac
 }
