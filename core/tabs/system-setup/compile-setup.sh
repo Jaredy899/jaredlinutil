@@ -5,7 +5,7 @@
 
 installDepend() {
     ## Check for dependencies.
-    DEPENDENCIES='tar tree multitail tldr trash-cli unzip cmake make jq'
+    DEPENDENCIES='tar tree multitail trash-cli unzip cmake make jq'
     printf "%b\n" "${YELLOW}Installing dependencies...${RC}"
     case "$PACKAGER" in
         pacman)
