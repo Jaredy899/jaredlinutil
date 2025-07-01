@@ -22,7 +22,7 @@ tui-term = { version = "0.2.0", default-features = false }
 time = { version = "0.3.41", features = ["formatting", "local-offset", "macros"], default-features = false }
 unicode-width = { version = "0.2.0", default-features = false }
 rand = { version = "0.9.1", optional = true }
-linutil_core = { version = "6.6.2025", path = "../core" }
+linutil_core = { version = "7.1.2025", path = "../core" }
 tree-sitter-highlight = "0.25.5"
 tree-sitter-bash = "0.25.0"
 nix = { version = "0.30.1", features = [ "user" ] }
