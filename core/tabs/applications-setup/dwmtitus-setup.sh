@@ -71,10 +71,31 @@ setupPicomDependencies() {
 }
 
 makeDWM() {
-    cd "$HOME" && git clone https://github.com/ChrisTitusTech/dwm-titus.git # CD to Home directory to install dwm-titus
-    # This path can be changed (e.g. to linux-toolbox directory)
-    cd dwm-titus/ # Hardcoded path, maybe not the best.
-    "$ESCALATION_TOOL" make clean install # Run make clean install
+    dwm_dir="$HOME/dwm-titus"
+    
+    if [ -d "$dwm_dir" ]; then
+        printf "%b\n" "Removing existing dwm-titus directory..."
+        rm -rf "$dwm_dir"
+    fi
+    
+    printf "%b\n" "Cloning dwm-titus repository..."
+    if ! git clone https://github.com/ChrisTitusTech/dwm-titus.git "$dwm_dir"; then
+        printf "%b\n" "Error: Failed to clone dwm-titus repository" >&2
+        return 1
+    fi
+    
+    if ! cd "$dwm_dir"; then
+        printf "%b\n" "Error: Failed to change to dwm-titus directory" >&2
+        return 1
+    fi
+    
+    printf "%b\n" "Building and installing dwm-titus..."
+    if ! "$ESCALATION_TOOL" make clean install; then
+        printf "%b\n" "Error: Failed to build/install dwm-titus" >&2
+        return 1
+    fi
+    
+    printf "%b\n" "dwm-titus installed successfully!"
 }
 
 install_nerd_font() {
@@ -340,10 +361,10 @@ install_slstatus() {
     read -r response
     if [ "$response" = "y" ] || [ "$response" = "Y" ]; then
         printf "%b\n" "${YELLOW}Installing slstatus${RC}"
-        cd "$HOME/dwm-titus/slstatus" || { 
+        if ! cd "$HOME/dwm-titus/slstatus"; then
             printf "%b\n" "${RED}Failed to change directory to slstatus${RC}"
             return 1
-        }
+        fi
         if "$ESCALATION_TOOL" make clean install; then
             printf "%b\n" "${GREEN}slstatus installed successfully${RC}"
         else
@@ -353,7 +374,10 @@ install_slstatus() {
     else
         printf "%b\n" "${GREEN}Skipping slstatus installation${RC}"
     fi
-    cd "$HOME"
+    # Return to HOME directory regardless of success/failure
+    cd "$HOME" || {
+        printf "%b\n" "${RED}Warning: Failed to return to HOME directory${RC}"
+    }
 }
 
 checkEnv
