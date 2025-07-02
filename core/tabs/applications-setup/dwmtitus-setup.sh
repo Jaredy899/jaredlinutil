@@ -3,6 +3,12 @@
 . ../common-script.sh
 . ../common-service-script.sh
 
+# Configuration variables
+DWM_DIR="${DWM_DIR:-$HOME/dwm-titus}"
+FONT_DIR="${FONT_DIR:-$HOME/.local/share/fonts}"
+PIC_DIR="${PIC_DIR:-$HOME/Pictures}"
+BG_DIR="${BG_DIR:-$PIC_DIR/backgrounds}"
+
 setupDWM() {
     printf "%b\n" "${YELLOW}Installing DWM-Titus...${RC}"
     case "$PACKAGER" in # Install pre-Requisites
@@ -30,7 +36,7 @@ setupDWM() {
             "$ESCALATION_TOOL" "$PACKAGER" install -y libxcb-devel libxinerama-devel libxft-devel imlib2-devel git unzip flameshot lxappearance feh mate-polkit xcb-util-devel
             ;;   
         *)
-            printf "%b\n" "${RED}Unsupported package manager: ""$PACKAGER""${RC}"
+            printf "%b\n" "${RED}Unsupported package manager: $PACKAGER${RC}"
             exit 1
             ;;
     esac
@@ -71,35 +77,35 @@ setupPicomDependencies() {
 }
 
 makeDWM() {
-    dwm_dir="$HOME/dwm-titus"
-    
-    if [ -d "$dwm_dir" ]; then
-        printf "%b\n" "Removing existing dwm-titus directory..."
-        rm -rf "$dwm_dir"
+    if [ -d "$DWM_DIR" ]; then
+        printf "%b\n" "${YELLOW}Removing existing dwm-titus directory...${RC}"
+        if ! rm -rf "$DWM_DIR"; then
+            printf "%b\n" "${RED}Failed to remove existing dwm-titus directory${RC}"
+            return 1
+        fi
     fi
     
-    printf "%b\n" "Cloning dwm-titus repository..."
-    if ! git clone https://github.com/ChrisTitusTech/dwm-titus.git "$dwm_dir"; then
-        printf "%b\n" "Error: Failed to clone dwm-titus repository" >&2
+    printf "%b\n" "${YELLOW}Cloning dwm-titus repository...${RC}"
+    if ! git clone https://github.com/ChrisTitusTech/dwm-titus.git "$DWM_DIR"; then
+        printf "%b\n" "${RED}Error: Failed to clone dwm-titus repository${RC}"
         return 1
     fi
     
-    if ! cd "$dwm_dir"; then
-        printf "%b\n" "Error: Failed to change to dwm-titus directory" >&2
+    if ! cd "$DWM_DIR"; then
+        printf "%b\n" "${RED}Error: Failed to change to dwm-titus directory${RC}"
         return 1
     fi
     
-    printf "%b\n" "Building and installing dwm-titus..."
+    printf "%b\n" "${YELLOW}Building and installing dwm-titus...${RC}"
     if ! "$ESCALATION_TOOL" make clean install; then
-        printf "%b\n" "Error: Failed to build/install dwm-titus" >&2
+        printf "%b\n" "${RED}Error: Failed to build/install dwm-titus${RC}"
         return 1
     fi
     
-    printf "%b\n" "dwm-titus installed successfully!"
+    printf "%b\n" "${GREEN}dwm-titus installed successfully!${RC}"
 }
 
 install_nerd_font() {
-    FONT_DIR="$HOME/.local/share/fonts"
     FONT_ZIP="$FONT_DIR/Meslo.zip"
     FONT_URL="https://github.com/ryanoasis/nerd-fonts/releases/latest/download/Meslo.zip"
     FONT_INSTALLED=$(fc-list | grep -i "Meslo")
@@ -113,10 +119,10 @@ install_nerd_font() {
 
     # Create the fonts directory if it doesn't exist
     if [ ! -d "$FONT_DIR" ]; then
-        mkdir -p "$FONT_DIR" || {
+        if ! mkdir -p "$FONT_DIR"; then
             printf "%b\n" "${RED}Failed to create directory: $FONT_DIR${RC}"
             return 1
-        }
+        fi
     else
         printf "%b\n" "${GREEN}$FONT_DIR exists, skipping creation.${RC}"
     fi
@@ -124,48 +130,55 @@ install_nerd_font() {
     # Check if the font zip file already exists
     if [ ! -f "$FONT_ZIP" ]; then
         # Download the font zip file
-        curl -sSLo "$FONT_ZIP" "$FONT_URL" || {
+        if ! curl -sSLo "$FONT_ZIP" "$FONT_URL"; then
             printf "%b\n" "${RED}Failed to download Meslo Nerd-fonts from $FONT_URL${RC}"
             return 1
-        }
+        fi
     else
         printf "%b\n" "${GREEN}Meslo.zip already exists in $FONT_DIR, skipping download.${RC}"
     fi
 
     # Unzip the font file if it hasn't been unzipped yet
     if [ ! -d "$FONT_DIR/Meslo" ]; then
-        mkdir -p "$FONT_DIR/Meslo" || {
+        if ! mkdir -p "$FONT_DIR/Meslo"; then
             printf "%b\n" "${RED}Failed to create directory: $FONT_DIR/Meslo${RC}"
             return 1
-        }
-        unzip "$FONT_ZIP" -d "$FONT_DIR" || {
+        fi
+        if ! unzip "$FONT_ZIP" -d "$FONT_DIR"; then
             printf "%b\n" "${RED}Failed to unzip $FONT_ZIP${RC}"
             return 1
-        }
+        fi
     else
         printf "%b\n" "${GREEN}Meslo font files already unzipped in $FONT_DIR, skipping unzip.${RC}"
     fi
 
     # Remove the zip file
-    rm "$FONT_ZIP" || {
+    if ! rm "$FONT_ZIP"; then
         printf "%b\n" "${RED}Failed to remove $FONT_ZIP${RC}"
         return 1
-    }
+    fi
 
     # Rebuild the font cache
-    fc-cache -fv || {
+    if ! fc-cache -fv; then
         printf "%b\n" "${RED}Failed to rebuild font cache${RC}"
         return 1
-    }
+    fi
 
     printf "%b\n" "${GREEN}Meslo Nerd-fonts installed successfully${RC}"
 }
 
 picom_animations() {
+    original_dir=$(pwd)
+    picom_dir="$HOME/.local/share/picom-animations"
+    
     # clone the repo into .local/share & use the -p flag to avoid overwriting that dir
-    mkdir -p "$HOME/.local/share/"
-    if [ ! -d "$HOME/.local/share/ftlabs-picom" ]; then
-        if ! git clone https://github.com/FT-Labs/picom.git "$HOME/.local/share/ftlabs-picom"; then
+    if ! mkdir -p "$HOME/.local/share/"; then
+        printf "%b\n" "${RED}Failed to create .local/share directory${RC}"
+        return 1
+    fi
+    
+    if [ ! -d "$picom_dir" ]; then
+        if ! git clone https://github.com/ChrisTitusTech/picom.git "$picom_dir"; then
             printf "%b\n" "${RED}Failed to clone the repository${RC}"
             return 1
         fi
@@ -173,59 +186,81 @@ picom_animations() {
         printf "%b\n" "${GREEN}Repository already exists, skipping clone${RC}"
     fi
 
-    cd "$HOME/.local/share/ftlabs-picom" || { printf "%b\n" "${RED}Failed to change directory to picom${RC}"; return 1; }
+    if ! cd "$picom_dir"; then
+        printf "%b\n" "${RED}Failed to change directory to picom${RC}"
+        return 1
+    fi
 
     # Build the project
     if ! meson setup --buildtype=release build; then
         printf "%b\n" "${RED}Meson setup failed${RC}"
+        cd "$original_dir" || printf "%b\n" "${RED}Warning: Failed to return to original directory${RC}"
         return 1
     fi
 
     if ! ninja -C build; then
         printf "%b\n" "${RED}Ninja build failed${RC}"
+        cd "$original_dir" || printf "%b\n" "${RED}Warning: Failed to return to original directory${RC}"
         return 1
     fi
 
     # Install the built binary
     if ! "$ESCALATION_TOOL" ninja -C build install; then
         printf "%b\n" "${RED}Failed to install the built binary${RC}"
+        cd "$original_dir" || printf "%b\n" "${RED}Warning: Failed to return to original directory${RC}"
         return 1
     fi
+
+    cd "$original_dir" || {
+        printf "%b\n" "${RED}Warning: Failed to return to original directory${RC}"
+    }
 
     printf "%b\n" "${GREEN}Picom animations installed successfully${RC}"
 }
 
 clone_config_folders() {
     # Ensure the target directory exists
-    [ ! -d ~/.config ] && mkdir -p ~/.config
+    if [ ! -d "$HOME/.config" ]; then
+        if ! mkdir -p "$HOME/.config"; then
+            printf "%b\n" "${RED}Failed to create ~/.config directory${RC}"
+            return 1
+        fi
+    fi
+
+    # Check if we're in the right directory and config exists
+    if [ ! -d "config" ]; then
+        printf "%b\n" "${RED}config directory not found in current location${RC}"
+        return 1
+    fi
 
     # Iterate over all directories in config/*
     for dir in config/*/; do
+        # Check if the glob matched anything
+        if [ ! -d "$dir" ]; then
+            printf "%b\n" "${YELLOW}No config directories found${RC}"
+            break
+        fi
+        
         # Extract the directory name
         dir_name=$(basename "$dir")
 
         # Clone the directory to ~/.config/
-        if [ -d "$dir" ]; then
-            cp -r "$dir" ~/.config/
-            printf "%b\n" "${GREEN}Cloned $dir_name to ~/.config/${RC}"
-        else
-            printf "%b\n" "${RED}Directory $dir_name does not exist, skipping${RC}"
+        if ! cp -r "$dir" "$HOME/.config/"; then
+            printf "%b\n" "${RED}Failed to copy $dir_name to ~/.config/${RC}"
+            return 1
         fi
+        printf "%b\n" "${GREEN}Cloned $dir_name to ~/.config/${RC}"
     done
 }
 
 configure_backgrounds() {
-    # Set the variable PIC_DIR which stores the path for images
-    PIC_DIR="$HOME/Pictures"
-
-    # Set the variable BG_DIR to the path where backgrounds will be stored
-    BG_DIR="$PIC_DIR/backgrounds"
-
     # Check if the ~/Pictures directory exists
     if [ ! -d "$PIC_DIR" ]; then
-        # If it doesn't exist, print an error message and return with a status of 1 (indicating failure)
-        printf "%b\n" "${RED}Pictures directory does not exist${RC}"
-        mkdir ~/Pictures
+        printf "%b\n" "${YELLOW}Pictures directory does not exist, creating it...${RC}"
+        if ! mkdir -p "$PIC_DIR"; then
+            printf "%b\n" "${RED}Failed to create Pictures directory${RC}"
+            return 1
+        fi
         printf "%b\n" "${GREEN}Directory was created in Home folder${RC}"
     fi
 
@@ -238,7 +273,10 @@ configure_backgrounds() {
             return 1
         fi
         # Rename the cloned directory to 'backgrounds'
-        mv "$PIC_DIR/nord-background" "$PIC_DIR/backgrounds"
+        if ! mv "$PIC_DIR/nord-background" "$BG_DIR"; then
+            printf "%b\n" "${RED}Failed to rename nord-background to backgrounds${RC}"
+            return 1
+        fi
         # Print a success message indicating that the backgrounds have been downloaded
         printf "%b\n" "${GREEN}Downloaded desktop backgrounds to $BG_DIR${RC}"    
     else
@@ -361,7 +399,7 @@ install_slstatus() {
     read -r response
     if [ "$response" = "y" ] || [ "$response" = "Y" ]; then
         printf "%b\n" "${YELLOW}Installing slstatus${RC}"
-        if ! cd "$HOME/dwm-titus/slstatus"; then
+        if ! cd "$DWM_DIR/slstatus"; then
             printf "%b\n" "${RED}Failed to change directory to slstatus${RC}"
             return 1
         fi
