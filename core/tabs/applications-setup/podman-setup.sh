@@ -12,6 +12,9 @@ installPodman() {
             xbps-install)
                 "$ESCALATION_TOOL" "$PACKAGER" -Sy podman
                 ;;
+            apk)
+                "$ESCALATION_TOOL" "$PACKAGER" add podman
+                ;;
             *)
                 "$ESCALATION_TOOL" "$PACKAGER" install -y podman
                 ;;
