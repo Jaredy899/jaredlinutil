@@ -20,4 +20,4 @@ task_list = "I SS"
 [[data.preconditions]]
 matches = true
 data = "command_exists"
-values = [ "firewall-cmd" ]
+values = [ "zypper", "dnf", "firewall-cmd" ]

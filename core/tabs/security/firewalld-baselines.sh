@@ -1,6 +1,27 @@
 #!/bin/sh -e
 
 . ../common-script.sh
+. ../common-service-script.sh
+
+installPkg() {
+    if ! command_exists firewalld; then
+        printf "%b\n" "${YELLOW}Installing firewalld...${RC}"
+        case "$PACKAGER" in
+            zypper|dnf)
+                "$ESCALATION_TOOL" "$PACKAGER" install -y firewalld
+                ;;
+            *)
+                printf "%b\n" "${RED}Unsupported package manager: $PACKAGER${RC}"
+                exit 1
+                ;;
+        esac
+        
+        printf "%b\n" "${YELLOW}Enabling and starting firewalld service...${RC}"
+        startAndEnableService firewalld
+    else
+        printf "%b\n" "${GREEN}firewalld is already installed${RC}"
+    fi
+}
 
 configureFirewallD() {
     printf "%b\n" "${YELLOW}Configuring FirewallD with recommended rules${RC}"
@@ -37,4 +58,5 @@ configureFirewallD() {
 
 checkEnv
 checkEscalationTool
+installPkg
 configureFirewallD
