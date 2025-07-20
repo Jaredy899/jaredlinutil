@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# shellcheck disable=SC2002,SC2086,SC2154
+
 # Redirect stdout and stderr to archsetup.txt and still output to console
 exec > >(tee -i archsetup.txt)
 exec 2>&1
@@ -226,6 +228,7 @@ echo -ne "
 
     PS3='
     Select the disk to install on: '
+    #shellcheck disable=SC2207
     options=($(lsblk -n --output TYPE,KNAME,SIZE | awk '$1=="disk"{print "/dev/"$2"|"$3}'))
 
     select_option "${options[@]}"
@@ -619,7 +622,7 @@ fi
 
 echo -ne "
 -------------------------------------------------------------------------
-               Creating (and Theming) Grub Boot Menu
+               Creating Grub Boot Menu
 -------------------------------------------------------------------------
 "
 # set kernel parameter for decrypting the drive
@@ -629,28 +632,6 @@ fi
 # set kernel parameter for adding splash screen
 sed -i 's/GRUB_CMDLINE_LINUX_DEFAULT="[^"]*/& splash /' /etc/default/grub
 
-echo -e "Installing CyberRe Grub theme..."
-THEME_DIR="/boot/grub/themes/CyberRe"
-echo -e "Creating the theme directory..."
-mkdir -p "${THEME_DIR}"
-
-# Clone the theme
-cd "${THEME_DIR}" || exit
-git init
-git remote add -f origin https://github.com/ChrisTitusTech/Top-5-Bootloader-Themes.git
-git config core.sparseCheckout true
-echo "themes/CyberRe/*" >> .git/info/sparse-checkout
-git pull origin main
-mv themes/CyberRe/* .
-rm -rf themes
-rm -rf .git
-
-echo "CyberRe theme has been cloned to ${THEME_DIR}"
-echo -e "Backing up Grub config..."
-cp -an /etc/default/grub /etc/default/grub.bak
-echo -e "Setting the theme as the default..."
-grep "GRUB_THEME=" /etc/default/grub 2>&1 >/dev/null && sed -i '/GRUB_THEME=/d' /etc/default/grub
-echo "GRUB_THEME=\"${THEME_DIR}/theme.txt\"" >> /etc/default/grub
 echo -e "Updating grub..."
 grub-mkconfig -o /boot/grub/grub.cfg
 echo -e "All set!"
