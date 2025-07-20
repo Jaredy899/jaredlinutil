@@ -182,7 +182,7 @@ task_list = "I FM SS"
 [[data]]
 name = "SSH Authorized Keys"
 description = "Adds SSH keys to Authorized users by either GitHub or manual entry"
-script - "add-ssh-key.sh"
+script = "add-ssh-key.sh"
 task_list = "FM SS"
 
 [[data]]
