@@ -105,7 +105,7 @@ setDefaultShellToZsh() {
 }
 
 BASE_URL="https://raw.githubusercontent.com/Jaredy899/linux/main/config_changes"
-ZSHRC_URL="https://raw.githubusercontent.com/Jaredy899/mac/refs/heads/main/myzsh/myzsh.sh"
+ZSHRC_URL="https://raw.githubusercontent.com/Jaredy899/mac/refs/heads/main/myzsh/.zshrc"
 
 setupAndReplaceConfigs() {
     printf "%b\n" "${YELLOW}Setting up Zsh and downloading configurations...${RC}"
