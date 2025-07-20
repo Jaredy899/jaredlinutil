@@ -36,9 +36,11 @@ setDefaultShellToBash() {
     if [ "$CURRENT_SHELL" != "$BASH_PATH" ]; then
         printf "%b\n" "${YELLOW}Changing default shell to bash for user $USER...${RC}"
         if command -v chsh >/dev/null 2>&1; then
-            chsh -s "$BASH_PATH" "$USER" && \
-                printf "%b\n" "${GREEN}Default shell changed to bash.${RC}" || \
+            if chsh -s "$BASH_PATH" "$USER"; then
+                printf "%b\n" "${GREEN}Default shell changed to bash.${RC}"
+            else
                 printf "%b\n" "${RED}Failed to change default shell. You may need to log out and back in, or run 'chsh -s $BASH_PATH' manually.${RC}"
+            fi
         else
             printf "%b\n" "${RED}chsh command not found. Please change your shell manually to bash.${RC}"
         fi

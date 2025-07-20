@@ -26,7 +26,7 @@ impl Config {
         let content = match fs::read_to_string(path) {
             Ok(content) => content,
             Err(e) => {
-                eprintln!("Failed to read config file {}: {}", path.display(), e);
+                eprintln!("Failed to read config file {}: {e}", path.display());
                 process::exit(1);
             }
         };
@@ -34,7 +34,7 @@ impl Config {
         let config: Config = match toml::from_str(&content) {
             Ok(config) => config,
             Err(e) => {
-                eprintln!("Failed to parse config file: {}", e);
+                eprintln!("Failed to parse config file: {e}");
                 process::exit(1);
             }
         };
