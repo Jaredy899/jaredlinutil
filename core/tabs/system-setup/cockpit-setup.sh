@@ -7,16 +7,16 @@ install_cockpit() {
     if ! command_exists cockpit; then
         printf "%b\n" "${YELLOW}Installing Cockpit...${RC}"
         case "$PACKAGER" in
-        pacman)
-            "$ESCALATION_TOOL" "$PACKAGER" -S --noconfirm cockpit
-            ;;
-        apt-get|nala|dnf|zypper)
-            "$ESCALATION_TOOL" "$PACKAGER" install -y cockpit
-            ;;
-        *)
-            printf "%b\n" "${RED}Unsupported package manager: $PACKAGER${RC}"
-            exit 1
-            ;;
+            pacman)
+                "$ESCALATION_TOOL" "$PACKAGER" -S --noconfirm cockpit
+                ;;
+            apt-get|nala|dnf|zypper)
+                "$ESCALATION_TOOL" "$PACKAGER" install -y cockpit
+                ;;
+            *)
+                printf "%b\n" "${RED}Unsupported package manager: $PACKAGER${RC}"
+                exit 1
+                ;;
         esac
         startAndEnableService "cockpit.socket"
         printf "%b\n" "${GREEN}Cockpit service has been started.${RC}"
@@ -26,7 +26,7 @@ install_cockpit() {
     fi
 }
 
-configureUFW() {
+configure_firewall() {
     if command_exists ufw; then
         "$ESCALATION_TOOL" ufw allow 9090/tcp
         "$ESCALATION_TOOL" ufw reload
@@ -44,4 +44,4 @@ configureUFW() {
 checkEnv
 checkEscalationTool
 install_cockpit
-configureUFW
+configure_firewall

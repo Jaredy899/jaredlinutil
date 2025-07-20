@@ -26,7 +26,7 @@ installFastfetch() {
                 rm /tmp/fastfetch.deb
                 ;;
             apk)
-                "$ESCALATION_TOOL" "$PACKAGER" add fastfetch
+                "$ESCALATION_TOOL" "$PACKAGER" add fastfetch zoxide
                 ;;
             xbps-install)
                 "$ESCALATION_TOOL" "$PACKAGER" -Sy fastfetch

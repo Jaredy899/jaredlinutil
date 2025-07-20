@@ -122,6 +122,12 @@ name = "Remove User From Groups"
 script = "user-account-manager/remove_from_group.sh"
 
 [[data]]
+name = "Add Network Drive"
+description = "Adds either CIFS (Samba) or NFS netowrk drives"
+script = "network-device.sh"
+task_list = "I FM SS"
+
+[[data]]
 name = "Auto Mount Drive"
 description = "This utility is designed to help with automating the process of mounting a drive on to your system."
 script = "auto-mount.sh"
@@ -172,6 +178,12 @@ task_list = "I PFM SS"
 name = "SSH Commands"
 script = "ssh.sh"
 task_list = "I FM SS"
+
+[[data]]
+name = "SSH Authorized Keys"
+description = "Adds SSH keys to Authorized users by either GitHub or manual entry"
+script - "add-ssh-key.sh"
+task_list = "FM SS"
 
 [[data]]
 name = "SSH Samba"
