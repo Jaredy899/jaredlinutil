@@ -42,32 +42,42 @@ install_package() {
 
     case "$PACKAGER" in
         pacman)
-            "$ESCALATION_TOOL" "$PACKAGER" -S --noconfirm --needed "$package_name"
+            if "$ESCALATION_TOOL" "$PACKAGER" -S --noconfirm --needed "$package_name"; then
+                printf "%b\n" "${GREEN}$package_name installed successfully.${RC}"
+            else
+                printf "%b\n" "${RED}Failed to install $package_name. Please install it manually.${RC}"
+                exit 1
+            fi
             ;;
         apt-get|nala|dnf|zypper|eopkg)
-            "$ESCALATION_TOOL" "$PACKAGER" install -y "$package_name"
+            if "$ESCALATION_TOOL" "$PACKAGER" install -y "$package_name"; then
+                printf "%b\n" "${GREEN}$package_name installed successfully.${RC}"
+            else
+                printf "%b\n" "${RED}Failed to install $package_name. Please install it manually.${RC}"
+                exit 1
+            fi
             ;;
         apk)
-            "$ESCALATION_TOOL" "$PACKAGER" add --no-cache "$package_name"
+            if "$ESCALATION_TOOL" "$PACKAGER" add --no-cache "$package_name"; then
+                printf "%b\n" "${GREEN}$package_name installed successfully.${RC}"
+            else
+                printf "%b\n" "${RED}Failed to install $package_name. Please install it manually.${RC}"
+                exit 1
+            fi
             ;;
         xbps-install)
-            "$ESCALATION_TOOL" "$PACKAGER" -Sy "$package_name"
-            ;;
-        slapt-get)
-            "$ESCALATION_TOOL" "$PACKAGER" -y -i "$package_name"
+            if "$ESCALATION_TOOL" "$PACKAGER" -Sy "$package_name"; then
+                printf "%b\n" "${GREEN}$package_name installed successfully.${RC}"
+            else
+                printf "%b\n" "${RED}Failed to install $package_name. Please install it manually.${RC}"
+                exit 1
+            fi
             ;;
         *)
             printf "%b\n" "${RED}Unknown package manager. Cannot install package.${RC}"
             exit 1
             ;;
     esac
-
-    if [ $? -eq 0 ]; then
-        printf "%b\n" "${GREEN}$package_name installed successfully.${RC}"
-    else
-        printf "%b\n" "${RED}Failed to install $package_name. Please install it manually.${RC}"
-        exit 1
-    fi
 }
 
 prompt_mount_info() {
