@@ -21,3 +21,9 @@ task_list = "I SS"
 matches = true
 data = "command_exists"
 values = [ "firewall-cmd" ]
+
+[[data]]
+name = "Tailscale"
+description = "Tailscale is a zero-trust network overlay that utilizes the WireGuard protocol for secure connectivity across resources."
+script = "tailscale.sh"
+task_list = "I SS"
