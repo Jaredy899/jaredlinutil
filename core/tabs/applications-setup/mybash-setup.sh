@@ -26,20 +26,20 @@ installDepend() {
 
 setDefaultShellToBash() {
     CURRENT_SHELL="$(getent passwd "$USER" | cut -d: -f7)"
-    BASH_PATH="$(command -v bash)"
+    SHELL_PATH="$(command -v bash)"
 
-    if [ -z "$BASH_PATH" ]; then
+    if [ -z "$SHELL_PATH" ]; then
         printf "%b\n" "${RED}Bash is not installed!${RC}"
         return 1
     fi
 
-    if [ "$CURRENT_SHELL" != "$BASH_PATH" ]; then
+    if [ "$CURRENT_SHELL" != "$SHELL_PATH" ]; then
         printf "%b\n" "${YELLOW}Changing default shell to bash for user $USER...${RC}"
         if command -v chsh >/dev/null 2>&1; then
-            if chsh -s "$BASH_PATH" "$USER"; then
+            if chsh -s "$SHELL_PATH" "$USER"; then
                 printf "%b\n" "${GREEN}Default shell changed to bash.${RC}"
             else
-                printf "%b\n" "${RED}Failed to change default shell. You may need to log out and back in, or run 'chsh -s $BASH_PATH' manually.${RC}"
+                printf "%b\n" "${RED}Failed to change default shell. You may need to log out and back in, or run 'chsh -s $SHELL_PATH' manually.${RC}"
             fi
         else
             printf "%b\n" "${RED}chsh command not found. Please change your shell manually to bash.${RC}"
