@@ -24,23 +24,71 @@ installDepend() {
     fi
 }
 
+setDefaultShellToBash() {
+    CURRENT_SHELL="$(getent passwd "$USER" | cut -d: -f7)"
+    SHELL_PATH="$(command -v bash)"
+
+    if [ -z "$SHELL_PATH" ]; then
+        printf "%b\n" "${RED}Bash is not installed!${RC}"
+        return 1
+    fi
+
+    # Ensure bash is in /etc/shells
+    if ! grep -q "^$SHELL_PATH$" /etc/shells 2>/dev/null; then
+        printf "%b\n" "${YELLOW}Adding bash to /etc/shells...${RC}"
+        echo "$SHELL_PATH" | "$ESCALATION_TOOL" tee -a /etc/shells >/dev/null
+    fi
+
+    if [ "$CURRENT_SHELL" != "$SHELL_PATH" ]; then
+        printf "%b\n" "${YELLOW}Changing default shell to bash for user $USER...${RC}"
+        
+        # Try chsh first (most common method)
+        if command -v chsh >/dev/null 2>&1; then
+            if chsh -s "$SHELL_PATH" "$USER" 2>/dev/null; then
+                printf "%b\n" "${GREEN}Default shell changed to bash.${RC}"
+            else
+                # Fallback: try with sudo if regular chsh fails
+                if "$ESCALATION_TOOL" chsh -s "$SHELL_PATH" "$USER" 2>/dev/null; then
+                    printf "%b\n" "${GREEN}Default shell changed to bash.${RC}"
+                else
+                    printf "%b\n" "${YELLOW}Automatic shell change failed. Trying usermod...${RC}"
+                    # Fallback: use usermod (requires root)
+                    if "$ESCALATION_TOOL" usermod -s "$SHELL_PATH" "$USER" 2>/dev/null; then
+                        printf "%b\n" "${GREEN}Default shell changed to bash using usermod.${RC}"
+                    else
+                        printf "%b\n" "${RED}Failed to change shell automatically.${RC}"
+                        printf "%b\n" "${YELLOW}Please run manually: chsh -s $SHELL_PATH${RC}"
+                        printf "%b\n" "${YELLOW}Or log out and back in for changes to take effect.${RC}"
+                    fi
+                fi
+            fi
+        else
+            # No chsh available, try usermod directly
+            if "$ESCALATION_TOOL" usermod -s "$SHELL_PATH" "$USER" 2>/dev/null; then
+                printf "%b\n" "${GREEN}Default shell changed to bash using usermod.${RC}"
+            else
+                printf "%b\n" "${RED}Neither chsh nor usermod available. Please change shell manually.${RC}"
+            fi
+        fi
+    else
+        printf "%b\n" "${GREEN}Default shell is already bash.${RC}"
+    fi
+}
+
 cloneMyBash() {
-    # Check if the dir exists before attempting to clone into it.
     if [ -d "$gitpath" ]; then
         rm -rf "$gitpath"
     fi
-    mkdir -p "$HOME/.local/share" # Only create the dir if it doesn't exist.
+    mkdir -p "$HOME/.local/share"
     cd "$HOME" && git clone https://github.com/ChrisTitusTech/mybash.git "$gitpath"
 }
 
 installFont() {
-    # Check to see if the MesloLGS Nerd Font is installed (Change this to whatever font you would like)
     FONT_NAME="MesloLGS Nerd Font Mono"
     if fc-list :family | grep -iq "$FONT_NAME"; then
         printf "%b\n" "${GREEN}Font '$FONT_NAME' is installed.${RC}"
     else
         printf "%b\n" "${YELLOW}Installing font '$FONT_NAME'${RC}"
-        # Change this URL to correspond with the correct font
         FONT_URL="https://github.com/ryanoasis/nerd-fonts/releases/latest/download/Meslo.zip"
         FONT_DIR="$HOME/.local/share/fonts"
         TEMP_DIR=$(mktemp -d)
@@ -107,6 +155,7 @@ linkConfig() {
         printf "%b\n" "${RED}Failed to create symbolic link for .bashrc${RC}"
         exit 1
     }
+    mkdir -p "$HOME/.config"
     ln -svf "$gitpath/starship.toml" "$HOME/.config/starship.toml" || {
         printf "%b\n" "${RED}Failed to create symbolic link for starship.toml${RC}"
         exit 1
@@ -114,11 +163,40 @@ linkConfig() {
     printf "%b\n" "${GREEN}Done! restart your shell to see the changes.${RC}"
 }
 
+# --- New Section: Replace Configs ---
+BASE_URL="https://raw.githubusercontent.com/Jaredy899/linux/main/config_changes"
+MYBASH_DIR="$HOME/.local/share/mybash"
+
+replaceConfigs() {
+    printf "%b\n" "${YELLOW}Downloading and replacing configurations...${RC}"
+
+    mkdir -p "$MYBASH_DIR"
+    mkdir -p "$HOME/.config/fastfetch"
+    mkdir -p "$HOME/.config"
+
+    if [ -f /etc/alpine-release ]; then
+        "$ESCALATION_TOOL" curl -sSfL -o "/etc/profile" "$BASE_URL/profile"
+        "$ESCALATION_TOOL" apk add zoxide
+    elif [ "$DTYPE" = "solus" ]; then
+        curl -sSfL -o "$HOME/.profile" "$BASE_URL/.profile"
+        curl -sSfL -o "$MYBASH_DIR/.bashrc" "$BASE_URL/.bashrc"
+    else
+        curl -sSfL -o "$MYBASH_DIR/.bashrc" "$BASE_URL/.bashrc"
+    fi
+
+    curl -sSfL -o "$HOME/.config/fastfetch/config.jsonc" "$BASE_URL/config.jsonc"
+    curl -sSfL -o "$HOME/.config/starship.toml" "$BASE_URL/starship.toml"
+
+    printf "%b\n" "${GREEN}Configurations downloaded and replaced successfully.${RC}"
+}
+
 checkEnv
 checkEscalationTool
 installDepend
+setDefaultShellToBash
 cloneMyBash
 installFont
 installStarshipAndFzf
 installZoxide
 linkConfig
+replaceConfigs

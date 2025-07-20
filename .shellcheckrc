@@ -1,3 +1,4 @@
 external-sources=true
 source=core/tabs/common-script.sh
 source=core/tabs/common-service-script.sh
+disable=SC1091

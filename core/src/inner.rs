@@ -59,18 +59,31 @@ pub fn get_tabs(validate: bool) -> TabList {
 
     let tabs: Vec<Tab> = tabs
         .into_iter()
-        .map(|(TabEntry { name, data, warning }, directory)| {
-            let mut tree = Tree::new(Rc::new(ListNode {
-                name: "root".to_string(),
-                description: String::new(),
-                command: Command::None,
-                task_list: String::new(),
-                multi_select: false,
-            }));
-            let mut root = tree.root_mut();
-            create_directory(data, &mut root, &directory, validate, true);
-            Tab { name, tree, warning }
-        })
+        .map(
+            |(
+                TabEntry {
+                    name,
+                    data,
+                    warning,
+                },
+                directory,
+            )| {
+                let mut tree = Tree::new(Rc::new(ListNode {
+                    name: "root".to_string(),
+                    description: String::new(),
+                    command: Command::None,
+                    task_list: String::new(),
+                    multi_select: false,
+                }));
+                let mut root = tree.root_mut();
+                create_directory(data, &mut root, &directory, validate, true);
+                Tab {
+                    name,
+                    tree,
+                    warning,
+                }
+            },
+        )
         .collect();
 
     if tabs.is_empty() {

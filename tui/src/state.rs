@@ -311,7 +311,7 @@ impl AppState {
         let (keybind_scope, shortcuts) = self.get_keybinds();
 
         let keybinds_block = Block::bordered()
-            .title(format!(" {} ", keybind_scope))
+            .title(format!(" {keybind_scope} "))
             .border_set(border::ROUNDED);
 
         let keybind_render_width = keybinds_block.inner(area).width;
@@ -407,7 +407,7 @@ impl AppState {
                         chunks[1].width as usize - left_content.len() - right_content.len(),
                     );
                     Line::styled(
-                        format!("{}{}{}", left_content, center_space, right_content),
+                        format!("{left_content}{center_space}{right_content}"),
                         self.theme.cmd_color(),
                     )
                     .patch_style(style)
@@ -422,7 +422,7 @@ impl AppState {
         };
 
         let title = if self.multi_select {
-            &format!("{}[Multi-Select] ", TITLE)
+            &format!("{TITLE}[Multi-Select] ")
         } else {
             TITLE
         };
@@ -587,7 +587,7 @@ impl AppState {
                 KeyCode::Enter | KeyCode::Char('l') | KeyCode::Right => {
                     self.focus = Focus::List;
                     self.check_and_show_tab_warning();
-                },
+                }
                 KeyCode::Char('j') | KeyCode::Down => self.scroll_tab_down(),
                 KeyCode::Char('k') | KeyCode::Up => self.scroll_tab_up(),
 
@@ -894,11 +894,7 @@ impl AppState {
     fn check_and_show_tab_warning(&mut self) {
         if let Some(tab) = self.tabs.get(self.current_tab.selected().unwrap()) {
             if let Some(warning) = &tab.warning {
-                let warning_float = FloatingText::new(
-                    warning.clone(),
-                    "Tab Warning",
-                    true,
-                );
+                let warning_float = FloatingText::new(warning.clone(), "Tab Warning", true);
                 self.spawn_float(warning_float, FLOAT_SIZE, FLOAT_SIZE);
             }
         }
