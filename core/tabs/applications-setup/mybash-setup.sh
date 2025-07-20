@@ -24,23 +24,43 @@ installDepend() {
     fi
 }
 
+setDefaultShellToBash() {
+    CURRENT_SHELL="$(getent passwd "$USER" | cut -d: -f7)"
+    BASH_PATH="$(command -v bash)"
+
+    if [ -z "$BASH_PATH" ]; then
+        printf "%b\n" "${RED}Bash is not installed!${RC}"
+        return 1
+    fi
+
+    if [ "$CURRENT_SHELL" != "$BASH_PATH" ]; then
+        printf "%b\n" "${YELLOW}Changing default shell to bash for user $USER...${RC}"
+        if command -v chsh >/dev/null 2>&1; then
+            chsh -s "$BASH_PATH" "$USER" && \
+                printf "%b\n" "${GREEN}Default shell changed to bash.${RC}" || \
+                printf "%b\n" "${RED}Failed to change default shell. You may need to log out and back in, or run 'chsh -s $BASH_PATH' manually.${RC}"
+        else
+            printf "%b\n" "${RED}chsh command not found. Please change your shell manually to bash.${RC}"
+        fi
+    else
+        printf "%b\n" "${GREEN}Default shell is already bash.${RC}"
+    fi
+}
+
 cloneMyBash() {
-    # Check if the dir exists before attempting to clone into it.
     if [ -d "$gitpath" ]; then
         rm -rf "$gitpath"
     fi
-    mkdir -p "$HOME/.local/share" # Only create the dir if it doesn't exist.
+    mkdir -p "$HOME/.local/share"
     cd "$HOME" && git clone https://github.com/ChrisTitusTech/mybash.git "$gitpath"
 }
 
 installFont() {
-    # Check to see if the MesloLGS Nerd Font is installed (Change this to whatever font you would like)
     FONT_NAME="MesloLGS Nerd Font Mono"
     if fc-list :family | grep -iq "$FONT_NAME"; then
         printf "%b\n" "${GREEN}Font '$FONT_NAME' is installed.${RC}"
     else
         printf "%b\n" "${YELLOW}Installing font '$FONT_NAME'${RC}"
-        # Change this URL to correspond with the correct font
         FONT_URL="https://github.com/ryanoasis/nerd-fonts/releases/latest/download/Meslo.zip"
         FONT_DIR="$HOME/.local/share/fonts"
         TEMP_DIR=$(mktemp -d)
@@ -115,11 +135,40 @@ linkConfig() {
     printf "%b\n" "${GREEN}Done! restart your shell to see the changes.${RC}"
 }
 
+# --- New Section: Replace Configs ---
+BASE_URL="https://raw.githubusercontent.com/Jaredy899/linux/main/config_changes"
+MYBASH_DIR="$HOME/.local/share/mybash"
+
+replaceConfigs() {
+    printf "%b\n" "${YELLOW}Downloading and replacing configurations...${RC}"
+
+    mkdir -p "$MYBASH_DIR"
+    mkdir -p "$HOME/.config/fastfetch"
+    mkdir -p "$HOME/.config"
+
+    if [ -f /etc/alpine-release ]; then
+        "$ESCALATION_TOOL" curl -sSfL -o "/etc/profile" "$BASE_URL/profile"
+        "$ESCALATION_TOOL" apk add zoxide
+    elif [ "$DTYPE" = "solus" ]; then
+        curl -sSfL -o "$HOME/.profile" "$BASE_URL/.profile"
+        curl -sSfL -o "$MYBASH_DIR/.bashrc" "$BASE_URL/.bashrc"
+    else
+        curl -sSfL -o "$MYBASH_DIR/.bashrc" "$BASE_URL/.bashrc"
+    fi
+
+    curl -sSfL -o "$HOME/.config/fastfetch/config.jsonc" "$BASE_URL/config.jsonc"
+    curl -sSfL -o "$HOME/.config/starship.toml" "$BASE_URL/starship.toml"
+
+    printf "%b\n" "${GREEN}Configurations downloaded and replaced successfully.${RC}"
+}
+
 checkEnv
 checkEscalationTool
 installDepend
+setDefaultShellToBash
 cloneMyBash
 installFont
 installStarshipAndFzf
 installZoxide
 linkConfig
+replaceConfigs
