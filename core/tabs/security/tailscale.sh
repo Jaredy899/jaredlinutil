@@ -5,7 +5,14 @@
 installTailscale() {
     if ! command_exists tailscale; then
         printf "%b\n" "${YELLOW}Installing Tailscale...${RC}"
-        curl -fsSL https://tailscale.com/install.sh | sh
+        case "$PACKAGER" in
+            eopkg)
+                "$ESCALATION_TOOL" "$PACKAGER" install -y tailscale
+                ;;
+            *)
+                curl -fsSL https://tailscale.com/install.sh | sh
+                ;;
+        esac
     else
         printf "%b\n" "${GREEN}Tailscale is already installed${RC}"
     fi
