@@ -84,24 +84,54 @@ installZoxide() {
 
 # Function to set default shell to zsh
 setDefaultShellToZsh() {
-  ZSH_PATH="$(command -v zsh)"
-  CURRENT_SHELL="$(getent passwd "$USER" | cut -d: -f7)"
-  if [ -z "$ZSH_PATH" ]; then
-    printf "%b\n" "${RED}Zsh is not installed!${RC}"
-    return 1
-  fi
-  if [ "$CURRENT_SHELL" != "$ZSH_PATH" ]; then
-    printf "%b\n" "${YELLOW}Changing default shell to zsh for user $USER...${RC}"
-    if command -v chsh >/dev/null 2>&1; then
-      chsh -s "$ZSH_PATH" "$USER" && \
-        printf "%b\n" "${GREEN}Default shell changed to zsh.${RC}" || \
-        printf "%b\n" "${RED}Failed to change default shell. You may need to log out and back in, or run 'chsh -s $ZSH_PATH' manually.${RC}"
-    else
-      printf "%b\n" "${RED}chsh command not found. Please change your shell manually to zsh.${RC}"
+    ZSH_PATH="$(command -v zsh)"
+    CURRENT_SHELL="$(getent passwd "$USER" | cut -d: -f7)"
+    
+    if [ -z "$ZSH_PATH" ]; then
+        printf "%b\n" "${RED}Zsh is not installed!${RC}"
+        return 1
     fi
-  else
-    printf "%b\n" "${GREEN}Default shell is already zsh.${RC}"
-  fi
+    
+    # Ensure zsh is in /etc/shells
+    if ! grep -q "^$ZSH_PATH$" /etc/shells 2>/dev/null; then
+        printf "%b\n" "${YELLOW}Adding zsh to /etc/shells...${RC}"
+        echo "$ZSH_PATH" | "$ESCALATION_TOOL" tee -a /etc/shells >/dev/null
+    fi
+    
+    if [ "$CURRENT_SHELL" != "$ZSH_PATH" ]; then
+        printf "%b\n" "${YELLOW}Changing default shell to zsh for user $USER...${RC}"
+        
+        # Try chsh first (most common method)
+        if command -v chsh >/dev/null 2>&1; then
+            if chsh -s "$ZSH_PATH" "$USER" 2>/dev/null; then
+                printf "%b\n" "${GREEN}Default shell changed to zsh.${RC}"
+            else
+                # Fallback: try with sudo if regular chsh fails
+                if "$ESCALATION_TOOL" chsh -s "$ZSH_PATH" "$USER" 2>/dev/null; then
+                    printf "%b\n" "${GREEN}Default shell changed to zsh.${RC}"
+                else
+                    printf "%b\n" "${YELLOW}Automatic shell change failed. Trying usermod...${RC}"
+                    # Fallback: use usermod (requires root)
+                    if "$ESCALATION_TOOL" usermod -s "$ZSH_PATH" "$USER" 2>/dev/null; then
+                        printf "%b\n" "${GREEN}Default shell changed to zsh using usermod.${RC}"
+                    else
+                        printf "%b\n" "${RED}Failed to change shell automatically.${RC}"
+                        printf "%b\n" "${YELLOW}Please run manually: chsh -s $ZSH_PATH${RC}"
+                        printf "%b\n" "${YELLOW}Or log out and back in for changes to take effect.${RC}"
+                    fi
+                fi
+            fi
+        else
+            # No chsh available, try usermod directly
+            if "$ESCALATION_TOOL" usermod -s "$ZSH_PATH" "$USER" 2>/dev/null; then
+                printf "%b\n" "${GREEN}Default shell changed to zsh using usermod.${RC}"
+            else
+                printf "%b\n" "${RED}Neither chsh nor usermod available. Please change shell manually.${RC}"
+            fi
+        fi
+    else
+        printf "%b\n" "${GREEN}Default shell is already zsh.${RC}"
+    fi
 }
 
 BASE_URL="https://raw.githubusercontent.com/Jaredy899/linux/main/config_changes"
