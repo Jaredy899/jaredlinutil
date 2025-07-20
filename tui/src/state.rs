@@ -587,7 +587,7 @@ impl AppState {
                 KeyCode::Enter | KeyCode::Char('l') | KeyCode::Right => {
                     self.focus = Focus::List;
                     self.check_and_show_tab_warning();
-                },
+                }
                 KeyCode::Char('j') | KeyCode::Down => self.scroll_tab_down(),
                 KeyCode::Char('k') | KeyCode::Up => self.scroll_tab_up(),
 
@@ -894,11 +894,7 @@ impl AppState {
     fn check_and_show_tab_warning(&mut self) {
         if let Some(tab) = self.tabs.get(self.current_tab.selected().unwrap()) {
             if let Some(warning) = &tab.warning {
-                let warning_float = FloatingText::new(
-                    warning.clone(),
-                    "Tab Warning",
-                    true,
-                );
+                let warning_float = FloatingText::new(warning.clone(), "Tab Warning", true);
                 self.spawn_float(warning_float, FLOAT_SIZE, FLOAT_SIZE);
             }
         }
