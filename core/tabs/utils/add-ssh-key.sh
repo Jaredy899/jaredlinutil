@@ -66,14 +66,18 @@ add_manual_key() {
 }
 
 show_ssh_menu() {
-    show_menu_item 1 "${NC}" "Import from GitHub"
-    show_menu_item 2 "${NC}" "Enter your own public key"
+    printf "%b\n" "${CYAN}SSH Key Management${RC}"
+    printf "%b\n" "${CYAN}1) Import from GitHub${RC}"
+    printf "%b\n" "${CYAN}2) Enter your own public key${RC}"
+    printf "%b\n" "${CYAN}3) Exit${RC}"
 }
 
 ssh_key_menu() {
     while true; do
-        handle_menu_selection 2 "Select SSH key option:" show_ssh_menu
-        CHOICE=$?
+        show_ssh_menu
+        printf "%b" "${CYAN}Select an option (1-3): ${RC}"
+        read -r CHOICE
+
         case $CHOICE in
             1)
                 import_ssh_keys
@@ -83,7 +87,16 @@ ssh_key_menu() {
                 add_manual_key
                 break
                 ;;
+            3)
+                printf "%b\n" "${GREEN}Exiting...${RC}"
+                exit 0
+                ;;
+            *)
+                printf "%b\n" "${RED}Invalid option. Please try again.${RC}"
+                ;;
         esac
+        printf "%b\n" "${CYAN}Press Enter to continue...${RC}"
+        read -r _
     done
 }
 
