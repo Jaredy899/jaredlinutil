@@ -21,6 +21,14 @@ installTailscale() {
     fi
 }
 
+configureTailscale() {
+    printf "%b\n" "${YELLOW}Configuring Tailscale...${RC}"
+    $ESCALATION_TOOL tailscale up
+    printf "%b\n" "${GREEN}Tailscale configured successfully!${RC}"
+}
+
+
 checkEnv
 checkEscalationTool
 installTailscale
+configureTailscale
