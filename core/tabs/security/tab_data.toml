@@ -20,7 +20,7 @@ task_list = "I SS"
 [[data.preconditions]]
 matches = true
 data = "command_exists"
-values = [ "firewall-cmd" ]
+values = [ "dnf", "zypper", "firewall-cmd" ]
 
 [[data]]
 name = "Tailscale"

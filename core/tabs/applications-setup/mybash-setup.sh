@@ -2,85 +2,31 @@
 
 . ../common-script.sh
 
-gitpath="$HOME/.local/share/mybash"
+MYBASH_DIR="$HOME/.local/share/mybash"
 
 installDepend() {
-    if [ ! -f "/usr/share/bash-completion/bash_completion" ] || ! command_exists bash tar bat tree unzip fc-list git; then
+    if [ ! -f "/usr/share/bash-completion/bash_completion" ] || \
+       ! command_exists bash tar bat tree unzip fc-list git; then
         printf "%b\n" "${YELLOW}Installing Bash...${RC}"
         case "$PACKAGER" in
             pacman)
-                "$ESCALATION_TOOL" "$PACKAGER" -S --needed --noconfirm bash bash-completion tar bat tree unzip fontconfig git
+                "$ESCALATION_TOOL" "$PACKAGER" -S --needed --noconfirm \
+                    bash bash-completion tar bat tree unzip fontconfig git
                 ;;
             apk)
-                "$ESCALATION_TOOL" "$PACKAGER" add bash bash-completion tar bat tree unzip fontconfig git
+                "$ESCALATION_TOOL" "$PACKAGER" add \
+                    bash bash-completion tar bat tree unzip fontconfig git
                 ;;
             xbps-install)
-                "$ESCALATION_TOOL" "$PACKAGER" -Sy bash bash-completion tar bat tree unzip fontconfig git
+                "$ESCALATION_TOOL" "$PACKAGER" -Sy \
+                    bash bash-completion tar bat tree unzip fontconfig git
                 ;;
             *)
-                "$ESCALATION_TOOL" "$PACKAGER" install -y bash bash-completion tar bat tree unzip fontconfig git
+                "$ESCALATION_TOOL" "$PACKAGER" install -y \
+                    bash bash-completion tar bat tree unzip fontconfig git
                 ;;
         esac
     fi
-}
-
-setDefaultShellToBash() {
-    CURRENT_SHELL="$(getent passwd "$USER" | cut -d: -f7)"
-    SHELL_PATH="$(command -v bash)"
-
-    if [ -z "$SHELL_PATH" ]; then
-        printf "%b\n" "${RED}Bash is not installed!${RC}"
-        return 1
-    fi
-
-    # Ensure bash is in /etc/shells
-    if ! grep -q "^$SHELL_PATH$" /etc/shells 2>/dev/null; then
-        printf "%b\n" "${YELLOW}Adding bash to /etc/shells...${RC}"
-        echo "$SHELL_PATH" | "$ESCALATION_TOOL" tee -a /etc/shells >/dev/null
-    fi
-
-    if [ "$CURRENT_SHELL" != "$SHELL_PATH" ]; then
-        printf "%b\n" "${YELLOW}Changing default shell to bash for user $USER...${RC}"
-        
-        # Try chsh first (most common method)
-        if command -v chsh >/dev/null 2>&1; then
-            if chsh -s "$SHELL_PATH" "$USER" 2>/dev/null; then
-                printf "%b\n" "${GREEN}Default shell changed to bash.${RC}"
-            else
-                # Fallback: try with sudo if regular chsh fails
-                if "$ESCALATION_TOOL" chsh -s "$SHELL_PATH" "$USER" 2>/dev/null; then
-                    printf "%b\n" "${GREEN}Default shell changed to bash.${RC}"
-                else
-                    printf "%b\n" "${YELLOW}Automatic shell change failed. Trying usermod...${RC}"
-                    # Fallback: use usermod (requires root)
-                    if "$ESCALATION_TOOL" usermod -s "$SHELL_PATH" "$USER" 2>/dev/null; then
-                        printf "%b\n" "${GREEN}Default shell changed to bash using usermod.${RC}"
-                    else
-                        printf "%b\n" "${RED}Failed to change shell automatically.${RC}"
-                        printf "%b\n" "${YELLOW}Please run manually: chsh -s $SHELL_PATH${RC}"
-                        printf "%b\n" "${YELLOW}Or log out and back in for changes to take effect.${RC}"
-                    fi
-                fi
-            fi
-        else
-            # No chsh available, try usermod directly
-            if "$ESCALATION_TOOL" usermod -s "$SHELL_PATH" "$USER" 2>/dev/null; then
-                printf "%b\n" "${GREEN}Default shell changed to bash using usermod.${RC}"
-            else
-                printf "%b\n" "${RED}Neither chsh nor usermod available. Please change shell manually.${RC}"
-            fi
-        fi
-    else
-        printf "%b\n" "${GREEN}Default shell is already bash.${RC}"
-    fi
-}
-
-cloneMyBash() {
-    if [ -d "$gitpath" ]; then
-        rm -rf "$gitpath"
-    fi
-    mkdir -p "$HOME/.local/share"
-    cd "$HOME" && git clone https://github.com/ChrisTitusTech/mybash.git "$gitpath"
 }
 
 installFont() {
@@ -92,12 +38,12 @@ installFont() {
         FONT_URL="https://github.com/ryanoasis/nerd-fonts/releases/latest/download/Meslo.zip"
         FONT_DIR="$HOME/.local/share/fonts"
         TEMP_DIR=$(mktemp -d)
-        curl -sSLo "$TEMP_DIR"/"${FONT_NAME}".zip "$FONT_URL"
-        unzip "$TEMP_DIR"/"${FONT_NAME}".zip -d "$TEMP_DIR"
-        mkdir -p "$FONT_DIR"/"$FONT_NAME"
-        mv "${TEMP_DIR}"/*.ttf "$FONT_DIR"/"$FONT_NAME"
+        curl -sSLo "$TEMP_DIR/${FONT_NAME}.zip" "$FONT_URL"
+        unzip "$TEMP_DIR/${FONT_NAME}.zip" -d "$TEMP_DIR"
+        mkdir -p "$FONT_DIR/$FONT_NAME"
+        mv "$TEMP_DIR"/*.ttf "$FONT_DIR/$FONT_NAME"
         fc-cache -fv
-        rm -rf "${TEMP_DIR}"
+        rm -rf "$TEMP_DIR"
         printf "%b\n" "${GREEN}'$FONT_NAME' installed successfully.${RC}"
     fi
 }
@@ -105,19 +51,18 @@ installFont() {
 installStarshipAndFzf() {
     if command_exists starship; then
         printf "%b\n" "${GREEN}Starship already installed${RC}"
-        return
-    fi
-
-    if [ "$PACKAGER" = "eopkg" ]; then
-        "$ESCALATION_TOOL" "$PACKAGER" install -y starship || {
-            printf "%b\n" "${RED}Failed to install starship with Solus!${RC}"
-            exit 1
-        }
     else
-        curl -sSL https://starship.rs/install.sh | "$ESCALATION_TOOL" sh || {
-            printf "%b\n" "${RED}Failed to install starship!${RC}"
-            exit 1
-        }
+        if [ "$PACKAGER" = "eopkg" ]; then
+            "$ESCALATION_TOOL" "$PACKAGER" install -y starship || {
+                printf "%b\n" "${RED}Failed to install starship with Solus!${RC}"
+                exit 1
+            }
+        else
+            curl -sSL https://starship.rs/install.sh | "$ESCALATION_TOOL" sh || {
+                printf "%b\n" "${RED}Failed to install starship!${RC}"
+                exit 1
+            }
+        fi
     fi
 
     if command_exists fzf; then
@@ -134,9 +79,13 @@ installZoxide() {
         return
     fi
 
-    if ! curl -sSL https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | sh; then
-        printf "%b\n" "${RED}Something went wrong during zoxide install!${RC}"
-        exit 1
+    if [ "$PACKAGER" = "apk" ]; then
+        "$ESCALATION_TOOL" "$PACKAGER" add zoxide
+    else
+        if ! curl -sSL https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | sh; then
+            printf "%b\n" "${RED}Something went wrong during zoxide install!${RC}"
+            exit 1
+        fi
     fi
 }
 
@@ -151,21 +100,20 @@ linkConfig() {
     fi
 
     printf "%b\n" "${YELLOW}Linking new bash config file...${RC}"
-    ln -svf "$gitpath/.bashrc" "$HOME/.bashrc" || {
+    ln -svf "$MYBASH_DIR/.bashrc" "$HOME/.bashrc" || {
         printf "%b\n" "${RED}Failed to create symbolic link for .bashrc${RC}"
         exit 1
     }
     mkdir -p "$HOME/.config"
-    ln -svf "$gitpath/starship.toml" "$HOME/.config/starship.toml" || {
+    ln -svf "$HOME/.config/starship.toml" "$HOME/.config/starship.toml" || {
         printf "%b\n" "${RED}Failed to create symbolic link for starship.toml${RC}"
         exit 1
     }
     printf "%b\n" "${GREEN}Done! restart your shell to see the changes.${RC}"
 }
 
-# --- New Section: Replace Configs ---
+# --- Download and replace configs ---
 BASE_URL="https://raw.githubusercontent.com/Jaredy899/linux/main/config_changes"
-MYBASH_DIR="$HOME/.local/share/mybash"
 
 replaceConfigs() {
     printf "%b\n" "${YELLOW}Downloading and replacing configurations...${RC}"
@@ -176,7 +124,6 @@ replaceConfigs() {
 
     if [ -f /etc/alpine-release ]; then
         "$ESCALATION_TOOL" curl -sSfL -o "/etc/profile" "$BASE_URL/profile"
-        "$ESCALATION_TOOL" apk add zoxide
     elif [ "$DTYPE" = "solus" ]; then
         curl -sSfL -o "$HOME/.profile" "$BASE_URL/.profile"
         curl -sSfL -o "$MYBASH_DIR/.bashrc" "$BASE_URL/.bashrc"
@@ -190,13 +137,12 @@ replaceConfigs() {
     printf "%b\n" "${GREEN}Configurations downloaded and replaced successfully.${RC}"
 }
 
+# --- Main execution ---
 checkEnv
 checkEscalationTool
 installDepend
-setDefaultShellToBash
-cloneMyBash
 installFont
 installStarshipAndFzf
 installZoxide
-linkConfig
 replaceConfigs
+linkConfig

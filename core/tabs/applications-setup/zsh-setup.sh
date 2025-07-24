@@ -4,25 +4,25 @@
 
 # Function to install zsh
 installZsh() {
-  if ! command_exists zsh; then
-    printf "%b\n" "${YELLOW}Installing Zsh...${RC}"
-    case "$PACKAGER" in
-      pacman)
-        "$ESCALATION_TOOL" "$PACKAGER" -S --needed --noconfirm zsh
-        ;;
-      apk)
-        "$ESCALATION_TOOL" "$PACKAGER" add zsh
-        ;;
-      xbps-install)
-        "$ESCALATION_TOOL" "$PACKAGER" -Sy zsh
-        ;;
-      *)
-        "$ESCALATION_TOOL" "$PACKAGER" install -y zsh
-        ;;
-    esac
-  else
-    printf "%b\n" "${GREEN}ZSH is already installed.${RC}"
-  fi
+    if ! command_exists zsh; then
+        printf "%b\n" "${YELLOW}Installing Zsh...${RC}"
+        case "$PACKAGER" in
+            pacman)
+                "$ESCALATION_TOOL" "$PACKAGER" -S --needed --noconfirm zsh
+                ;;
+            apk)
+                "$ESCALATION_TOOL" "$PACKAGER" add zsh
+                ;;
+            xbps-install)
+                "$ESCALATION_TOOL" "$PACKAGER" -Sy zsh
+                ;;
+            *)
+                "$ESCALATION_TOOL" "$PACKAGER" install -y zsh
+                ;;
+        esac
+    else
+        printf "%b\n" "${GREEN}ZSH is already installed.${RC}"
+    fi
 }
 
 installFont() {
@@ -34,12 +34,12 @@ installFont() {
         FONT_URL="https://github.com/ryanoasis/nerd-fonts/releases/latest/download/Meslo.zip"
         FONT_DIR="$HOME/.local/share/fonts"
         TEMP_DIR=$(mktemp -d)
-        curl -sSLo "$TEMP_DIR"/"${FONT_NAME}".zip "$FONT_URL"
-        unzip "$TEMP_DIR"/"${FONT_NAME}".zip -d "$TEMP_DIR"
-        mkdir -p "$FONT_DIR"/"$FONT_NAME"
-        mv "${TEMP_DIR}"/*.ttf "$FONT_DIR"/"$FONT_NAME"
+        curl -sSLo "$TEMP_DIR/${FONT_NAME}.zip" "$FONT_URL"
+        unzip "$TEMP_DIR/${FONT_NAME}.zip" -d "$TEMP_DIR"
+        mkdir -p "$FONT_DIR/$FONT_NAME"
+        mv "$TEMP_DIR"/*.ttf "$FONT_DIR/$FONT_NAME"
         fc-cache -fv
-        rm -rf "${TEMP_DIR}"
+        rm -rf "$TEMP_DIR"
         printf "%b\n" "${GREEN}'$FONT_NAME' installed successfully.${RC}"
     fi
 }
@@ -76,61 +76,13 @@ installZoxide() {
         return
     fi
 
-    if ! curl -sSL https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | sh; then
-        printf "%b\n" "${RED}Something went wrong during zoxide install!${RC}"
-        exit 1
-    fi
-}
-
-# Function to set default shell to zsh
-setDefaultShellToZsh() {
-    ZSH_PATH="$(command -v zsh)"
-    CURRENT_SHELL="$(getent passwd "$USER" | cut -d: -f7)"
-    
-    if [ -z "$ZSH_PATH" ]; then
-        printf "%b\n" "${RED}Zsh is not installed!${RC}"
-        return 1
-    fi
-    
-    # Ensure zsh is in /etc/shells
-    if ! grep -q "^$ZSH_PATH$" /etc/shells 2>/dev/null; then
-        printf "%b\n" "${YELLOW}Adding zsh to /etc/shells...${RC}"
-        echo "$ZSH_PATH" | "$ESCALATION_TOOL" tee -a /etc/shells >/dev/null
-    fi
-    
-    if [ "$CURRENT_SHELL" != "$ZSH_PATH" ]; then
-        printf "%b\n" "${YELLOW}Changing default shell to zsh for user $USER...${RC}"
-        
-        # Try chsh first (most common method)
-        if command -v chsh >/dev/null 2>&1; then
-            if chsh -s "$ZSH_PATH" "$USER" 2>/dev/null; then
-                printf "%b\n" "${GREEN}Default shell changed to zsh.${RC}"
-            else
-                # Fallback: try with sudo if regular chsh fails
-                if "$ESCALATION_TOOL" chsh -s "$ZSH_PATH" "$USER" 2>/dev/null; then
-                    printf "%b\n" "${GREEN}Default shell changed to zsh.${RC}"
-                else
-                    printf "%b\n" "${YELLOW}Automatic shell change failed. Trying usermod...${RC}"
-                    # Fallback: use usermod (requires root)
-                    if "$ESCALATION_TOOL" usermod -s "$ZSH_PATH" "$USER" 2>/dev/null; then
-                        printf "%b\n" "${GREEN}Default shell changed to zsh using usermod.${RC}"
-                    else
-                        printf "%b\n" "${RED}Failed to change shell automatically.${RC}"
-                        printf "%b\n" "${YELLOW}Please run manually: chsh -s $ZSH_PATH${RC}"
-                        printf "%b\n" "${YELLOW}Or log out and back in for changes to take effect.${RC}"
-                    fi
-                fi
-            fi
-        else
-            # No chsh available, try usermod directly
-            if "$ESCALATION_TOOL" usermod -s "$ZSH_PATH" "$USER" 2>/dev/null; then
-                printf "%b\n" "${GREEN}Default shell changed to zsh using usermod.${RC}"
-            else
-                printf "%b\n" "${RED}Neither chsh nor usermod available. Please change shell manually.${RC}"
-            fi
-        fi
+    if [ "$PACKAGER" = "apk" ]; then
+        "$ESCALATION_TOOL" "$PACKAGER" add zoxide
     else
-        printf "%b\n" "${GREEN}Default shell is already zsh.${RC}"
+        if ! curl -sSL https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | sh; then
+            printf "%b\n" "${RED}Something went wrong during zoxide install!${RC}"
+            exit 1
+        fi
     fi
 }
 
@@ -156,7 +108,6 @@ setupAndReplaceConfigs() {
     # Handle Alpine and Solus special cases for /etc/profile and .profile
     if [ -f /etc/alpine-release ]; then
         "$ESCALATION_TOOL" curl -sSfL -o "/etc/profile" "$BASE_URL/profile"
-        "$ESCALATION_TOOL" apk add zoxide
     elif [ "$DTYPE" = "solus" ]; then
         curl -sSfL -o "$HOME/.profile" "$BASE_URL/.profile"
     fi
@@ -171,8 +122,7 @@ setupAndReplaceConfigs() {
 checkEnv
 checkEscalationTool
 installZsh
-setDefaultShellToZsh
 installFont
 installStarshipAndFzf
 installZoxide
-setupAndReplaceConfigs 
+setupAndReplaceConfigs
