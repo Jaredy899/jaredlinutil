@@ -6,6 +6,54 @@
 SSH_DIR="$HOME/.ssh"
 AUTHORIZED_KEYS="$SSH_DIR/authorized_keys"
 
+# Function to setup and configure SSH
+setup_ssh() {
+    printf "%b\n" "${YELLOW}Setting up SSH...${RC}"
+
+    case "$PACKAGER" in
+        apt-get|nala)
+            if ! command_exists "openssh-server"; then
+                "$ESCALATION_TOOL" "$PACKAGER" install -y openssh-server
+            else
+                printf "%b\n" "${GREEN}openssh-server is already installed.${RC}"
+            fi
+            startAndEnableService "ssh"
+            ;;
+        pacman)
+            if ! command_exists "openssh"; then
+                "$ESCALATION_TOOL" "$PACKAGER" -S --needed --noconfirm openssh
+            else
+                printf "%b\n" "${GREEN}openssh is already installed.${RC}"
+            fi
+            startAndEnableService "sshd"
+            ;;
+        apk)
+            if ! command_exists "openssh"; then
+                "$ESCALATION_TOOL" "$PACKAGER" add openssh
+            else
+                printf "%b\n" "${GREEN}openssh is already installed.${RC}"
+            fi
+            startAndEnableService "sshd"
+            ;;
+        xbps-install)
+            if ! command_exists "openssh"; then
+                "$ESCALATION_TOOL" "$PACKAGER" -Sy openssh
+            else
+                printf "%b\n" "${GREEN}openssh is already installed.${RC}"
+            fi
+            startAndEnableService "sshd"
+            ;;
+        *)
+            if ! command_exists "openssh-server"; then
+                "$ESCALATION_TOOL" "$PACKAGER" install -y openssh-server
+            else
+                printf "%b\n" "${GREEN}openssh-server is already installed.${RC}"
+            fi
+            startAndEnableService "sshd"
+            ;;
+    esac
+}
+
 ensure_ssh_setup() {
     if [ ! -d "$SSH_DIR" ]; then
         mkdir -p "$SSH_DIR"
@@ -101,5 +149,6 @@ ssh_key_menu() {
 }
 
 checkEnv
+setup_ssh
 ensure_ssh_setup
 ssh_key_menu

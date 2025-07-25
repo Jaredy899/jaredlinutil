@@ -49,10 +49,6 @@ setup_ssh() {
         install_package openssh
         SSH_SERVICE="sshd"
         ;;
-    slapt-get)
-        install_package openssh
-        SSH_SERVICE="sshd"
-        ;;
     *)
         install_package openssh-server
         SSH_SERVICE="sshd"
